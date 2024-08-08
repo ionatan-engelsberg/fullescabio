@@ -424,6 +424,8 @@
                 const inputFechaPedidoUnico = document.querySelector('#fechaPedidoUnico');
 
                 confirmarClienteButton.addEventListener('click', () => {
+                    // capturar session storage
+
                     inputListaPedidoUnico.disabled = !inputListaPedidoUnico.disabled;
                     inputListaPedidoUnico.classList.toggle('input-disabled'); 
 
@@ -454,16 +456,22 @@
                             razon: item.getAttribute('data-razon'),
                             nombreFantasia: item.getAttribute('data-nombreFantasia'),
                             lista: item.getAttribute('data-lista'),
-                            vendedor: item.getAttribute('data-vendedor')
+                            vendedor: item.getAttribute('data-vendedor'),
+                            
+                            //todo:
+                            tipo: "tipo",
+                            fecha: "fecha"
                         };
                     });
                 });
 
                 document.getElementById('confirmarSeleccion').addEventListener('click', () => {
                     if (selectedResult) {
+                        // guardarlo en session storage
                         console.log('Resultado seleccionado:', selectedResult);
                         inputListaPedidoUnico.value = selectedResult.lista
                         inputVendedorPedidoUnico.value = selectedResult.vendedor
+                        // todo: tipo y fecha
                     }
                 });
             });
