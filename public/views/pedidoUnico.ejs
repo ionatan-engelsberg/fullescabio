@@ -131,7 +131,8 @@
                                                                     data-id="<%= resultado.id %>" 
                                                                     data-nombreFantasia="<%= resultado.nombreFantasia ? resultado.nombreFantasia : "No Definido" %>"
                                                                     data-razon="<%= resultado.razon ? resultado.razon : "No Definido" %>"
-                                                                    data-lista="<%= resultado.lista %>">
+                                                                    data-vendedor="<%= resultado.vendedor ? resultado.vendedor : "No Definido" %>"
+                                                                    data-lista="<%= resultado.lista ? resultado.lista : "No Definido" %>">
                                                                     
                                                                     <div class="col-md-2">
                                                                         <span><%= resultado.id %></span>
@@ -182,11 +183,12 @@
                                                                 </div>
                                                             </div>
                                                             <% resultadosNombre.forEach((resultado, index) => { %>
-                                                                <div class="result-item row" 
+                                                               <div class="result-item row" 
                                                                     data-id="<%= resultado.id %>" 
                                                                     data-nombreFantasia="<%= resultado.nombreFantasia ? resultado.nombreFantasia : "No Definido" %>"
                                                                     data-razon="<%= resultado.razon ? resultado.razon : "No Definido" %>"
-                                                                    data-lista="<%= resultado.lista %>">
+                                                                    data-vendedor="<%= resultado.vendedor ? resultado.vendedor : "No Definido" %>"
+                                                                    data-lista="<%= resultado.lista ? resultado.lista : "No Definido" %>">
                                                                     
                                                                     <div class="col-md-2">
                                                                         <span><%= resultado.id %></span>
@@ -241,7 +243,8 @@
                                                                     data-id="<%= resultado.id %>" 
                                                                     data-nombreFantasia="<%= resultado.nombreFantasia ? resultado.nombreFantasia : "No Definido" %>"
                                                                     data-razon="<%= resultado.razon ? resultado.razon : "No Definido" %>"
-                                                                    data-lista="<%= resultado.lista %>">
+                                                                    data-vendedor="<%= resultado.vendedor ? resultado.vendedor : "No Definido" %>"
+                                                                    data-lista="<%= resultado.lista ? resultado.lista : "No Definido" %>">
                                                                     
                                                                     <div class="col-md-2">
                                                                         <span><%= resultado.id %></span>
@@ -282,16 +285,12 @@
                                     <input type="text" class="bg-transparent border-color-transparent-white-light" name="listaPedidoUnico">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="" class="text-white fw-600 fs-20">Tipo</label>
-                                    <select class="bg-transparent border-color-transparent-white-light" name="typePedidoUnico">
-                                        <option value="">aa</option>
-                                    </select>
-                                   
+                                    <label for="" class="text-white fw-600 fs-20">Vendedor</label>
+                                    <input type="text" class="bg-transparent border-color-transparent-white-light" name="vendedorPedidoUnico">
                                 </div>
                                 <div class="col-md-4">
-                                    
-                                    <label for="" class="text-white fw-600 fs-20">Vendedor</label>
-                                    <select class="bg-transparent border-color-transparent-white-light" name="vendedorPedidoUnico">
+                                    <label for="" class="text-white fw-600 fs-20">Tipo</label>
+                                    <select class="bg-transparent border-color-transparent-white-light" name="tipoPedidoUnico" id="tipoPedidoUnico">
                                         <option value="">aa</option>
                                     </select>
                                 </div>
@@ -299,26 +298,26 @@
                             <div class="row mt-30px">
                                 <div class="col-md-12">
                                     <label for="" class="text-white fw-600 fs-20">Fecha de entrega</label>
-                                    <input type="date" class="form-control bg-transparent border-color-transparent-white-light" name="nombrePedidoUnico">
+                                    <input type="date" class="form-control bg-transparent border-color-transparent-white-light" name="fechaPedidoUnico" id="fechaPedidoUnico">
                                 </div>
                             </div>
                           
                         </div>
                     </div>
                 <div class="row mt-5">
-                    <div class="col-md-1">
+                    <div class="col-md-3">
                         <p class="text-white text-center fs-20 fw-600">Código</p>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <p class="text-white text-center fs-20 fw-600">Nombre</p>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-1">
                         <p class="text-white text-center fs-20 fw-600">Cantidad</p>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-1">
                         <p class="text-white text-center fs-20 fw-600">Costo</p>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-1">
                         <p class="text-white text-center fs-20 fw-600">Precio</p>
                     </div>
                     <div class="col-md-2">
@@ -329,19 +328,27 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-1">
-                        <input type="text" class="bg-transparent border-color-transparent-white-light" name="codigoPedidoUnico">
+                    <div class="col-md-3">
+                        <form action="/admin/pedido-unico/datos-orden" method="POST" class="d-flex">
+                            <input type="text" 
+                            class="bg-transparent border-color-transparent-white-light w-70" 
+                            aria-describedby="basic-addon2" 
+                            name="codigoPedidoUnico">
+                            <div class="input-group-append">
+                                <button class="btn btn-success h-100" type="submit">Buscar</button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <input type="text" class="bg-transparent border-color-transparent-white-light" name="nombrePedidoUnico">
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-1">
                         <input type="text" class="bg-transparent border-color-transparent-white-light" name="cantidadPedidoUnico">
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-1">
                         <input type="text" class="bg-transparent border-color-transparent-white-light" name="costoPedidoUnico">
                     </div>
-                    <div class="col-md-2 ">
+                    <div class="col-md-1">
                         <input type="text" class="bg-transparent border-color-transparent-white-light" name="precioPedidoUnico">
                     </div>
                     <div class="col-md-2 d-flex flex-warp justify-content-between">
@@ -412,17 +419,28 @@
                 // Freeze inputs 
                 const confirmarClienteButton = document.getElementById('confirmarCliente');
                 const inputListaPedidoUnico = document.querySelector('input[name="listaPedidoUnico"]');
-                // ...
+                const inputVendedorPedidoUnico = document.querySelector('input[name="vendedorPedidoUnico"]');
+                const inputTipoPedidoUnico = document.querySelector('#tipoPedidoUnico');
+                const inputFechaPedidoUnico = document.querySelector('#fechaPedidoUnico');
 
                 confirmarClienteButton.addEventListener('click', () => {
-                    inputListaPedidoUnico.disabled = true;
-                    inputListaPedidoUnico.classList.add('input-disabled'); 
-                    // ... 
+                    inputListaPedidoUnico.disabled = !inputListaPedidoUnico.disabled;
+                    inputListaPedidoUnico.classList.toggle('input-disabled'); 
+
+                    inputVendedorPedidoUnico.disabled = !inputVendedorPedidoUnico.disabled;
+                    inputVendedorPedidoUnico.classList.toggle('input-disabled'); 
+                    
+                    inputTipoPedidoUnico.disabled = !inputTipoPedidoUnico.disabled;
+                    inputTipoPedidoUnico.classList.toggle('input-disabled');
+
+                    inputFechaPedidoUnico.disabled = !inputFechaPedidoUnico.disabled;
+                    inputFechaPedidoUnico.classList.toggle('input-disabled');
                 });
             });
 
             document.addEventListener('DOMContentLoaded', () => {
                 const inputListaPedidoUnico = document.querySelector('input[name="listaPedidoUnico"]');
+                const inputVendedorPedidoUnico = document.querySelector('input[name="vendedorPedidoUnico"]');
                 const resultItems = document.querySelectorAll('.result-item');
                 let selectedResult = null;
 
@@ -435,7 +453,8 @@
                             id: item.getAttribute('data-id'),
                             razon: item.getAttribute('data-razon'),
                             nombreFantasia: item.getAttribute('data-nombreFantasia'),
-                            lista: item.getAttribute('data-lista')
+                            lista: item.getAttribute('data-lista'),
+                            vendedor: item.getAttribute('data-vendedor')
                         };
                     });
                 });
@@ -444,6 +463,7 @@
                     if (selectedResult) {
                         console.log('Resultado seleccionado:', selectedResult);
                         inputListaPedidoUnico.value = selectedResult.lista
+                        inputVendedorPedidoUnico.value = selectedResult.vendedor
                     }
                 });
             });
@@ -489,8 +509,9 @@
                 color: white;
             }
             .input-disabled {
-                font-style: italic;
                 font-weight: bold;
+                border: 1px solid #157347 !important;
+                cursor: not-allowed;
             }   
         </style>
     </body>
