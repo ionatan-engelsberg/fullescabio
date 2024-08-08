@@ -1,0 +1,167 @@
+<!doctype html>
+<html class="no-js" lang="es">
+    <head>
+        <title>Full Escabio | Admin</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="author" content="ThemeZaa">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+        <meta name="description" content="">
+        <!-- favicon icon -->
+        <!-- google fonts preconnect -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <!-- style sheets and font icons  -->
+        <link rel="stylesheet" href="/css/vendors.min.css"/>
+        <link rel="stylesheet" href="/css/icon.min.css"/>
+        <link rel="stylesheet" href="/css/style.css"/>
+        <link rel="stylesheet" href="/css/responsive.css"/>
+        <link rel="stylesheet" href="/demos/conference/conference.css" />
+    </head>
+    <body data-mobile-nav-style="classic" class="bg-midnight-blue">  
+
+        <header> 
+            <nav class="navbar navbar-expand-lg header-transparent bg-transparent disable-fixed mt-2">
+                <div class="container-fluid">
+                    <div class="col-md-8">
+                        <a href="/admin/pedido-unico" class="fs-28 adminLinks" style="margin-right: 20px;">Pedido Unico</a>
+                                
+                        <a href="/admin/pedido-mayorista" class="fs-28 adminLinks  text-base-color fw-600" style="margin-right: 20px;">Pedido Mayorista</a>
+                        
+                        <a href="/admin/ventas-adicionales" class="fs-28 adminLinks " >Ventas Adicionales</a>
+                    </div>
+                    <div class="col-auto col-lg-2 text-end xs-ps-0 xs-pe-0">
+                        <div class="header-icon"> 
+                            <form action="/logout?_method=DELETE" method="POST">
+                                <button class="btn btn-medium btn-base-color btn-hover-animation btn-round-edge btn-box-shadow " type="submit">
+                                    <span> 
+                                        <span class="btn-text">Log Out</span> 
+                                        <span class="btn-icon"><i class="fa-solid fa-arrow-right"></i></span> 
+                                    </span>
+                                </button>
+                            </form>
+                        </div>  
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <section>
+            <div class="container adminContainer" style="max-width: 100% !important">
+                <form action="/" method="POST">
+                    <div class="row">
+                        <div class="col-md-12 list-admin">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="col-md-12">
+                                        <label for="" class="text-white fw-600 fs-20">Numero de Cliente</label>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <form action="">
+                                            <input class="input-name bg-transparent border-color-transparent-white-light w-70" type="text" name="integrante" placeholder="Numero de Cliente" />
+                                            <button class="btn btn-medium btn-base-color btn-hover-animation btn-round-edge btn-box-shadow " type="submit"><i class="bi bi-search text-white"></i></button>
+                                        </form> 
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="" class="text-white fw-600 fs-20">Numero de Cliente</label>
+                                    <select class="bg-transparent border-color-transparent-white-light" name="typePedidoUnico">
+                                        <option value="">aa</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="" class="text-white fw-600 fs-20">Numero de Cliente</label>
+                                    <select class="bg-transparent border-color-transparent-white-light" name="vendedorPedidoUnico">
+                                        <option value="">aa</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mt-30px">
+                                <div class="col-md-4">
+                                    <label for="" class="text-white fw-600 fs-20">Lista</label>
+                                    
+                                    <input type="text" class="bg-transparent border-color-transparent-white-light" name="listaPedidoUnico">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="" class="text-white fw-600 fs-20">Razon</label>
+                                    <input type="text" class="bg-transparent border-color-transparent-white-light" name="razonPedidoUnico">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="" class="text-white fw-600 fs-20">Nombre fantasia</label>
+                                    <input type="text" class="bg-transparent border-color-transparent-white-light" name="nombrePedidoUnico">
+                                </div>
+                            </div>
+                            <div class="row mt-30px">
+                                <div class="col-md-12">
+                                    <label for="" class="text-white fw-600 fs-20">Fecha de entrega</label>
+                                    <input type="date" class="form-control bg-transparent border-color-transparent-white-light" name="nombrePedidoUnico">
+                                </div>
+                            </div>
+                            <div class="row mt-30px">
+                                <div class="col-md-12 d-flex justify-content-center">
+                                    <button type="submit" class="btn btn-success w-10" style="padding: 15px 0px;">Consultar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="row mt-5">
+                    <div class="col-md-1">
+                        <p class="text-white text-center fs-20 fw-600">Código</p>
+                    </div>
+                    <div class="col-md-2">
+                        <p class="text-white text-center fs-20 fw-600">Nombre</p>
+                    </div>
+                    <div class="col-md-2">
+                        <p class="text-white text-center fs-20 fw-600">Cantidad</p>
+                    </div>
+                    <div class="col-md-2">
+                        <p class="text-white text-center fs-20 fw-600">Costo</p>
+                    </div>
+                    <div class="col-md-2">
+                        <p class="text-white text-center fs-20 fw-600">Precio</p>
+                    </div>
+                    <div class="col-md-1">
+                        <p class="text-white text-center fs-20 fw-600">P. Elegidas</p>
+                    </div>
+                    <div class="col-md-2">
+                        <p class="text-white text-center fs-20 fw-600">Opciones</p>
+                    </div>
+                </div>
+                <!--! SE DEBEN CREAR X ROWS PARA X PRODUCTOS-->
+                <div class="row">
+                    <div class="col-md-1">
+                        <input type="text" class="bg-transparent border-color-transparent-white-light" name="codigoPedidoUnico">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="bg-transparent border-color-transparent-white-light" name="nombrePedidoUnico">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="bg-transparent border-color-transparent-white-light" name="cantidadPedidoUnico">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="bg-transparent border-color-transparent-white-light" name="costoPedidoUnico">
+                    </div>
+                    <div class="col-md-2 ">
+                        <input type="text" class="bg-transparent border-color-transparent-white-light" name="precioPedidoUnico">
+                    </div>
+                    <div class="col-md-1 d-flex flex-warp justify-content-center">
+                        <button type="button" class="btn btn-light w-50">+</button>
+                    </div>
+                    <div class="col-md-2 d-flex flex-warp justify-content-between">
+                        <button type="button" class="btn btn-primary w-50">Partida</button>
+                        <button type="button" class="btn btn-danger w-45">Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+       
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/vendors.min.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+    </body>
+</html>
+
+<style>
+    
+</style>

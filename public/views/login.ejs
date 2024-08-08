@@ -1,0 +1,79 @@
+<!doctype html>
+<html class="no-js" lang="es">
+    <head>
+        <title>Full Escabio | Login</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="author" content="ThemeZaa">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+        <meta name="description" content="">
+        <!-- favicon icon -->
+        <link rel="shortcut icon" href="">
+        <link rel="apple-touch-icon" href="images/apple-touch-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+        <!-- google fonts preconnect -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <!-- style sheets and font icons  -->
+        <link rel="stylesheet" href="/css/vendors.min.css"/>
+        <link rel="stylesheet" href="/css/icon.min.css"/>
+        <link rel="stylesheet" href="/css/style.css"/>
+        <link rel="stylesheet" href="/css/responsive.css"/>
+        <link rel="stylesheet" href="/demos/conference/conference.css" />
+    </head>
+    <body data-mobile-nav-style="classic" class="bg-midnight-blue">  
+     
+        <!-- end section -->
+        <!-- start section -->
+        <section >
+            <div class="container">
+                <div class="row justify-content-center mb-3 xs-mb-8" data-anime='{ "translateY": [50, 0], "opacity": [0,1], "duration": 600, "delay": 0, "staggervalue": 300, "easing": "easeOutQuad" }'>
+                    <div class="col-xl-7 col-lg-8 text-center">
+                        <h2 class="alt-font text-white fw-500 ls-minus-2px"><span class="w-20px h-4px d-inline-block bg-base-color me-10px"></span>Iniciar Sesion</h2>
+                        <p>Panel de Administrador</p>
+                    </div>
+                </div>
+                <div class="row row-cols-md-1 justify-content-center" data-anime='{ "translateY": [0, 0], "opacity": [0,1], "duration": 600, "delay": 100, "staggervalue": 300, "easing": "easeOutQuad" }'>
+                    <div class="col-xl-9 col-lg-11">
+                        <!-- start contact form -->
+                        <form method="post" action="/login" class="row contact-form-style-02">
+                            <div class="col-md-12 mb-30px">
+                                <input class="input-name bg-transparent border-color-transparent-white-light form-control" type="text" name="business" placeholder="Empresa" />
+                            </div>
+                            <div class="col-md-12 mb-30px">
+                                <input class="input-name bg-transparent border-color-transparent-white-light form-control" type="text" name="username" placeholder="Usuario" />
+                            </div>
+                            <div class="col-md-12 mb-30px">
+                                <input class="bg-transparent border-color-transparent-white-light form-control" type="password" name="password" placeholder="Contraseña" />
+                            </div>
+                            
+                            <div>
+                                <% if (messages.error) { %>
+                                    <%= messages.error %>
+                                <% } %>
+                            </div>
+
+                            <div class="col-md-12 text-center text-center sm-mt-20px">
+                                <input type="hidden" name="redirect" value="">
+                                <button class="btn btn-medium btn-base-color btn-hover-animation btn-round-edge btn-box-shadow align-self-center" type="submit">
+                                    <span> 
+                                        <span class="btn-text">Iniciar Sesion</span> 
+                                        <span class="btn-icon"><i class="fa-solid fa-arrow-right"></i></span> 
+                                    </span>
+                                </button>
+                            </div>
+                        </form>
+                        <!-- end contact form -->
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+       
+        <script type="text/javascript" src="../js/jquery.js"></script>
+        <script type="text/javascript" src="../js/vendors.min.js"></script>
+        <script type="text/javascript" src="../js/main.js"></script>
+    </body>
+</html>
+

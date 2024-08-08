@@ -1,0 +1,78 @@
+<!doctype html>
+<html class="no-js" lang="es">
+    <head>
+        <title>Full Escabio | Admin</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="author" content="ThemeZaa">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+        <meta name="description" content="">
+        <!-- favicon icon -->
+        <link rel="shortcut icon" href="images/favicon.png">
+        <link rel="apple-touch-icon" href="images/apple-touch-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+        <!-- google fonts preconnect -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <!-- style sheets and font icons  -->
+        <link rel="stylesheet" href="css/vendors.min.css"/>
+        <link rel="stylesheet" href="css/icon.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+        <link rel="stylesheet" href="css/responsive.css"/>
+        <link rel="stylesheet" href="demos/conference/conference.css" />
+    </head>
+    <body data-mobile-nav-style="classic" class="bg-midnight-blue">  
+
+        <header> 
+            <nav class="navbar navbar-expand-lg header-transparent bg-transparent disable-fixed mt-2">
+                <div class="container-fluid">
+                    <div class="col-md-5 d-flex justify-content-between">
+
+                    </div>
+                    <div class="col-auto col-lg-2 text-end xs-ps-0 xs-pe-0">
+                        <div class="header-icon"> 
+                            <form action="/logout?_method=DELETE" method="POST">
+                                <button class="btn btn-medium btn-base-color btn-hover-animation btn-round-edge btn-box-shadow " type="submit">
+                                    <span> 
+                                        <span class="btn-text">Log Out</span> 
+                                        <span class="btn-icon"><i class="fa-solid fa-arrow-right"></i></span> 
+                                    </span>
+                                </button>
+                            </form>
+                        </div>  
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <section>
+            <div class="container adminContainer" style="max-width: 100% !important">
+                <div class="row">
+                    <h3 class="text-white">Panel de Administrador</h3>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-3 sidebar-admin text-white d-flex flex-column">
+                        <a href="/admin/pedido-unico" class="fs-28 adminLinks">Pedido Unico</a>
+                        
+                        <a href="/admin/pedido-mayorista" class="fs-28 adminLinks">Pedido Mayorista</a>
+                        
+                        <a href="/admin/ventas-adicionales" class="fs-28 adminLinks" >Ventas Adicionales</a>
+                    </div>
+                    <div class="col-md-9 list-admin">
+                        <h4 class="text-white">Seleccione una opcion para comenzar</h4>
+                    </div>
+                </div>
+            </div>
+        </section>
+       
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/vendors.min.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+    </body>
+</html>
+
+<style>
+    
+</style>

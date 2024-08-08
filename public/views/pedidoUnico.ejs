@@ -1,0 +1,501 @@
+<!doctype html>
+<html class="no-js" lang="es">
+    <head>
+        <title>Full Escabio | Admin</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="author" content="ThemeZaa">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+        <meta name="description" content="">
+        <!-- favicon icon -->
+
+        <!-- google fonts preconnect -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <!-- style sheets and font icons  -->
+        <link rel="stylesheet" href="/css/vendors.min.css"/>
+        <link rel="stylesheet" href="/css/icon.min.css"/>
+        <link rel="stylesheet" href="/css/style.css"/>
+        <link rel="stylesheet" href="/css/responsive.css"/>
+        <link rel="stylesheet" href="/demos/conference/conference.css" />
+    </head>
+    <body data-mobile-nav-style="classic" class="bg-midnight-blue">  
+
+        <header> 
+            <nav class="navbar navbar-expand-lg header-transparent bg-transparent disable-fixed mt-2">
+                <div class="container-fluid">
+                    <div class="col-md-8">
+                        <a href="/admin/pedido-unico" class="fs-28 adminLinks  text-base-color fw-600"style="margin-right: 20px;">Pedido Unico</a>
+                                
+                        <a href="/admin/pedido-mayorista" class="fs-28 adminLinks" style="margin-right: 20px;">Pedido Mayorista</a>
+                        
+                        <a href="/admin/ventas-adicionales" class="fs-28 adminLinks" >Ventas Adicionales</a>
+                    </div>
+                    <div class="col-auto col-lg-2 text-end xs-ps-0 xs-pe-0">
+                        <div class="header-icon"> 
+                            <form action="/logout?_method=DELETE" method="POST">
+                                <button class="btn btn-medium btn-base-color btn-hover-animation btn-round-edge btn-box-shadow " type="submit">
+                                    <span> 
+                                        <span class="btn-text">Log Out</span> 
+                                        <span class="btn-icon"><i class="fa-solid fa-arrow-right"></i></span> 
+                                    </span>
+                                </button>
+                            </form>
+                        </div>  
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <section>
+            <div class="container adminContainer" style="max-width: 100% !important">
+                    <div class="row">
+                        <div class="col-md-12 list-admin">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button class="btn btn-medium btn-base-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" data-toggle="modal" data-target="#seleccionarClienteModalPedidoUnico">Buscar Cliente<i class="bi bi-search text-white"></i></button>
+
+                                    <div class="modal fade" id="seleccionarClienteModalPedidoUnico" tabindex="-1" role="dialog" aria-labelledby="seleccionarClienteModalPedidoUnico" aria-hidden="true" data-target=".bd-example-modal-lg">
+                                        <div class="modal-dialog" role="document">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h5 class="modal-title" id="exampleModalLabel">Buscar Cliente</h5>
+                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="
+                                              background: none;
+                                              border: none;
+                                              font-size: 40px;
+                                              color: red">
+                                                <span aria-hidden="true">&times;</span>
+                                              </button>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <select id="optionSelect" class="form-select" <% if (showModal) { %> disabled <% }%> >
+                                                        <option value="1" <% if (selectedOption == 1) { %> selected <% } %>>Buscar por ID</option>
+                                                        <option value="2" <% if (selectedOption == 2) { %> selected <% } %>>Buscar por Razon</option>
+                                                        <option value="3" <% if (selectedOption == 3) { %> selected <% } %>>Buscar por Nombre Fantasia</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="modal-body row">
+                                                <!--! No borrar. Sin esto se rompe-->
+                                                <div class="col-md-12" id="" style="display: none;">
+                                                    <label for="" class="fw-600 fs-20">ID</label>
+                                                    
+                                                    <div class="input-group mb-3">
+                                                        <form action="/admin/pedido-unico/buscar-por-id" method="POST" class="d-flex w-100">
+                                                            <input type="text" class="form-control w-90" placeholder="Buscar por ID"  aria-describedby="basic-addon2" name="idPedidoUnico">
+                                                            <div class="input-group-append">
+                                                                <button class="btn btn-success h-100" type="submit">Buscar</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+
+                                                    <div id="idResultadosPedidoUnico"></div>
+                                                </div>
+
+                                                <div class="col-md-12" id="idContainer">
+                                                    <label for="" class="fw-600 fs-20">ID</label>
+                                                    
+                                                    <div class="input-group mb-3">
+                                                        <form action="/admin/pedido-unico/buscar-por-id" method="POST" class="d-flex w-100">
+                                                            <input type="text" class="form-control w-90" 
+                                                            placeholder="<%= idPedidoUnico ? idPedidoUnico : 'ID' %>"  
+                                                            aria-describedby="basic-addon2" 
+                                                            name="idPedidoUnico"
+                                                            value="<%= idPedidoUnico ? idPedidoUnico : '' %>">
+                                                            <div class="input-group-append">
+                                                                <button class="btn btn-success h-100" type="submit">Buscar</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+
+                                                    <div id="idResultadosPedidoUnico">
+                                                        <% if (resultadosID && resultadosID.length > 0) { %>
+                                                            <p>Resultados de la busqueda: <b><%= idPedidoUnico %></b></p>
+                                                            <div class="row">
+                                                                <div class="col-md-2">
+                                                                    <span><b>ID</b></span>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <span><b>Razon</b></span>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <span><b>Nombre Fantasia</b></span>
+                                                                </div>
+                                                            </div>
+                                                            <% resultadosID.forEach((resultado, index) => { %>
+                                                                <div class="result-item row" 
+                                                                    data-id="<%= resultado.id %>" 
+                                                                    data-nombreFantasia="<%= resultado.nombreFantasia ? resultado.nombreFantasia : "No Definido" %>"
+                                                                    data-razon="<%= resultado.razon ? resultado.razon : "No Definido" %>"
+                                                                    data-lista="<%= resultado.lista %>">
+                                                                    
+                                                                    <div class="col-md-2">
+                                                                        <span><%= resultado.id %></span>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <span><%= resultado.razon ? resultado.razon : "No Definido" %></span>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <span><%= resultado.nombreFantasia ? resultado.nombreFantasia : "No Definido" %></span>
+                                                                    </div>
+                                                                </div>
+                                                            <% }) %>
+                                                            <button id="confirmarSeleccion" class="btn btn-primary mt-3" disabled>Confirmar Selección</button>
+                                                        <% } else { %>
+                                                            <p>No hay resultados.</p>
+                                                        <% } %>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12" id="nombreFantasiaContainer">
+                                                    <label for="" class="fw-600 fs-20">Nombre Fantasia</label>
+
+                                                    <div class="input-group mb-3">
+                                                        <form action="/admin/pedido-unico/buscar-por-nombre" method="POST" class="d-flex w-100">
+                                                            <input type="text" class="form-control w-90" 
+                                                            placeholder="<%= nombrePedidoUnico ? nombrePedidoUnico : 'Buscar por Nombre Fantasia' %>"  
+                                                            aria-describedby="basic-addon2" 
+                                                            name="nombrePedidoUnico"
+                                                            value="<%= nombrePedidoUnico ? nombrePedidoUnico : '' %>">
+                                                            <div class="input-group-append">
+                                                                <button class="btn btn-success h-100" type="submit">Buscar</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+
+                                                    <div id="nombreResultadosPedidoUnico">
+                                                        <% if (resultadosNombre && resultadosNombre.length > 0) { %>
+                                                            <p>Resultados de la busqueda: <b><%= nombrePedidoUnico %></b></p>
+                                                            <div class="row">
+                                                                <div class="col-md-2">
+                                                                    <span><b>ID</b></span>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <span><b>Razon</b></span>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <span><b>Nombre Fantasia</b></span>
+                                                                </div>
+                                                            </div>
+                                                            <% resultadosNombre.forEach((resultado, index) => { %>
+                                                                <div class="result-item row" 
+                                                                    data-id="<%= resultado.id %>" 
+                                                                    data-nombreFantasia="<%= resultado.nombreFantasia ? resultado.nombreFantasia : "No Definido" %>"
+                                                                    data-razon="<%= resultado.razon ? resultado.razon : "No Definido" %>"
+                                                                    data-lista="<%= resultado.lista %>">
+                                                                    
+                                                                    <div class="col-md-2">
+                                                                        <span><%= resultado.id %></span>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <span><%= resultado.razon ? resultado.razon : "No Definido" %></span>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <span><%= resultado.nombreFantasia ? resultado.nombreFantasia : "No Definido" %></span>
+                                                                    </div>
+                                                                </div>
+                                                            <% }) %>
+                                                            <button id="confirmarSeleccion" class="btn btn-primary mt-3" disabled>Confirmar Selección</button>
+                                                        <% } else { %>
+                                                            <p>No hay resultados.</p>
+                                                        <% } %>
+                                                    </div>                                                
+                                                </div>
+
+                                                <div class="col-md-12" id="razonContainer">
+                                                    <label for="" class="fw-600 fs-20">Razon</label>
+
+                                                    <div class="input-group mb-3">
+                                                        <form action="/admin/pedido-unico/buscar-por-razon" method="POST" class="d-flex w-100">
+                                                            <input type="text" class="form-control w-90" 
+                                                            placeholder="<%= razonPedidoUnico ? razonPedidoUnico : 'Razon' %>"  
+                                                            aria-describedby="basic-addon2" 
+                                                            name="razonPedidoUnico"
+                                                            value="<%= razonPedidoUnico ? razonPedidoUnico : '' %>">
+                                                            <div class="input-group-append">
+                                                                <button class="btn btn-success h-100" type="submit">Buscar</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+
+                                                    <div id="razonResultadosPedidoUnico">
+                                                        <% if (resultadosRazon && resultadosRazon.length > 0) { %>
+                                                            <p>Resultados de la busqueda: <b><%= razonPedidoUnico %></b></p>
+                                                                <div class="row">
+                                                                    <div class="col-md-2">
+                                                                        <span><b>ID</b></span>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <span><b>Razon</b></span>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <span><b>Nombre Fantasia</b></span>
+                                                                    </div>
+                                                                </div>
+                                                            <% resultadosRazon.forEach((resultado, index) => { %>
+                                                                <div class="result-item row" 
+                                                                    data-id="<%= resultado.id %>" 
+                                                                    data-nombreFantasia="<%= resultado.nombreFantasia ? resultado.nombreFantasia : "No Definido" %>"
+                                                                    data-razon="<%= resultado.razon ? resultado.razon : "No Definido" %>"
+                                                                    data-lista="<%= resultado.lista %>">
+                                                                    
+                                                                    <div class="col-md-2">
+                                                                        <span><%= resultado.id %></span>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <span><%= resultado.razon ? resultado.razon : "No Definido" %></span>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <span><%= resultado.nombreFantasia ? resultado.nombreFantasia : "No Definido" %></span>
+                                                                    </div>
+                                                                </div>
+                                                            <% }) %>
+
+                                                            <button id="confirmarSeleccion" type="button" class="btn btn-primary mt-3" disabled>Confirmar Selección</button>
+
+                                                        <% } else { %>
+                                                            <p>No hay resultados.</p>
+                                                        <% } %>
+                                                    </div>
+                                                    
+                                                </div>
+                                                
+                                            </div>
+                                            <div class="modal-footer">
+                                             
+                                            </div>
+                                          </div>
+                                        </div>
+                                    </div>
+                                </div>       
+                                <div class="col-md-6 text-end">
+                                    <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="confirmarCliente">Confirmar <i class="bi bi-check-circle-fill text-white"></i></button>
+                                </div>                          
+                            </div>
+                            <div class="row mt-30px">
+                                <div class="col-md-4">
+                                    <label for="" class="text-white fw-600 fs-20">Lista</label>
+                                    <input type="text" class="bg-transparent border-color-transparent-white-light" name="listaPedidoUnico">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="" class="text-white fw-600 fs-20">Tipo</label>
+                                    <select class="bg-transparent border-color-transparent-white-light" name="typePedidoUnico">
+                                        <option value="">aa</option>
+                                    </select>
+                                   
+                                </div>
+                                <div class="col-md-4">
+                                    
+                                    <label for="" class="text-white fw-600 fs-20">Vendedor</label>
+                                    <select class="bg-transparent border-color-transparent-white-light" name="vendedorPedidoUnico">
+                                        <option value="">aa</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mt-30px">
+                                <div class="col-md-12">
+                                    <label for="" class="text-white fw-600 fs-20">Fecha de entrega</label>
+                                    <input type="date" class="form-control bg-transparent border-color-transparent-white-light" name="nombrePedidoUnico">
+                                </div>
+                            </div>
+                          
+                        </div>
+                    </div>
+                <div class="row mt-5">
+                    <div class="col-md-1">
+                        <p class="text-white text-center fs-20 fw-600">Código</p>
+                    </div>
+                    <div class="col-md-2">
+                        <p class="text-white text-center fs-20 fw-600">Nombre</p>
+                    </div>
+                    <div class="col-md-2">
+                        <p class="text-white text-center fs-20 fw-600">Cantidad</p>
+                    </div>
+                    <div class="col-md-2">
+                        <p class="text-white text-center fs-20 fw-600">Costo</p>
+                    </div>
+                    <div class="col-md-2">
+                        <p class="text-white text-center fs-20 fw-600">Precio</p>
+                    </div>
+                    <div class="col-md-2">
+                        <p class="text-white text-center fs-20 fw-600">Opciones</p>
+                    </div>
+                    <div class="col-md-1">
+                        <p class="text-white text-center fs-20 fw-600">P. Elegidas</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-1">
+                        <input type="text" class="bg-transparent border-color-transparent-white-light" name="codigoPedidoUnico">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="bg-transparent border-color-transparent-white-light" name="nombrePedidoUnico">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="bg-transparent border-color-transparent-white-light" name="cantidadPedidoUnico">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="bg-transparent border-color-transparent-white-light" name="costoPedidoUnico">
+                    </div>
+                    <div class="col-md-2 ">
+                        <input type="text" class="bg-transparent border-color-transparent-white-light" name="precioPedidoUnico">
+                    </div>
+                    <div class="col-md-2 d-flex flex-warp justify-content-between">
+                        <button type="button" class="btn btn-primary w-50">Partida</button>
+                        <button type="button" class="btn btn-danger w-45">Eliminar</button>
+                    </div>
+                    <div class="col-md-1 d-flex flex-warp justify-content-center">
+                        <button type="button" class="btn btn-light w-50"><i class="bi-arrows-angle-expand"></i></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <input type="hidden" id="showModal" value="<%= showModal %>">
+       
+        <script type="text/javascript" src="/../js/jquery.js"></script>
+        <script type="text/javascript" src="/../js/vendors.min.js"></script>
+        <script type="text/javascript" src="/../js/main.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                // Mostrar modal
+                let showModal = document.getElementById('showModal').value;
+                let modal = new bootstrap.Modal(document.getElementById('seleccionarClienteModalPedidoUnico'));
+                if (showModal === 'true') {
+                    modal.show();
+                }
+
+                // Logica de seleccionado de item
+                const resultItems = document.querySelectorAll('.result-item');
+                const confirmButton = document.getElementById('confirmarSeleccion');
+                let selectedItemId = null;
+                resultItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        resultItems.forEach(i => i.classList.remove('selected'));
+                        item.classList.add('selected');
+                        selectedItemId = item.getAttribute('data-id');
+                        confirmButton.disabled = false;
+                    });
+                });
+
+                // Post a backend. De momento no es necesario
+                confirmButton.addEventListener('click', () => {
+                    if (selectedItemId) {
+                        confirmButton.disabled = true;
+                        const data = { id: selectedItemId };
+                        // fetch('/admin/pedido-unico/datos-cliente', {
+                        //     method: 'POST',
+                        //     headers: {
+                        //         'Content-Type': 'application/json'
+                        //     },
+                        //     body: JSON.stringify(data)
+                        // })
+                        // .then(response => response.json())
+                        // .then(result => {
+                           
+                        // })
+
+                        // Una vez finalizado el flujo se oculta el modal
+                        modal.hide()                        
+                    }
+                });
+            });
+
+            document.addEventListener('DOMContentLoaded', () => {
+                // Freeze inputs 
+                const confirmarClienteButton = document.getElementById('confirmarCliente');
+                const inputListaPedidoUnico = document.querySelector('input[name="listaPedidoUnico"]');
+                // ...
+
+                confirmarClienteButton.addEventListener('click', () => {
+                    inputListaPedidoUnico.disabled = true;
+                    inputListaPedidoUnico.classList.add('input-disabled'); 
+                    // ... 
+                });
+            });
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const inputListaPedidoUnico = document.querySelector('input[name="listaPedidoUnico"]');
+                const resultItems = document.querySelectorAll('.result-item');
+                let selectedResult = null;
+
+                resultItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        resultItems.forEach(el => el.classList.remove('selected'));
+                        item.classList.add('selected');
+                        document.getElementById('confirmarSeleccion').disabled = false;
+                        selectedResult = {                          
+                            id: item.getAttribute('data-id'),
+                            razon: item.getAttribute('data-razon'),
+                            nombreFantasia: item.getAttribute('data-nombreFantasia'),
+                            lista: item.getAttribute('data-lista')
+                        };
+                    });
+                });
+
+                document.getElementById('confirmarSeleccion').addEventListener('click', () => {
+                    if (selectedResult) {
+                        console.log('Resultado seleccionado:', selectedResult);
+                        inputListaPedidoUnico.value = selectedResult.lista
+                    }
+                });
+            });
+
+            // Select de tipo de busqueda
+            document.getElementById('optionSelect').addEventListener('change', function() {
+                document.getElementById('idContainer').style.display = 'none';
+                document.getElementById('razonContainer').style.display = 'none';
+                document.getElementById('nombreFantasiaContainer').style.display = 'none';
+    
+                const selectedValue = this.value;
+                if (selectedValue === '1') {
+                    document.getElementById('idContainer').style.display = 'block';
+                } else if (selectedValue === '2') {
+                    document.getElementById('razonContainer').style.display = 'block';
+                } else if (selectedValue === '3') {
+                    document.getElementById('nombreFantasiaContainer').style.display = 'block';
+                }
+            });
+    
+            document.getElementById('optionSelect').dispatchEvent(new Event('change'));
+        </script>
+
+        <style>
+            .result-item {
+                cursor: pointer;
+                padding: 10px;
+                border: 1px solid #ccc;
+                margin-bottom: 5px;
+            }
+            .result-item:hover {
+                background-color: #f0f0f0;
+            }
+            .selected {
+                background-color: #d4edda;
+            }
+            .btn-green-color {
+                background-color: #157347;
+                color: white;
+            }
+            .btn-green-color:hover {
+                background-color: #157347;
+                color: white;
+            }
+            .input-disabled {
+                font-style: italic;
+                font-weight: bold;
+            }   
+        </style>
+    </body>
+</html>
+
+<style>
+    
+</style>
