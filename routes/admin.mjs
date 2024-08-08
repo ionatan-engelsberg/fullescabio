@@ -7,8 +7,8 @@ const obtenerClientesPedidoUnico = async (query) => {
     try {
         const request = await new sql.Request().query(query)
         return request.recordset.map((row) => {
-            const {NUM_CLIENTE: id, RAZON: razon, NOM_FANTASIA: nombreFantasia, LISTA_DESCRIP: lista} = row
-            return {id, razon, nombreFantasia, lista}
+            const {NUM_CLIENTE: id, RAZON: razon, NOM_FANTASIA: nombreFantasia, LISTA_DESCRIP: lista, Vendedor: vendedor} = row
+            return {id, razon, nombreFantasia, lista, vendedor}
         })
     } catch (error) {
         console.log('ERROR: ', error);
