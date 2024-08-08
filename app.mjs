@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import express from "express";
 import path, { dirname } from 'path';
 import cors from 'cors';
@@ -58,6 +60,20 @@ initializePassport(
     (username, business) => users.find(user => user.username === username && user.business === business),
     id => users.find(user => user.id === id)
 );
+
+const { IP, USER, PASSWORD, DATABASE, PORT,  INSTANCENAME} = process.env
+const config = {
+    user: USER,
+    password: PASSWORD,
+    server: IP,
+    database: DATABASE,
+    port: Number(PORT),
+    options: {
+        encrypt: false,
+        trustServerCertificate: false,
+        instancename: INSTANCENAME
+    }
+};
 
 const start = async () => {
     try {
