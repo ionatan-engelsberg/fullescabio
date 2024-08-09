@@ -353,13 +353,57 @@
                             <input type="text" class="bg-transparent border-color-transparent-white-light" name="precioPedidoUnico" id="precioPedidoUnico">
                         </div>
                         <div class="col-md-2 d-flex flex-wrap justify-content-between">
-                            <button type="button" class="btn btn-primary w-50">Partida</button>
-                            <button type="button" class="btn btn-danger w-45">Eliminar</button>
+                            <button type="button" class="btn btn-primary w-50" data-toggle="modal" data-target="#verPartidasPedidoUnico">Partida</button>
+                            <button type="button" class="btn btn-danger w-45 eliminarFila">Eliminar</button>
                         </div>
                         <div class="col-md-1 d-flex flex-wrap justify-content-center">
                             <button type="button" class="btn btn-light w-50"><i class="bi-arrows-angle-expand"></i></button>
                         </div>
+
+                        <div class="modal fade" id="verPartidasPedidoUnico" tabindex="-1" role="dialog" aria-labelledby="verPartidasPedidoUnico" aria-hidden="true" data-target=".bd-example-modal-lg">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="exampleModalLabel">Asignar Partidas</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="
+                                  background: none;
+                                  border: none;
+                                  font-size: 40px;
+                                  color: red">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+
+                                <div class="modal-body row">
+                                    <div class="col-md-12">
+
+                                        <div id="partidasResultadosPedidoUnico">
+                                            <% if (true) { %>
+                                                <p></p>
+                                                    <div class="row"></div>
+                                                <% [1,2,3].forEach((resultado, index) => { %>
+                                                    <div class="partida row"></div> 
+                                                <% }) %>
+
+                                                <button id="confirmarSeleccionPartidas" type="button" class="btn btn-primary mt-3">Confirmar Selección</button>
+
+                                            <% } else { %>
+                                                <p>No hay resultados.</p>
+                                            <% } %>
+                                        </div>
+                                        
+                                    </div>
+                                    
+                                </div>
+                                <div class="modal-footer">
+                                 
+                                </div>
+                              </div>
+                            </div>
+                        </div>
                     </div>
+
+
                 </div>
                 
                 <!-- Botón para agregar otra fila -->
@@ -382,6 +426,23 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
         <script>
+            const generatedIDs = new Set();
+
+            function randomID() {
+                if (generatedIDs.size === 100) {
+                    console.warn('Todos los números entre 1 y 100 ya han sido generados.');
+                    return null; // O lanzar un error si prefieres
+                }
+
+                let id;
+                do {
+                    id = Math.floor(Math.random() * 100) + 1;
+                } while (generatedIDs.has(id));
+
+                generatedIDs.add(id);
+                return id;
+            }
+
             // Select de tipo de busqueda
             document.getElementById('optionSelect').addEventListener('change', function() {
                 document.getElementById('idContainer').style.display = 'none';
@@ -399,6 +460,13 @@
             });
 
             document.getElementById('optionSelect').dispatchEvent(new Event('change'));
+
+            function agregarEventoEliminar(fila) {
+                const botonEliminar = fila.querySelector('.eliminarFila');
+                botonEliminar.addEventListener('click', function() {
+                    fila.remove();
+                });
+            }
     
             document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('agregarFila').addEventListener('click', function() {
@@ -409,6 +477,9 @@
                 nuevaFila.querySelectorAll('input').forEach(input => input.value = '');
 
                 formularioArticulos.appendChild(nuevaFila);
+
+                agregarEventoEliminar(nuevaFila);
+
                 });
             })
 
@@ -441,13 +512,22 @@
             });
             
             document.addEventListener('DOMContentLoaded', () => {
+                const confirmarClienteButton = document.getElementById('confirmarCliente');
                 const inputListaPedidoUnico = document.querySelector('input[name="listaPedidoUnico"]');
                 const inputVendedorPedidoUnico = document.querySelector('input[name="vendedorPedidoUnico"]');
+                const inputTipoPedidoUnico = document.querySelector('#tipoPedidoUnico');
+                const inputFechaPedidoUnico = document.querySelector('#fechaPedidoUnico');
+                const botonesBuscar = document.querySelectorAll('.buscarCodigoPedidoUnico');
                 const inputCodigoPedidoUnico = document.getElementById("codigoPedidoUnico")
                 const nombreArticuloPedidoUnico = document.getElementById("nombreArticuloPedidoUnico")
                 const resultItems = document.querySelectorAll('.result-item');
+                const partidas = document.querySelectorAll('.partida');
                 let selectedResult = null;
-                
+                let partidasSeleccionadas = [];
+
+                sessionStorage.setItem("session-data", JSON.stringify(null))
+                let retrievedData = JSON.parse(sessionStorage.getItem('session-data'));
+
                 resultItems.forEach(item => {
                     item.addEventListener('click', () => {
                         resultItems.forEach(el => el.classList.remove('selected'));
@@ -459,20 +539,43 @@
                             nombreFantasia: item.getAttribute('data-nombreFantasia'),
                             lista: item.getAttribute('data-lista'),
                             vendedor: item.getAttribute('data-vendedor'),
-                            tipo: "",
-                            fecha: ""
+                            fecha: "",
+                            tipo: ""
                         };
 
-                        sessionStorage.setItem("session-data", JSON.stringify(selectedResult));
+                        retrievedData = { ...selectedResult }
+                        
                     });
                 });
                 
                 document.getElementById('confirmarSeleccion').addEventListener('click', () => {
                     if (selectedResult) {
-                        console.log('Resultado seleccionado:', selectedResult);
                         inputListaPedidoUnico.value = selectedResult.lista
                         inputVendedorPedidoUnico.value = selectedResult.vendedor
                     }
+                });
+
+                confirmarClienteButton.addEventListener('click', () => {
+                    inputListaPedidoUnico.disabled = !inputListaPedidoUnico.disabled;
+                    inputListaPedidoUnico.classList.toggle('input-disabled'); 
+
+                    inputVendedorPedidoUnico.disabled = !inputVendedorPedidoUnico.disabled;
+                    inputVendedorPedidoUnico.classList.toggle('input-disabled'); 
+                    
+                    inputTipoPedidoUnico.disabled = !inputTipoPedidoUnico.disabled;
+                    inputTipoPedidoUnico.classList.toggle('input-disabled');
+
+                    inputFechaPedidoUnico.disabled = !inputFechaPedidoUnico.disabled;
+                    inputFechaPedidoUnico.classList.toggle('input-disabled');
+                    
+                    retrievedData.lista = inputListaPedidoUnico.value
+                    retrievedData.vendedor = inputVendedorPedidoUnico.value
+                    retrievedData.tipo = inputTipoPedidoUnico.value
+                    retrievedData.fecha = inputFechaPedidoUnico.value
+
+                    botonesBuscar.forEach(boton => {
+                        boton.disabled = false;
+                    });
                 });
                 
                 document.addEventListener('click', function(event) {
@@ -506,54 +609,43 @@
                     }
                 });
 
-            });
+                partidas.forEach(item => {
+                    item.addEventListener('click', () => {
+                        item.classList.toggle('selected');
 
-            document.addEventListener('DOMContentLoaded', () => {
-                // Freeze inputs 
-                const confirmarClienteButton = document.getElementById('confirmarCliente');
-                const inputListaPedidoUnico = document.querySelector('input[name="listaPedidoUnico"]');
-                const inputVendedorPedidoUnico = document.querySelector('input[name="vendedorPedidoUnico"]');
-                const inputTipoPedidoUnico = document.querySelector('#tipoPedidoUnico');
-                const inputFechaPedidoUnico = document.querySelector('#fechaPedidoUnico');
-                const botonesBuscar = document.querySelectorAll('.buscarCodigoPedidoUnico');
-                const retrievedData = JSON.parse(sessionStorage.getItem('session-data'));
+                        const itemData = {};
+                        const index = partidasSeleccionadas.findIndex(result => result.id === itemData.id);
 
-                confirmarClienteButton.addEventListener('click', () => {
-                    inputListaPedidoUnico.disabled = !inputListaPedidoUnico.disabled;
-                    inputListaPedidoUnico.classList.toggle('input-disabled'); 
+                        if (index > -1) {
+                            partidasSeleccionadas.splice(index, 1);
+                        } else {
+                            partidasSeleccionadas.push(itemData);
+                        }
 
-                    inputVendedorPedidoUnico.disabled = !inputVendedorPedidoUnico.disabled;
-                    inputVendedorPedidoUnico.classList.toggle('input-disabled'); 
-                    
-                    inputTipoPedidoUnico.disabled = !inputTipoPedidoUnico.disabled;
-                    inputTipoPedidoUnico.classList.toggle('input-disabled');
-
-                    inputFechaPedidoUnico.disabled = !inputFechaPedidoUnico.disabled;
-                    inputFechaPedidoUnico.classList.toggle('input-disabled');
-                    
-                    retrievedData.lista = inputListaPedidoUnico.value
-                    retrievedData.vendedor = inputVendedorPedidoUnico.value
-                    retrievedData.tipo = inputTipoPedidoUnico.value
-                    retrievedData.fecha = inputFechaPedidoUnico.value
-
-                    botonesBuscar.forEach(boton => {
-                            boton.disabled = false;
+                        // Habilitar o deshabilitar el botón según haya selecciones
+                        document.getElementById('confirmarSeleccion').disabled = partidasSeleccionadas.length === 0;
                     });
-                    
+                });
+
+                document.getElementById('confirmarSeleccionPartidas').addEventListener('click', () => {
+                    retrievedData.partidas = [1,2,3]
                     console.log(retrievedData)
                 });
+
             });
+
+     
             
         </script>
 
         <style>
-            .result-item {
+            .result-item, .partida {
                 cursor: pointer;
                 padding: 10px;
                 border: 1px solid #ccc;
                 margin-bottom: 5px;
             }
-            .result-item:hover {
+            .result-item:hover, .partida:hover {
                 background-color: #f0f0f0;
             }
             .selected {
