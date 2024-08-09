@@ -327,37 +327,49 @@
                         <p class="text-white text-center fs-20 fw-600">P. Elegidas</p>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-3 d-flex">
-                        <input type="text" 
-                            class="bg-transparent border-color-transparent-white-light w-70" 
-                            aria-describedby="basic-addon2" 
-                            name="codigoPedidoUnico"
-                            id="codigoPedidoUnico">
+                <div id="formularioArticulos">
+                    <!-- La primera fila inicial -->
+                    <div class="row mb-15px" id="filaFormularioArticulo">
+                        <div class="col-md-3 d-flex">
+                            <input type="text" 
+                                class="bg-transparent border-color-transparent-white-light w-70" 
+                                aria-describedby="basic-addon2" 
+                                name="codigoPedidoUnico"
+                                id="codigoPedidoUnico">
                             <div class="input-group-append">
-                                <button class="btn btn-success h-100" type="button" id="buscarCodigoPedidoUnico" disabled>Buscar</button>
+                                <button class="btn btn-success h-100 buscarCodigoPedidoUnico" type="button" id="buscarCodigoPedidoUnico" disabled>Buscar</button>
                             </div>
-                    </div>
-                    <div class="col-md-3">
-                        <input type="text" class="bg-transparent border-color-transparent-white-light" name="nombreArticuloPedidoUnico" id="nombreArticuloPedidoUnico">
-                    </div>
-                    <div class="col-md-1">
-                        <input type="text" class="bg-transparent border-color-transparent-white-light" name="cantidadPedidoUnico" id="cantidadPedidoUnico">
-                    </div>
-                    <div class="col-md-1">
-                        <input type="text" class="bg-transparent border-color-transparent-white-light" name="costoPedidoUnico" id="costoPedidoUnico">
-                    </div>
-                    <div class="col-md-1">
-                        <input type="text" class="bg-transparent border-color-transparent-white-light" name="precioPedidoUnico" id="precioPedidoUnico">
-                    </div>
-                    <div class="col-md-2 d-flex flex-warp justify-content-between">
-                        <button type="button" class="btn btn-primary w-50">Partida</button>
-                        <button type="button" class="btn btn-danger w-45">Eliminar</button>
-                    </div>
-                    <div class="col-md-1 d-flex flex-warp justify-content-center">
-                        <button type="button" class="btn btn-light w-50"><i class="bi-arrows-angle-expand"></i></button>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" class="bg-transparent border-color-transparent-white-light" name="nombreArticuloPedidoUnico" id="nombreArticuloPedidoUnico">
+                        </div>
+                        <div class="col-md-1">
+                            <input type="text" class="bg-transparent border-color-transparent-white-light" name="cantidadPedidoUnico" id="cantidadPedidoUnico">
+                        </div>
+                        <div class="col-md-1">
+                            <input type="text" class="bg-transparent border-color-transparent-white-light" name="costoPedidoUnico" id="costoPedidoUnico">
+                        </div>
+                        <div class="col-md-1">
+                            <input type="text" class="bg-transparent border-color-transparent-white-light" name="precioPedidoUnico" id="precioPedidoUnico">
+                        </div>
+                        <div class="col-md-2 d-flex flex-wrap justify-content-between">
+                            <button type="button" class="btn btn-primary w-50">Partida</button>
+                            <button type="button" class="btn btn-danger w-45">Eliminar</button>
+                        </div>
+                        <div class="col-md-1 d-flex flex-wrap justify-content-center">
+                            <button type="button" class="btn btn-light w-50"><i class="bi-arrows-angle-expand"></i></button>
+                        </div>
                     </div>
                 </div>
+                
+                <!-- Botón para agregar otra fila -->
+                <div class="row text-center">
+                    <div class="col-12">
+                        <button id="agregarFila" type="button" class="btn btn-secondary mt-30px">Agregar otra fila</button>
+                    </div>
+                </div>
+                
+                
             </div>
         </section>
 
@@ -385,19 +397,28 @@
                     document.getElementById('nombreFantasiaContainer').style.display = 'block';
                 }
             });
-    
+
             document.getElementById('optionSelect').dispatchEvent(new Event('change'));
+    
+            document.addEventListener('DOMContentLoaded', () => {
+                document.getElementById('agregarFila').addEventListener('click', function() {
+                const formularioArticulos = document.getElementById('formularioArticulos');
+                const filaOriginal = document.querySelector('#filaFormularioArticulo');
+                const nuevaFila = filaOriginal.cloneNode(true);
+
+                nuevaFila.querySelectorAll('input').forEach(input => input.value = '');
+
+                formularioArticulos.appendChild(nuevaFila);
+                });
+            })
 
             document.addEventListener('DOMContentLoaded', () => {
-                const buscarCodigo = document.getElementById('buscarCodigoPedidoUnico')
-
                 // Mostrar modal
                 let showModal = document.getElementById('showModal').value;
                 let modal = new bootstrap.Modal(document.getElementById('seleccionarClienteModalPedidoUnico'));
                 if (showModal === 'true') {
                     modal.show();
                 }
-
                 // Logica de seleccionado de item
                 const resultItems = document.querySelectorAll('.result-item');
                 const confirmButton = document.getElementById('confirmarSeleccion');
@@ -413,7 +434,6 @@
 
                 confirmButton.addEventListener('click', () => {
                     if (selectedItemId) {
-                        buscarCodigo.disabled = false;
                         confirmButton.disabled = true;            
                         modal.hide()                        
                     }
@@ -455,9 +475,15 @@
                     }
                 });
                 
-                document.getElementById('buscarCodigoPedidoUnico').addEventListener('click', () => {
-                    let codigo = inputCodigoPedidoUnico.value
+                document.addEventListener('click', function(event) {
+                    if (event.target && event.target.id === 'buscarCodigoPedidoUnico') {
+                    const fila = event.target.closest('.row');
+
+                    let inputCodigoPedidoUnico = fila.querySelector('input[name="codigoPedidoUnico"]');
+                    let codigo = inputCodigoPedidoUnico.value;
+
                     const data = { codigoPedidoUnico: codigo };
+
                     fetch(`/admin/pedido-unico/obtener-articulos`, {
                         method: 'POST',
                         headers: {
@@ -467,14 +493,19 @@
                     })
                     .then(response => response.json())
                     .then(result => {
-                        nombreArticuloPedidoUnico.value = result[0].nombre  
-                        return result    
+                        let nombreArticuloPedidoUnico = fila.querySelector('input[name="nombreArticuloPedidoUnico"]');
+                        nombreArticuloPedidoUnico.value = result[0].nombre;
+                        return result;
                     })
                     .catch(error => {
-                        console.log(error)
-                        return error
-                    })
+                        console.log(error);
+                        let nombreArticuloPedidoUnico = fila.querySelector('input[name="nombreArticuloPedidoUnico"]');
+                        nombreArticuloPedidoUnico.value = "No hay resultados";
+                        return error;
+                    });
+                    }
                 });
+
             });
 
             document.addEventListener('DOMContentLoaded', () => {
@@ -484,6 +515,7 @@
                 const inputVendedorPedidoUnico = document.querySelector('input[name="vendedorPedidoUnico"]');
                 const inputTipoPedidoUnico = document.querySelector('#tipoPedidoUnico');
                 const inputFechaPedidoUnico = document.querySelector('#fechaPedidoUnico');
+                const botonesBuscar = document.querySelectorAll('.buscarCodigoPedidoUnico');
                 const retrievedData = JSON.parse(sessionStorage.getItem('session-data'));
 
                 confirmarClienteButton.addEventListener('click', () => {
@@ -503,6 +535,11 @@
                     retrievedData.vendedor = inputVendedorPedidoUnico.value
                     retrievedData.tipo = inputTipoPedidoUnico.value
                     retrievedData.fecha = inputFechaPedidoUnico.value
+
+                    botonesBuscar.forEach(boton => {
+                            boton.disabled = false;
+                    });
+                    
                     console.log(retrievedData)
                 });
             });

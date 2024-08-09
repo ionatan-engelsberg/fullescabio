@@ -29,6 +29,17 @@ const obtenerArticulosPedidoUnico = async (query) => {
     }
 } 
 
+//! Devuelve de todo. Ver que sirve
+const obtenerPartidasPedidoUnico = async (query) => {
+    try {
+        const request = await new sql.Request().query(query)
+        return request.recordset
+    } catch (error) {
+        console.log('ERROR: ', error);
+        return [];
+    }
+} 
+
 const router = express.Router()
 router.use(checkAuthenticated)
 
@@ -38,7 +49,7 @@ router.get('/', (req, res) => {
 
 //todo: MODULARIZAR
 
-router.get('/pedido-unico', (req, res) => {
+router.get('/pedido-unico', async (req, res) => {
     res.render('pedidoUnico', {
         selectedOption: 1,
         showModal: false,
