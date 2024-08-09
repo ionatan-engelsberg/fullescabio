@@ -353,11 +353,11 @@
                             <input type="text" class="bg-transparent border-color-transparent-white-light" name="precioPedidoUnico" id="precioPedidoUnico">
                         </div>
                         <div class="col-md-2 d-flex flex-wrap justify-content-between">
-                            <button type="button" class="btn btn-primary w-50" data-toggle="modal" data-target="#verPartidasPedidoUnico">Partida</button>
+                            <button type="button" class="btn btn-primary w-50 verPartidas" data-toggle="modal" data-target="#verPartidasPedidoUnico">Partida</button>
                             <button type="button" class="btn btn-danger w-45 eliminarFila">Eliminar</button>
                         </div>
                         <div class="col-md-1 d-flex flex-wrap justify-content-center">
-                            <button type="button" class="btn btn-light w-50"><i class="bi-arrows-angle-expand"></i></button>
+                            <button type="button" class="btn btn-light w-50" id="btn-1"><i class="bi-arrows-angle-expand"></i></button>
                         </div>
 
                         <div class="modal fade" id="verPartidasPedidoUnico" tabindex="-1" role="dialog" aria-labelledby="verPartidasPedidoUnico" aria-hidden="true" data-target=".bd-example-modal-lg">
@@ -426,23 +426,6 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
         <script>
-            const generatedIDs = new Set();
-
-            function randomID() {
-                if (generatedIDs.size === 100) {
-                    console.warn('Todos los números entre 1 y 100 ya han sido generados.');
-                    return null; // O lanzar un error si prefieres
-                }
-
-                let id;
-                do {
-                    id = Math.floor(Math.random() * 100) + 1;
-                } while (generatedIDs.has(id));
-
-                generatedIDs.add(id);
-                return id;
-            }
-
             // Select de tipo de busqueda
             document.getElementById('optionSelect').addEventListener('change', function() {
                 document.getElementById('idContainer').style.display = 'none';
@@ -467,19 +450,34 @@
                     fila.remove();
                 });
             }
+
+// Variable para almacenar IDs generados
+            let usedIDs = new Set();
+
+            function randomID() {
+                let id;
+                do {
+                    id = Math.floor(Math.random() * 100) + 2; // Usamos un rango más amplio
+                } while (usedIDs.has(id));
+                    usedIDs.add(id);
+                return id;
+            }
     
             document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('agregarFila').addEventListener('click', function() {
-                const formularioArticulos = document.getElementById('formularioArticulos');
-                const filaOriginal = document.querySelector('#filaFormularioArticulo');
-                const nuevaFila = filaOriginal.cloneNode(true);
+                    const formularioArticulos = document.getElementById('formularioArticulos');
+                    const filaOriginal = document.querySelector('#filaFormularioArticulo');
+                    const nuevaFila = filaOriginal.cloneNode(true);
 
-                nuevaFila.querySelectorAll('input').forEach(input => input.value = '');
+                    nuevaFila.querySelectorAll('input').forEach(input => input.value = '');
 
-                formularioArticulos.appendChild(nuevaFila);
+                    nuevaFila.querySelectorAll('.verPartidas').forEach(button => {
+                        button.id = `btn-${randomID()}`;
+                    });
 
-                agregarEventoEliminar(nuevaFila);
+                    formularioArticulos.appendChild(nuevaFila);
 
+                    agregarEventoEliminar(nuevaFila);
                 });
             })
 
