@@ -16,6 +16,19 @@ const obtenerClientesPedidoUnico = async (query) => {
     }
 } 
 
+const obtenerArticulosPedidoUnico = async (query) => {
+    try {
+        const request = await new sql.Request().query(query)
+        return request.recordset.map((row) => {
+            const {COD_ARTICULO: codigo, DESCRIP_ARTI: nombre} = row
+            return {codigo, nombre}
+        })
+    } catch (error) {
+        console.log('ERROR: ', error);
+        return [];
+    }
+} 
+
 const router = express.Router()
 router.use(checkAuthenticated)
 
@@ -95,31 +108,14 @@ router.post('/pedido-unico/buscar-por-nombre', async (req, res) => {
     });
 });
 
-router.post('/pedido-unico/buscar-por-nombre', async (req, res) => {
-    const nombrePedidoUnico = req.body.codigoPedidoUnico;
+router.post("/pedido-unico/obtener-articulos", async (req, res) => {
+    const codigoPedidoUnico = req.body.codigoPedidoUnico;
 
     //! Consulta a DB
-    const resultadosNombre = await obtenerClientesPedidoUnico(`EXEC may_client_busq_nomb @nom = '${codigoPedidoUnico}'`)
-    console.log(resultadosNombre)
-
-    res.render("pedidoUnico", {
-        nombrePedidoUnico,
-        resultadosNombre,
-        selectedOption: 3,
-        showModal: true,
-        resultadosID: false,
-        resultadosRazon: false,
-        idPedidoUnico: false,
-        razonPedidoUnico: false
-    });
-});
-
-//! Esta ruta recibe el ID del cliente. Si viene del SP se usa ese, sino se asigna uno con UUID
-router.post("/pedido-unico/datos-cliente", (req, res) => {
-    console.log(req.body)
-    // Recibir el ID
-    // Consultar SP
-    // Enviar solo datos. NO renderizar ni redirigir
+    const resultadosCodigo = await obtenerArticulosPedidoUnico(`EXEC may_articulos @cod_art = '${codigoPedidoUnico}'`)
+    
+    res.json(resultadosCodigo)
+    return resultadosCodigo
 })
 
 router.get('/pedido-mayorista', (req, res) => {

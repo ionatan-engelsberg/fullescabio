@@ -291,7 +291,7 @@
                                 <div class="col-md-4">
                                     <label for="" class="text-white fw-600 fs-20">Tipo</label>
                                     <select class="bg-transparent border-color-transparent-white-light" name="tipoPedidoUnico" id="tipoPedidoUnico">
-                                        <option value="">aa</option>
+                                        <option value="aa">aa</option>
                                     </select>
                                 </div>
                             </div>
@@ -328,28 +328,27 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-3">
-                        <form action="/admin/pedido-unico/datos-orden" method="POST" class="d-flex">
-                            <input type="text" 
+                    <div class="col-md-3 d-flex">
+                        <input type="text" 
                             class="bg-transparent border-color-transparent-white-light w-70" 
                             aria-describedby="basic-addon2" 
-                            name="codigoPedidoUnico">
+                            name="codigoPedidoUnico"
+                            id="codigoPedidoUnico">
                             <div class="input-group-append">
-                                <button class="btn btn-success h-100" type="submit">Buscar</button>
+                                <button class="btn btn-success h-100" type="button" id="buscarCodigoPedidoUnico" disabled>Buscar</button>
                             </div>
-                        </form>
                     </div>
                     <div class="col-md-3">
-                        <input type="text" class="bg-transparent border-color-transparent-white-light" name="nombrePedidoUnico">
+                        <input type="text" class="bg-transparent border-color-transparent-white-light" name="nombreArticuloPedidoUnico" id="nombreArticuloPedidoUnico">
                     </div>
                     <div class="col-md-1">
-                        <input type="text" class="bg-transparent border-color-transparent-white-light" name="cantidadPedidoUnico">
+                        <input type="text" class="bg-transparent border-color-transparent-white-light" name="cantidadPedidoUnico" id="cantidadPedidoUnico">
                     </div>
                     <div class="col-md-1">
-                        <input type="text" class="bg-transparent border-color-transparent-white-light" name="costoPedidoUnico">
+                        <input type="text" class="bg-transparent border-color-transparent-white-light" name="costoPedidoUnico" id="costoPedidoUnico">
                     </div>
                     <div class="col-md-1">
-                        <input type="text" class="bg-transparent border-color-transparent-white-light" name="precioPedidoUnico">
+                        <input type="text" class="bg-transparent border-color-transparent-white-light" name="precioPedidoUnico" id="precioPedidoUnico">
                     </div>
                     <div class="col-md-2 d-flex flex-warp justify-content-between">
                         <button type="button" class="btn btn-primary w-50">Partida</button>
@@ -371,7 +370,27 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
         <script>
+            // Select de tipo de busqueda
+            document.getElementById('optionSelect').addEventListener('change', function() {
+                document.getElementById('idContainer').style.display = 'none';
+                document.getElementById('razonContainer').style.display = 'none';
+                document.getElementById('nombreFantasiaContainer').style.display = 'none';
+    
+                const selectedValue = this.value;
+                if (selectedValue === '1') {
+                    document.getElementById('idContainer').style.display = 'block';
+                } else if (selectedValue === '2') {
+                    document.getElementById('razonContainer').style.display = 'block';
+                } else if (selectedValue === '3') {
+                    document.getElementById('nombreFantasiaContainer').style.display = 'block';
+                }
+            });
+    
+            document.getElementById('optionSelect').dispatchEvent(new Event('change'));
+
             document.addEventListener('DOMContentLoaded', () => {
+                const buscarCodigo = document.getElementById('buscarCodigoPedidoUnico')
+
                 // Mostrar modal
                 let showModal = document.getElementById('showModal').value;
                 let modal = new bootstrap.Modal(document.getElementById('seleccionarClienteModalPedidoUnico'));
@@ -392,60 +411,23 @@
                     });
                 });
 
-                // Post a backend. De momento no es necesario
                 confirmButton.addEventListener('click', () => {
                     if (selectedItemId) {
-                        confirmButton.disabled = true;
-                        const data = { id: selectedItemId };
-                        // fetch('/admin/pedido-unico/datos-cliente', {
-                        //     method: 'POST',
-                        //     headers: {
-                        //         'Content-Type': 'application/json'
-                        //     },
-                        //     body: JSON.stringify(data)
-                        // })
-                        // .then(response => response.json())
-                        // .then(result => {
-                           
-                        // })
-
-                        // Una vez finalizado el flujo se oculta el modal
+                        buscarCodigo.disabled = false;
+                        confirmButton.disabled = true;            
                         modal.hide()                        
                     }
                 });
             });
-
-            document.addEventListener('DOMContentLoaded', () => {
-                // Freeze inputs 
-                const confirmarClienteButton = document.getElementById('confirmarCliente');
-                const inputListaPedidoUnico = document.querySelector('input[name="listaPedidoUnico"]');
-                const inputVendedorPedidoUnico = document.querySelector('input[name="vendedorPedidoUnico"]');
-                const inputTipoPedidoUnico = document.querySelector('#tipoPedidoUnico');
-                const inputFechaPedidoUnico = document.querySelector('#fechaPedidoUnico');
-
-                confirmarClienteButton.addEventListener('click', () => {
-                    // capturar session storage
-
-                    inputListaPedidoUnico.disabled = !inputListaPedidoUnico.disabled;
-                    inputListaPedidoUnico.classList.toggle('input-disabled'); 
-
-                    inputVendedorPedidoUnico.disabled = !inputVendedorPedidoUnico.disabled;
-                    inputVendedorPedidoUnico.classList.toggle('input-disabled'); 
-                    
-                    inputTipoPedidoUnico.disabled = !inputTipoPedidoUnico.disabled;
-                    inputTipoPedidoUnico.classList.toggle('input-disabled');
-
-                    inputFechaPedidoUnico.disabled = !inputFechaPedidoUnico.disabled;
-                    inputFechaPedidoUnico.classList.toggle('input-disabled');
-                });
-            });
-
+            
             document.addEventListener('DOMContentLoaded', () => {
                 const inputListaPedidoUnico = document.querySelector('input[name="listaPedidoUnico"]');
                 const inputVendedorPedidoUnico = document.querySelector('input[name="vendedorPedidoUnico"]');
+                const inputCodigoPedidoUnico = document.getElementById("codigoPedidoUnico")
+                const nombreArticuloPedidoUnico = document.getElementById("nombreArticuloPedidoUnico")
                 const resultItems = document.querySelectorAll('.result-item');
                 let selectedResult = null;
-
+                
                 resultItems.forEach(item => {
                     item.addEventListener('click', () => {
                         resultItems.forEach(el => el.classList.remove('selected'));
@@ -457,42 +439,74 @@
                             nombreFantasia: item.getAttribute('data-nombreFantasia'),
                             lista: item.getAttribute('data-lista'),
                             vendedor: item.getAttribute('data-vendedor'),
-                            
-                            //todo:
-                            tipo: "tipo",
-                            fecha: "fecha"
+                            tipo: "",
+                            fecha: ""
                         };
+
+                        sessionStorage.setItem("session-data", JSON.stringify(selectedResult));
                     });
                 });
-
+                
                 document.getElementById('confirmarSeleccion').addEventListener('click', () => {
                     if (selectedResult) {
-                        // guardarlo en session storage
                         console.log('Resultado seleccionado:', selectedResult);
                         inputListaPedidoUnico.value = selectedResult.lista
                         inputVendedorPedidoUnico.value = selectedResult.vendedor
-                        // todo: tipo y fecha
                     }
+                });
+                
+                document.getElementById('buscarCodigoPedidoUnico').addEventListener('click', () => {
+                    let codigo = inputCodigoPedidoUnico.value
+                    const data = { codigoPedidoUnico: codigo };
+                    fetch(`/admin/pedido-unico/obtener-articulos`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        nombreArticuloPedidoUnico.value = result[0].nombre  
+                        return result    
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        return error
+                    })
                 });
             });
 
-            // Select de tipo de busqueda
-            document.getElementById('optionSelect').addEventListener('change', function() {
-                document.getElementById('idContainer').style.display = 'none';
-                document.getElementById('razonContainer').style.display = 'none';
-                document.getElementById('nombreFantasiaContainer').style.display = 'none';
-    
-                const selectedValue = this.value;
-                if (selectedValue === '1') {
-                    document.getElementById('idContainer').style.display = 'block';
-                } else if (selectedValue === '2') {
-                    document.getElementById('razonContainer').style.display = 'block';
-                } else if (selectedValue === '3') {
-                    document.getElementById('nombreFantasiaContainer').style.display = 'block';
-                }
+            document.addEventListener('DOMContentLoaded', () => {
+                // Freeze inputs 
+                const confirmarClienteButton = document.getElementById('confirmarCliente');
+                const inputListaPedidoUnico = document.querySelector('input[name="listaPedidoUnico"]');
+                const inputVendedorPedidoUnico = document.querySelector('input[name="vendedorPedidoUnico"]');
+                const inputTipoPedidoUnico = document.querySelector('#tipoPedidoUnico');
+                const inputFechaPedidoUnico = document.querySelector('#fechaPedidoUnico');
+                const retrievedData = JSON.parse(sessionStorage.getItem('session-data'));
+
+                confirmarClienteButton.addEventListener('click', () => {
+                    inputListaPedidoUnico.disabled = !inputListaPedidoUnico.disabled;
+                    inputListaPedidoUnico.classList.toggle('input-disabled'); 
+
+                    inputVendedorPedidoUnico.disabled = !inputVendedorPedidoUnico.disabled;
+                    inputVendedorPedidoUnico.classList.toggle('input-disabled'); 
+                    
+                    inputTipoPedidoUnico.disabled = !inputTipoPedidoUnico.disabled;
+                    inputTipoPedidoUnico.classList.toggle('input-disabled');
+
+                    inputFechaPedidoUnico.disabled = !inputFechaPedidoUnico.disabled;
+                    inputFechaPedidoUnico.classList.toggle('input-disabled');
+                    
+                    retrievedData.lista = inputListaPedidoUnico.value
+                    retrievedData.vendedor = inputVendedorPedidoUnico.value
+                    retrievedData.tipo = inputTipoPedidoUnico.value
+                    retrievedData.fecha = inputFechaPedidoUnico.value
+                    console.log(retrievedData)
+                });
             });
-    
-            document.getElementById('optionSelect').dispatchEvent(new Event('change'));
+            
         </script>
 
         <style>
