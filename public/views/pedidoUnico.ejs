@@ -357,10 +357,10 @@
                             <button type="button" class="btn btn-danger w-45 eliminarFila">Eliminar</button>
                         </div>
                         <div class="col-md-1 d-flex flex-wrap justify-content-center">
-                            <button type="button" class="btn btn-light w-50" id="btn-1"><i class="bi-arrows-angle-expand"></i></button>
+                            <button type="button" class="btn btn-light w-50"><i class="bi-arrows-angle-expand"></i></button>
                         </div>
 
-                        <div class="modal fade" id="verPartidasPedidoUnico" tabindex="-1" role="dialog" aria-labelledby="verPartidasPedidoUnico" aria-hidden="true" data-target=".bd-example-modal-lg">
+                        <div class="modal fade modalVerPartidas" id="verPartidasPedidoUnico" tabindex="-1" role="dialog" aria-labelledby="verPartidasPedidoUnico" aria-hidden="true" data-target=".bd-example-modal-lg">
                             <div class="modal-dialog" role="document">
                               <div class="modal-content">
                                 <div class="modal-header">
@@ -451,31 +451,52 @@
                 });
             }
 
-// Variable para almacenar IDs generados
             let usedIDs = new Set();
 
             function randomID() {
                 let id;
                 do {
-                    id = Math.floor(Math.random() * 100) + 2; // Usamos un rango más amplio
+                    id = Math.floor(Math.random() * 100) + 2; 
                 } while (usedIDs.has(id));
                     usedIDs.add(id);
                 return id;
             }
     
             document.addEventListener('DOMContentLoaded', () => {
+                const modal = document.getElementById('verPartidasPedidoUnico');
+                modal.addEventListener('click', function(event) {
+                    if (event.target.classList.contains('partida')) {
+                        event.target.classList.toggle('selected');
+                    }
+                });
+                
                 document.getElementById('agregarFila').addEventListener('click', function() {
                     const formularioArticulos = document.getElementById('formularioArticulos');
                     const filaOriginal = document.querySelector('#filaFormularioArticulo');
                     const nuevaFila = filaOriginal.cloneNode(true);
+                    const uniqueID = randomID(); 
 
                     nuevaFila.querySelectorAll('input').forEach(input => input.value = '');
 
                     nuevaFila.querySelectorAll('.verPartidas').forEach(button => {
-                        button.id = `btn-${randomID()}`;
+                        button.setAttribute('data-target', `#verPartidasPedidoUnico-${uniqueID}`);
+                    });
+
+                    nuevaFila.querySelectorAll('.modalVerPartidas').forEach(modal => {
+                        modal.id = `verPartidasPedidoUnico-${uniqueID}`;
+                        modal.querySelectorAll('.partida').forEach(item => {
+                            item.classList.remove('selected'); 
+                        });
                     });
 
                     formularioArticulos.appendChild(nuevaFila);
+
+                    const modalElement = nuevaFila.querySelector(`#verPartidasPedidoUnico-${uniqueID}`);
+                        modalElement.addEventListener('click', function(event) {
+                        if (event.target.classList.contains('partida')) {
+                            event.target.classList.toggle('selected');
+                        }
+                    });
 
                     agregarEventoEliminar(nuevaFila);
                 });
@@ -607,23 +628,22 @@
                     }
                 });
 
-                partidas.forEach(item => {
-                    item.addEventListener('click', () => {
-                        item.classList.toggle('selected');
+                // partidas.forEach(item => {
+                //     item.addEventListener('click', () => {
+                //         item.classList.toggle('selected');
 
-                        const itemData = {};
-                        const index = partidasSeleccionadas.findIndex(result => result.id === itemData.id);
+                //         const itemData = {};
+                //         const index = partidasSeleccionadas.findIndex(result => result.id === itemData.id);
 
-                        if (index > -1) {
-                            partidasSeleccionadas.splice(index, 1);
-                        } else {
-                            partidasSeleccionadas.push(itemData);
-                        }
+                //         if (index > -1) {
+                //             partidasSeleccionadas.splice(index, 1);
+                //         } else {
+                //             partidasSeleccionadas.push(itemData);
+                //         }
 
-                        // Habilitar o deshabilitar el botón según haya selecciones
-                        document.getElementById('confirmarSeleccion').disabled = partidasSeleccionadas.length === 0;
-                    });
-                });
+                //         document.getElementById('confirmarSeleccion').disabled = partidasSeleccionadas.length === 0;
+                //     });
+                // });
 
                 document.getElementById('confirmarSeleccionPartidas').addEventListener('click', () => {
                     retrievedData.partidas = [1,2,3]
