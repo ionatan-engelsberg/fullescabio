@@ -385,7 +385,7 @@
                                                     <div class="partida row"></div> 
                                                 <% }) %>
 
-                                                <button id="confirmarSeleccionPartidas" type="button" class="btn btn-primary mt-3">Confirmar Selección</button>
+                                                <button type="button" class="btn btn-primary mt-3 confirmarSeleccionPartidas" id="confirmarSeleccionPartidas">Confirmar Selección</button>
 
                                             <% } else { %>
                                                 <p>No hay resultados.</p>
@@ -426,6 +426,19 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
         <script>
+            sessionStorage.setItem("session-data", JSON.stringify(null))
+            let retrievedData = JSON.parse(sessionStorage.getItem('session-data'));
+            let usedIDs = new Set();
+
+            function randomID() {
+                let id;
+                do {
+                    id = Math.floor(Math.random() * 100) + 2; 
+                } while (usedIDs.has(id));
+                    usedIDs.add(id);
+                return id;
+            }
+            
             // Select de tipo de busqueda
             document.getElementById('optionSelect').addEventListener('change', function() {
                 document.getElementById('idContainer').style.display = 'none';
@@ -450,57 +463,6 @@
                     fila.remove();
                 });
             }
-
-            let usedIDs = new Set();
-
-            function randomID() {
-                let id;
-                do {
-                    id = Math.floor(Math.random() * 100) + 2; 
-                } while (usedIDs.has(id));
-                    usedIDs.add(id);
-                return id;
-            }
-    
-            document.addEventListener('DOMContentLoaded', () => {
-                const modal = document.getElementById('verPartidasPedidoUnico');
-                modal.addEventListener('click', function(event) {
-                    if (event.target.classList.contains('partida')) {
-                        event.target.classList.toggle('selected');
-                    }
-                });
-                
-                document.getElementById('agregarFila').addEventListener('click', function() {
-                    const formularioArticulos = document.getElementById('formularioArticulos');
-                    const filaOriginal = document.querySelector('#filaFormularioArticulo');
-                    const nuevaFila = filaOriginal.cloneNode(true);
-                    const uniqueID = randomID(); 
-
-                    nuevaFila.querySelectorAll('input').forEach(input => input.value = '');
-
-                    nuevaFila.querySelectorAll('.verPartidas').forEach(button => {
-                        button.setAttribute('data-target', `#verPartidasPedidoUnico-${uniqueID}`);
-                    });
-
-                    nuevaFila.querySelectorAll('.modalVerPartidas').forEach(modal => {
-                        modal.id = `verPartidasPedidoUnico-${uniqueID}`;
-                        modal.querySelectorAll('.partida').forEach(item => {
-                            item.classList.remove('selected'); 
-                        });
-                    });
-
-                    formularioArticulos.appendChild(nuevaFila);
-
-                    const modalElement = nuevaFila.querySelector(`#verPartidasPedidoUnico-${uniqueID}`);
-                        modalElement.addEventListener('click', function(event) {
-                        if (event.target.classList.contains('partida')) {
-                            event.target.classList.toggle('selected');
-                        }
-                    });
-
-                    agregarEventoEliminar(nuevaFila);
-                });
-            })
 
             document.addEventListener('DOMContentLoaded', () => {
                 // Mostrar modal
@@ -543,9 +505,6 @@
                 const partidas = document.querySelectorAll('.partida');
                 let selectedResult = null;
                 let partidasSeleccionadas = [];
-
-                sessionStorage.setItem("session-data", JSON.stringify(null))
-                let retrievedData = JSON.parse(sessionStorage.getItem('session-data'));
 
                 resultItems.forEach(item => {
                     item.addEventListener('click', () => {
@@ -627,32 +586,67 @@
                     });
                     }
                 });
-
-                // partidas.forEach(item => {
-                //     item.addEventListener('click', () => {
-                //         item.classList.toggle('selected');
-
-                //         const itemData = {};
-                //         const index = partidasSeleccionadas.findIndex(result => result.id === itemData.id);
-
-                //         if (index > -1) {
-                //             partidasSeleccionadas.splice(index, 1);
-                //         } else {
-                //             partidasSeleccionadas.push(itemData);
-                //         }
-
-                //         document.getElementById('confirmarSeleccion').disabled = partidasSeleccionadas.length === 0;
-                //     });
-                // });
-
-                document.getElementById('confirmarSeleccionPartidas').addEventListener('click', () => {
-                    retrievedData.partidas = [1,2,3]
-                    console.log(retrievedData)
-                });
-
             });
 
-     
+            document.addEventListener('DOMContentLoaded', () => {
+                const modal = document.getElementById('verPartidasPedidoUnico');
+                const confirmarBtn = document.getElementById('confirmarSeleccionPartidas');
+                modal.addEventListener('click', function(event) {
+                    if (event.target.classList.contains('partida')) {
+                        event.target.classList.toggle('selected');
+                    }
+                });
+                confirmarBtn.addEventListener('click', function() {
+                    confirmarSeleccionPartidas(1); 
+                });
+                
+                document.getElementById('agregarFila').addEventListener('click', function() {
+                    const formularioArticulos = document.getElementById('formularioArticulos');
+                    const filaOriginal = document.querySelector('#filaFormularioArticulo');
+                    const nuevaFila = filaOriginal.cloneNode(true);
+                    const uniqueID = randomID(); 
+
+                    nuevaFila.querySelectorAll('input').forEach(input => input.value = '');
+
+                    nuevaFila.querySelectorAll('.verPartidas').forEach(button => {
+                        button.id = uniqueID
+                        button.setAttribute('data-target', `#verPartidasPedidoUnico-${uniqueID}`);
+                    });
+
+                    nuevaFila.querySelectorAll('.modalVerPartidas').forEach(modal => {
+                        modal.id = `verPartidasPedidoUnico-${uniqueID}`;
+        
+                        modal.querySelectorAll('.partida').forEach(item => {
+                            item.classList.remove('selected'); 
+                        });
+
+                        const confirmarBtn = modal.querySelector('.confirmarSeleccionPartidas');
+                        confirmarBtn.addEventListener('click', function() {
+                            confirmarSeleccionPartidas(uniqueID); 
+                        });
+                    });
+
+                    formularioArticulos.appendChild(nuevaFila);
+
+                    const modalElement = nuevaFila.querySelector(`#verPartidasPedidoUnico-${uniqueID}`);
+                        modalElement.addEventListener('click', function(event) {
+                        if (event.target.classList.contains('partida')) {
+                            event.target.classList.toggle('selected');
+                        }
+                    });
+
+                    agregarEventoEliminar(nuevaFila);
+                });
+            })
+
+            function confirmarSeleccionPartidas(modalID) {
+                if (!retrievedData.partidas) {
+                    retrievedData.partidas = [];
+                }
+
+                retrievedData.partidas.push({ id: modalID, data: "datoAleatorio" });
+                console.log(retrievedData);
+            }
             
         </script>
 
