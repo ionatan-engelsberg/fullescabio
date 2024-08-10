@@ -33,7 +33,10 @@ const obtenerArticulosPedidoUnico = async (query) => {
 const obtenerPartidasPedidoUnico = async (query) => {
     try {
         const request = await new sql.Request().query(query)
-        return request.recordset
+        return request.recordset.map((row) => {
+            const { NUM } = row
+            return NUM
+        })
     } catch (error) {
         console.log('ERROR: ', error);
         return [];
@@ -67,7 +70,6 @@ router.post('/pedido-unico/buscar-por-id', async (req, res) => {
 
     //! Consulta a DB
     const resultadosID = await obtenerClientesPedidoUnico(`EXEC may_client_busq @num = '${idPedidoUnico}'`)
-    console.log(resultadosID)
       
     res.render("pedidoUnico", {
         idPedidoUnico,
@@ -86,7 +88,6 @@ router.post('/pedido-unico/buscar-por-razon', async (req, res) => {
 
     //! Consulta a DB
     const resultadosRazon = await obtenerClientesPedidoUnico(`EXEC may_client_busq_razon @razon = '${razonPedidoUnico}'`)
-    console.log(resultadosRazon)
 
     res.render("pedidoUnico", {
         razonPedidoUnico,
@@ -105,7 +106,6 @@ router.post('/pedido-unico/buscar-por-nombre', async (req, res) => {
 
     //! Consulta a DB
     const resultadosNombre = await obtenerClientesPedidoUnico(`EXEC may_client_busq_nomb @nom = '${nombrePedidoUnico}'`)
-    console.log(resultadosNombre)
 
     res.render("pedidoUnico", {
         nombrePedidoUnico,
@@ -124,7 +124,9 @@ router.post("/pedido-unico/obtener-articulos", async (req, res) => {
 
     //! Consulta a DB
     const resultadosCodigo = await obtenerArticulosPedidoUnico(`EXEC may_articulos @cod_art = '${codigoPedidoUnico}'`)
+    const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${codigoPedidoUnico}'`)
     
+    console.log(resultadosPartidas)
     res.json(resultadosCodigo)
     return resultadosCodigo
 })

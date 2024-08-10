@@ -457,11 +457,22 @@
 
             document.getElementById('optionSelect').dispatchEvent(new Event('change'));
 
-            function agregarEventoEliminar(fila) {
+            function agregarEventoEliminar(fila, partidaID) {
                 const botonEliminar = fila.querySelector('.eliminarFila');
                 botonEliminar.addEventListener('click', function() {
                     fila.remove();
+                    eliminarPartidaDeSession(partidaID)
                 });
+            }
+
+            function eliminarPartidaDeSession(partidaID) {
+                if (retrievedData.partidas) {
+                    const partidaIndex = retrievedData.partidas.findIndex(partida => partida.id === partidaID);
+
+                    if (partidaIndex !== -1) {
+                        retrievedData.partidas.splice(partidaIndex, 1);
+                    }
+                }
             }
 
             document.addEventListener('DOMContentLoaded', () => {
@@ -635,7 +646,7 @@
                         }
                     });
 
-                    agregarEventoEliminar(nuevaFila);
+                    agregarEventoEliminar(nuevaFila, uniqueID);
                 });
             })
 
@@ -644,7 +655,13 @@
                     retrievedData.partidas = [];
                 }
 
-                retrievedData.partidas.push({ id: modalID, data: "datoAleatorio" });
+                const existingIndex = retrievedData.partidas.findIndex(partida => partida.id === modalID);
+                if (existingIndex !== -1) {
+                    retrievedData.partidas[existingIndex].data = "datoAleatorio Sobrescrito";
+                } else {
+                    retrievedData.partidas.push({ id: modalID, data: "datoAleatorio" });
+                }
+
                 console.log(retrievedData);
             }
             
