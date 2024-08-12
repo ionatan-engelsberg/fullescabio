@@ -7,7 +7,7 @@ const obtenerClientesPedidoUnico = async (query) => {
     try {
         const request = await new sql.Request().query(query)
         return request.recordset.map((row) => {
-            const {NUM_CLIENTE: id, RAZON: razon, NOM_FANTASIA: nombreFantasia, LISTA_DESCRIP: lista, Vendedor: vendedor} = row
+            const {NUM_CLIENTE: id, RAZON: razon, NOM_FANTASIA: nombreFantasia, LISTA_DESCRIP: lista, Vendedor: vendedor, LISTA_COD: listaCodigo} = row
             return {id, razon, nombreFantasia, lista, vendedor}
         })
     } catch (error) {
@@ -123,12 +123,13 @@ router.post("/pedido-unico/obtener-articulos", async (req, res) => {
     const codigoPedidoUnico = req.body.codigoPedidoUnico;
 
     //! Consulta a DB
-    const resultadosCodigo = await obtenerArticulosPedidoUnico(`EXEC may_articulos @cod_art = '${codigoPedidoUnico}'`)
-    const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${codigoPedidoUnico}'`)
+    const resultadosCodigo = await obtenerArticulosPedidoUnico(`EXEC may_articulos @cod_art = '${codigoPedidoUnico}'`) //! Sumar lista codigo a la llamada
+    const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${codigoPedidoUnico}'`) //! Pedido unico DEP
     
-    console.log(resultadosPartidas)
-    res.json(resultadosCodigo)
-    return resultadosCodigo
+    res.json({
+        resultadosCodigo,
+        resultadosPartidas
+    })
 })
 
 router.get('/pedido-mayorista', (req, res) => {

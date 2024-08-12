@@ -377,19 +377,10 @@
                                 <div class="modal-body row">
                                     <div class="col-md-12">
 
-                                        <div id="partidasResultadosPedidoUnico">
-                                            <% if (true) { %>
-                                                <p></p>
-                                                    <div class="row"></div>
-                                                <% [1,2,3].forEach((resultado, index) => { %>
-                                                    <div class="partida row"></div> 
-                                                <% }) %>
+                                        <div class="partidasResultadosPedidoUnico" id="partidasResultadosPedidoUnico">
+                                            <div class="partida row"></div> 
 
-                                                <button type="button" class="btn btn-primary mt-3 confirmarSeleccionPartidas" id="confirmarSeleccionPartidas">Confirmar Selección</button>
-
-                                            <% } else { %>
-                                                <p>No hay resultados.</p>
-                                            <% } %>
+                                            <button type="button" class="btn btn-primary mt-3 confirmarSeleccionPartidas" id="confirmarSeleccionPartidas">Confirmar Selección</button>
                                         </div>
                                         
                                     </div>
@@ -566,7 +557,23 @@
                         boton.disabled = false;
                     });
                 });
-                
+            });
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const modal = document.getElementById('verPartidasPedidoUnico');
+                const confirmarBtn = document.getElementById('confirmarSeleccionPartidas');
+                const nombreArticuloPedidoUnico = document.getElementById("nombreArticuloPedidoUnico")
+
+                modal.addEventListener('click', function(event) {
+                    if (event.target.classList.contains('partida')) {
+                        event.target.classList.toggle('selected');
+                    }
+                });
+
+                confirmarBtn.addEventListener('click', function() {
+                    confirmarSeleccionPartidas(1); 
+                });
+
                 document.addEventListener('click', function(event) {
                     if (event.target && event.target.id === 'buscarCodigoPedidoUnico') {
                     const fila = event.target.closest('.row');
@@ -586,7 +593,12 @@
                     .then(response => response.json())
                     .then(result => {
                         let nombreArticuloPedidoUnico = fila.querySelector('input[name="nombreArticuloPedidoUnico"]');
-                        nombreArticuloPedidoUnico.value = result[0].nombre;
+                        nombreArticuloPedidoUnico.value = result.resultadosCodigo[0].nombre;
+
+                        //todo: Mostra resultados en el modal
+                        const partidasContainer = document.querySelector('.partidasResultadosPedidoUnico');
+                        
+                        
                         return result;
                     })
                     .catch(error => {
@@ -597,20 +609,7 @@
                     });
                     }
                 });
-            });
 
-            document.addEventListener('DOMContentLoaded', () => {
-                const modal = document.getElementById('verPartidasPedidoUnico');
-                const confirmarBtn = document.getElementById('confirmarSeleccionPartidas');
-                modal.addEventListener('click', function(event) {
-                    if (event.target.classList.contains('partida')) {
-                        event.target.classList.toggle('selected');
-                    }
-                });
-                confirmarBtn.addEventListener('click', function() {
-                    confirmarSeleccionPartidas(1); 
-                });
-                
                 document.getElementById('agregarFila').addEventListener('click', function() {
                     const formularioArticulos = document.getElementById('formularioArticulos');
                     const filaOriginal = document.querySelector('#filaFormularioArticulo');
@@ -634,6 +633,10 @@
                         const confirmarBtn = modal.querySelector('.confirmarSeleccionPartidas');
                         confirmarBtn.addEventListener('click', function() {
                             confirmarSeleccionPartidas(uniqueID); 
+
+                            //todo: Corregir Bug
+                            const modalInstance = new bootstrap.Modal(modal);
+                            modalInstance.hide();
                         });
                     });
 
@@ -661,8 +664,6 @@
                 } else {
                     retrievedData.partidas.push({ id: modalID, data: "datoAleatorio" });
                 }
-
-                console.log(retrievedData);
             }
             
         </script>
