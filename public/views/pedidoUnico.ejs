@@ -378,8 +378,6 @@
                                     <div class="col-md-12">
 
                                         <div class="partidasResultadosPedidoUnico" id="partidasResultadosPedidoUnico">
-                                            <div class="partida row"></div> 
-
                                             <button type="button" class="btn btn-primary mt-3 confirmarSeleccionPartidas" id="confirmarSeleccionPartidas">Confirmar Selección</button>
                                         </div>
                                         
@@ -564,19 +562,46 @@
                 const confirmarBtn = document.getElementById('confirmarSeleccionPartidas');
                 const nombreArticuloPedidoUnico = document.getElementById("nombreArticuloPedidoUnico")
 
-                modal.addEventListener('click', function(event) {
-                    if (event.target.classList.contains('partida')) {
-                        event.target.classList.toggle('selected');
-                    }
-                });
-
                 confirmarBtn.addEventListener('click', function() {
                     confirmarSeleccionPartidas(1); 
+                });
+
+                document.getElementById('agregarFila').addEventListener('click', function() {
+                    const formularioArticulos = document.getElementById('formularioArticulos');
+                    const filaOriginal = document.querySelector('#filaFormularioArticulo');
+                    const nuevaFila = filaOriginal.cloneNode(true);
+                    const uniqueID = randomID(); 
+
+                    nuevaFila.querySelectorAll('input').forEach(input => input.value = '');
+
+                    nuevaFila.querySelectorAll('.verPartidas').forEach(button => {
+                        button.id = uniqueID
+                        button.setAttribute('data-target', `#verPartidasPedidoUnico-${uniqueID}`);
+                    });
+
+                    nuevaFila.querySelectorAll('.modalVerPartidas').forEach(modal => {
+                        modal.id = `verPartidasPedidoUnico-${uniqueID}`;
+                        modal.setAttribute('data-uniqueid', uniqueID);
+        
+                        const confirmarBtn = modal.querySelector('.confirmarSeleccionPartidas');
+                        confirmarBtn.addEventListener('click', function() {
+                            confirmarSeleccionPartidas(uniqueID); 
+
+                            //todo: Corregir Bug
+                            const modalInstance = new bootstrap.Modal(modal);
+                            modalInstance.hide();
+                        });
+                    });
+
+                    formularioArticulos.appendChild(nuevaFila);
+
+                    agregarEventoEliminar(nuevaFila, uniqueID);
                 });
 
                 document.addEventListener('click', function(event) {
                     if (event.target && event.target.id === 'buscarCodigoPedidoUnico') {
                     const fila = event.target.closest('.row');
+                    const uniqueID = fila.querySelector(".modalVerPartidas").getAttribute('data-uniqueid');
 
                     let inputCodigoPedidoUnico = fila.querySelector('input[name="codigoPedidoUnico"]');
                     let codigo = inputCodigoPedidoUnico.value;
@@ -595,10 +620,29 @@
                         let nombreArticuloPedidoUnico = fila.querySelector('input[name="nombreArticuloPedidoUnico"]');
                         nombreArticuloPedidoUnico.value = result.resultadosCodigo[0].nombre;
 
-                        //todo: Mostra resultados en el modal
-                        const partidasContainer = document.querySelector('.partidasResultadosPedidoUnico');
+                        const partidasContainer = fila.querySelector(`#verPartidasPedidoUnico-${uniqueID} #partidasResultadosPedidoUnico`);
+                        const confirmarBtn = document.createElement('button');
+                        confirmarBtn.type = 'button';
+                        confirmarBtn.className = 'btn btn-primary mt-3';
+                        confirmarBtn.id = `confirmarSeleccionPartidas-${uniqueID}`;
+                        confirmarBtn.textContent = 'Confirmar Selección';
                         
+                        result.resultadosPartidas.forEach(item => {
+                            const partidaDiv = document.createElement('div');
+                            const partidaSpan = document.createElement('span');
+                            
+                            partidaDiv.className = 'partida';
+                            partidaSpan.textContent = item; 
+
+                            partidaDiv.appendChild(partidaSpan);
+                            partidasContainer.appendChild(partidaDiv);
+                        })
                         
+                        partidasContainer.appendChild(confirmarBtn);                         
+                        partidasContainer.addEventListener('click', handlePartidaClick);
+                        
+                        //todo: agregar logica para la primer row
+
                         return result;
                     })
                     .catch(error => {
@@ -607,51 +651,10 @@
                         nombreArticuloPedidoUnico.value = "No hay resultados";
                         return error;
                     });
-                    }
-                });
+                }});
 
-                document.getElementById('agregarFila').addEventListener('click', function() {
-                    const formularioArticulos = document.getElementById('formularioArticulos');
-                    const filaOriginal = document.querySelector('#filaFormularioArticulo');
-                    const nuevaFila = filaOriginal.cloneNode(true);
-                    const uniqueID = randomID(); 
-
-                    nuevaFila.querySelectorAll('input').forEach(input => input.value = '');
-
-                    nuevaFila.querySelectorAll('.verPartidas').forEach(button => {
-                        button.id = uniqueID
-                        button.setAttribute('data-target', `#verPartidasPedidoUnico-${uniqueID}`);
-                    });
-
-                    nuevaFila.querySelectorAll('.modalVerPartidas').forEach(modal => {
-                        modal.id = `verPartidasPedidoUnico-${uniqueID}`;
-        
-                        modal.querySelectorAll('.partida').forEach(item => {
-                            item.classList.remove('selected'); 
-                        });
-
-                        const confirmarBtn = modal.querySelector('.confirmarSeleccionPartidas');
-                        confirmarBtn.addEventListener('click', function() {
-                            confirmarSeleccionPartidas(uniqueID); 
-
-                            //todo: Corregir Bug
-                            const modalInstance = new bootstrap.Modal(modal);
-                            modalInstance.hide();
-                        });
-                    });
-
-                    formularioArticulos.appendChild(nuevaFila);
-
-                    const modalElement = nuevaFila.querySelector(`#verPartidasPedidoUnico-${uniqueID}`);
-                        modalElement.addEventListener('click', function(event) {
-                        if (event.target.classList.contains('partida')) {
-                            event.target.classList.toggle('selected');
-                        }
-                    });
-
-                    agregarEventoEliminar(nuevaFila, uniqueID);
-                });
-            })
+                //todo: logica de agregado de partidas seleccionadas con session
+            });
 
             function confirmarSeleccionPartidas(modalID) {
                 if (!retrievedData.partidas) {
@@ -663,6 +666,12 @@
                     retrievedData.partidas[existingIndex].data = "datoAleatorio Sobrescrito";
                 } else {
                     retrievedData.partidas.push({ id: modalID, data: "datoAleatorio" });
+                }
+            }
+
+            function handlePartidaClick(event) {
+                if (event.target.classList.contains('partida')) {
+                    event.target.classList.toggle('selected');
                 }
             }
             
