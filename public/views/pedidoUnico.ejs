@@ -666,13 +666,17 @@
                         
                         confirmarBtn.addEventListener("click", function(){
                             let datosArticulo = {
-                                cantidad: [],
-                                costo: [],
-                                precio: []
+                                cantidad: undefined,
+                                costo: undefined,
+                                precio: undefined
                             }
 
-                            let filas = document.querySelectorAll(".filaFormularioArticulo")
-                            filas.forEach(fila => {
+                            let fila = document.querySelectorAll(".filaFormularioArticulo")
+                            let data = Array.from(fila[0].querySelectorAll(".col-md-1"))
+                            console.log(fila)
+                            console.log(data.slice(0,3))
+
+                            fila.forEach(fila => {
                                 let inputs = fila.querySelectorAll('input');
                                 let filteredInputs = Array.from(inputs).filter(input =>
                                     input.classList.contains('cantidadPedidoUnico') ||
@@ -681,7 +685,7 @@
                                 );
 
                                 filteredInputs.forEach(input => {
-                                    console.log(input);
+
                                 });
                             });
 
@@ -701,7 +705,6 @@
             function confirmarSeleccionPartidas(modalID, object, elements) {
                 const arr = Array.from(elements.querySelectorAll('.partida'));
                 const selectedPartidas = arr.filter(arr => arr.classList.contains('selected'));
-                console.log(selectedPartidas)
 
                 if (!retrievedData.partidas) {
                     retrievedData.partidas = [];
