@@ -277,6 +277,7 @@
                                 </div>       
                                 <div class="col-md-6 text-end">
                                     <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="confirmarCliente">Confirmar <i class="bi bi-check-circle-fill text-white"></i></button>
+                                    <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="finaliar">Finalizar</button>
                                 </div>                          
                             </div>
                             <div class="row mt-30px">
@@ -329,7 +330,7 @@
                 </div>
                 <div id="formularioArticulos">
                     <!-- La primera fila inicial -->
-                    <div class="row mb-15px" id="filaFormularioArticulo">
+                    <div class="row mb-15px filaFormularioArticulo" id="filaFormularioArticulo">
                         <div class="col-md-3 d-flex">
                             <input type="text" 
                                 class="bg-transparent border-color-transparent-white-light w-70" 
@@ -337,20 +338,20 @@
                                 name="codigoPedidoUnico"
                                 id="codigoPedidoUnico">
                             <div class="input-group-append">
-                                <button class="btn btn-success h-100 buscarCodigoPedidoUnico" type="button" id="buscarCodigoPedidoUnico" disabled>Buscar</button>
+                                <button class="btn btn-success h-100 buscarCodigoPedidoUnico" type="button" id="buscarCodigoPedidoUnico">Buscar</button>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <input type="text" class="bg-transparent border-color-transparent-white-light" name="nombreArticuloPedidoUnico" id="nombreArticuloPedidoUnico">
                         </div>
                         <div class="col-md-1">
-                            <input type="text" class="bg-transparent border-color-transparent-white-light" name="cantidadPedidoUnico" id="cantidadPedidoUnico">
+                            <input type="text" class="bg-transparent border-color-transparent-white-light cantidadPedidoUnico" name="cantidadPedidoUnico" id="cantidadPedidoUnico">
                         </div>
                         <div class="col-md-1">
-                            <input type="text" class="bg-transparent border-color-transparent-white-light" name="costoPedidoUnico" id="costoPedidoUnico">
+                            <input type="text" class="bg-transparent border-color-transparent-white-light costoPedidoUnico" name="costoPedidoUnico" id="costoPedidoUnico">
                         </div>
                         <div class="col-md-1">
-                            <input type="text" class="bg-transparent border-color-transparent-white-light" name="precioPedidoUnico" id="precioPedidoUnico">
+                            <input type="text" class="bg-transparent border-color-transparent-white-light precioPedidoUnico" name="precioPedidoUnico" id="precioPedidoUnico">
                         </div>
                         <div class="col-md-2 d-flex flex-wrap justify-content-between">
                             <button type="button" class="btn btn-primary w-50 verPartidas" data-toggle="modal" data-target="#verPartidasPedidoUnico">Partida</button>
@@ -378,7 +379,7 @@
                                     <div class="col-md-12">
 
                                         <div class="partidasResultadosPedidoUnico" id="partidasResultadosPedidoUnico">
-                                            <button type="button" class="btn btn-primary mt-3 confirmarSeleccionPartidas" id="confirmarSeleccionPartidas">Confirmar Selección</button>
+                                            
                                         </div>
                                         
                                     </div>
@@ -428,7 +429,6 @@
                 return id;
             }
             
-            // Select de tipo de busqueda
             document.getElementById('optionSelect').addEventListener('change', function() {
                 document.getElementById('idContainer').style.display = 'none';
                 document.getElementById('razonContainer').style.display = 'none';
@@ -465,13 +465,11 @@
             }
 
             document.addEventListener('DOMContentLoaded', () => {
-                // Mostrar modal
                 let showModal = document.getElementById('showModal').value;
                 let modal = new bootstrap.Modal(document.getElementById('seleccionarClienteModalPedidoUnico'));
                 if (showModal === 'true') {
                     modal.show();
                 }
-                // Logica de seleccionado de item
                 const resultItems = document.querySelectorAll('.result-item');
                 const confirmButton = document.getElementById('confirmarSeleccion');
                 let selectedItemId = null;
@@ -498,7 +496,6 @@
                 const inputVendedorPedidoUnico = document.querySelector('input[name="vendedorPedidoUnico"]');
                 const inputTipoPedidoUnico = document.querySelector('#tipoPedidoUnico');
                 const inputFechaPedidoUnico = document.querySelector('#fechaPedidoUnico');
-                const botonesBuscar = document.querySelectorAll('.buscarCodigoPedidoUnico');
                 const inputCodigoPedidoUnico = document.getElementById("codigoPedidoUnico")
                 const nombreArticuloPedidoUnico = document.getElementById("nombreArticuloPedidoUnico")
                 const resultItems = document.querySelectorAll('.result-item');
@@ -520,9 +517,8 @@
                             fecha: "",
                             tipo: ""
                         };
-
-                        retrievedData = { ...selectedResult }
                         
+                        retrievedData = { ...selectedResult }
                     });
                 });
                 
@@ -551,26 +547,42 @@
                     retrievedData.tipo = inputTipoPedidoUnico.value
                     retrievedData.fecha = inputFechaPedidoUnico.value
 
+                    let filas = document.querySelectorAll(".filaFormularioArticulo")
+                    filas.forEach(fila => {
+                        let inputs = fila.querySelectorAll('input');
+                        inputs.forEach(input => {
+                            input.disabled = !input.disabled; 
+                            input.classList.toggle('input-disabled');
+                        });
+                    });
+                    
+                    let botonesBuscar = document.querySelectorAll('.buscarCodigoPedidoUnico');
+                    let verPartidas = document.querySelectorAll('.verPartidas');
+                    let eliminarFila = document.querySelectorAll('.eliminarFila');
                     botonesBuscar.forEach(boton => {
-                        boton.disabled = false;
+                        boton.disabled = !boton.disabled; 
+                    });
+                    verPartidas.forEach(boton => {
+                        boton.disabled = !boton.disabled; 
+                    });
+                    eliminarFila.forEach(boton => {
+                        boton.disabled = !boton.disabled; 
                     });
                 });
             });
 
             document.addEventListener('DOMContentLoaded', () => {
                 const modal = document.getElementById('verPartidasPedidoUnico');
-                const confirmarBtn = document.getElementById('confirmarSeleccionPartidas');
                 const nombreArticuloPedidoUnico = document.getElementById("nombreArticuloPedidoUnico")
-
-                confirmarBtn.addEventListener('click', function() {
-                    confirmarSeleccionPartidas(1); 
-                });
 
                 document.getElementById('agregarFila').addEventListener('click', function() {
                     const formularioArticulos = document.getElementById('formularioArticulos');
                     const filaOriginal = document.querySelector('#filaFormularioArticulo');
                     const nuevaFila = filaOriginal.cloneNode(true);
                     const uniqueID = randomID(); 
+
+                    nuevaFila.classList.add(`filaFormularioArticulo`)
+                    nuevaFila.classList.add(`filaFormularioArticulo-${uniqueID}`)
 
                     nuevaFila.querySelectorAll('input').forEach(input => input.value = '');
 
@@ -583,18 +595,19 @@
                         modal.id = `verPartidasPedidoUnico-${uniqueID}`;
                         modal.setAttribute('data-uniqueid', uniqueID);
         
-                        const confirmarBtn = modal.querySelector('.confirmarSeleccionPartidas');
-                        confirmarBtn.addEventListener('click', function() {
-                            confirmarSeleccionPartidas(uniqueID); 
+                        const confirmarBtns = modal.querySelectorAll('.confirmarSeleccionPartidas');
 
-                            //todo: Corregir Bug
-                            const modalInstance = new bootstrap.Modal(modal);
-                            modalInstance.hide();
+                        confirmarBtns.forEach(confirmarBtn => {
+                            confirmarBtn.addEventListener('click', function() {
+                                confirmarSeleccionPartidas(uniqueID); 
+
+                                const modalInstance = bootstrap.Modal.getInstance(modal) || new bootstrap.Modal(modal);
+                                modalInstance.hide();
+                            });
                         });
                     });
 
                     formularioArticulos.appendChild(nuevaFila);
-
                     agregarEventoEliminar(nuevaFila, uniqueID);
                 });
 
@@ -620,29 +633,60 @@
                         let nombreArticuloPedidoUnico = fila.querySelector('input[name="nombreArticuloPedidoUnico"]');
                         nombreArticuloPedidoUnico.value = result.resultadosCodigo[0].nombre;
 
-                        const partidasContainer = fila.querySelector(`#verPartidasPedidoUnico-${uniqueID} #partidasResultadosPedidoUnico`);
+                        let partidasContainer = uniqueID != null 
+                        ? fila.querySelector(`#verPartidasPedidoUnico-${uniqueID} #partidasResultadosPedidoUnico`) 
+                        : fila.querySelector('#verPartidasPedidoUnico #partidasResultadosPedidoUnico');
+
+                        partidasContainer.innerHTML = '';
+
                         const confirmarBtn = document.createElement('button');
                         confirmarBtn.type = 'button';
-                        confirmarBtn.className = 'btn btn-primary mt-3';
+                        confirmarBtn.className = 'btn btn-primary mt-3 confirmarSeleccionPartidas';
                         confirmarBtn.id = `confirmarSeleccionPartidas-${uniqueID}`;
                         confirmarBtn.textContent = 'Confirmar Selección';
                         
-                        result.resultadosPartidas.forEach(item => {
+                        const partidaDivs = result.resultadosPartidas.map(item => {
                             const partidaDiv = document.createElement('div');
                             const partidaSpan = document.createElement('span');
-                            
+
                             partidaDiv.className = 'partida';
-                            partidaSpan.textContent = item; 
+                            partidaSpan.textContent = item;
 
                             partidaDiv.appendChild(partidaSpan);
-                            partidasContainer.appendChild(partidaDiv);
-                        })
-                        
-                        partidasContainer.appendChild(confirmarBtn);                         
-                        partidasContainer.addEventListener('click', handlePartidaClick);
-                        
-                        //todo: agregar logica para la primer row
+                            return partidaDiv;
+                        });
 
+                        partidaDivs.forEach(partidaDiv => partidasContainer.appendChild(partidaDiv));          
+
+                        if (!partidasContainer.querySelector('.confirmarSeleccionPartidas')) {
+                            partidasContainer.appendChild(confirmarBtn);
+                        }          
+
+                        partidasContainer.addEventListener('click', handlePartidaClick);       
+                        
+                        confirmarBtn.addEventListener("click", function(){
+                            let datosArticulo = {
+                                cantidad: [],
+                                costo: [],
+                                precio: []
+                            }
+
+                            let filas = document.querySelectorAll(".filaFormularioArticulo")
+                            filas.forEach(fila => {
+                                let inputs = fila.querySelectorAll('input');
+                                let filteredInputs = Array.from(inputs).filter(input =>
+                                    input.classList.contains('cantidadPedidoUnico') ||
+                                    input.classList.contains('costoPedidoUnico') ||
+                                    input.classList.contains('precioPedidoUnico')
+                                );
+
+                                filteredInputs.forEach(input => {
+                                    console.log(input);
+                                });
+                            });
+
+                            confirmarSeleccionPartidas(uniqueID === null ? 1 : uniqueID, null, partidasContainer)
+                        })                 
                         return result;
                     })
                     .catch(error => {
@@ -652,20 +696,22 @@
                         return error;
                     });
                 }});
-
-                //todo: logica de agregado de partidas seleccionadas con session
             });
 
-            function confirmarSeleccionPartidas(modalID) {
+            function confirmarSeleccionPartidas(modalID, object, elements) {
+                const arr = Array.from(elements.querySelectorAll('.partida'));
+                const selectedPartidas = arr.filter(arr => arr.classList.contains('selected'));
+                console.log(selectedPartidas)
+
                 if (!retrievedData.partidas) {
                     retrievedData.partidas = [];
                 }
-
-                const existingIndex = retrievedData.partidas.findIndex(partida => partida.id === modalID);
+                
+                const existingIndex = retrievedData.partidas.findIndex(partida => Number(partida.id) === Number(modalID));
                 if (existingIndex !== -1) {
-                    retrievedData.partidas[existingIndex].data = "datoAleatorio Sobrescrito";
+                    retrievedData.partidas[existingIndex].data = selectedPartidas;
                 } else {
-                    retrievedData.partidas.push({ id: modalID, data: "datoAleatorio" });
+                    retrievedData.partidas.push({ id: Number(modalID), data: selectedPartidas});
                 }
             }
 
