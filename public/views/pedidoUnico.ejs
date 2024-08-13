@@ -277,7 +277,7 @@
                                 </div>       
                                 <div class="col-md-6 text-end">
                                     <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="confirmarCliente">Confirmar <i class="bi bi-check-circle-fill text-white"></i></button>
-                                    <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="finaliar">Finalizar</button>
+                                    <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="finaliar">Finalizar (Desarrollo Pendiente)</button>
                                 </div>                          
                             </div>
                             <div class="row mt-30px">
@@ -407,6 +407,7 @@
                               <div class="modal-content">
                                 <div class="modal-header">
                                   <h5 class="modal-title" id="exampleModalLabel">Asignar Partidas</h5>
+                                  <h6 id="cantidadModal" class="mb-0"></h6>
                                   <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="
                                   background: none;
                                   border: none;
@@ -642,6 +643,10 @@
                 const modal = document.getElementById('verPartidasPedidoUnico');
                 const nombreArticuloPedidoUnico = document.getElementById("nombreArticuloPedidoUnico")
 
+                document.getElementById("cantidadPedidoUnico").addEventListener("input", () => {
+                    document.querySelector("#cantidadModal").textContent = input.value;
+                })
+
                 document.getElementById('agregarFila').addEventListener('click', function() {
                     const formularioArticulos = document.getElementById('formularioArticulos');
                     const filaOriginal = document.querySelector('#filaFormularioArticulo');
@@ -652,20 +657,15 @@
                     nuevaFila.classList.add(`filaFormularioArticulo-${uniqueID}`)
 
                     nuevaFila.querySelectorAll('input').forEach(input => input.value = '');
-               
+
+                    let cantidadModal = nuevaFila.querySelector("#cantidadModal")
                     let filteredInputs = Array.from(nuevaFila.querySelectorAll('input')).filter(input =>
                         input.classList.contains('cantidadPedidoUnico') 
                     );      
-                    
-                    const datosArticulosArr = []
-                    let datosArticulo = {
-                        id: uniqueID,
-                        cantidad: "",
-                    }
-                    
+                                        
                     filteredInputs.forEach(input => {
                         input.addEventListener("input", () => {
-                            //todo: cantidad 
+                            cantidadModal.textContent = input.value;
                         })
                     })
                     
