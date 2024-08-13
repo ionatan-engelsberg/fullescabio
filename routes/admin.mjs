@@ -5,10 +5,37 @@ import sql from 'mssql';
 
 const obtenerClientesPedidoUnico = async (query) => {
     try {
+        let listaCodigo = 123
         const request = await new sql.Request().query(query)
         return request.recordset.map((row) => {
-            const {NUM_CLIENTE: id, RAZON: razon, NOM_FANTASIA: nombreFantasia, LISTA_DESCRIP: lista, Vendedor: vendedor, LISTA_COD: listaCodigo} = row
-            return {id, razon, nombreFantasia, lista, vendedor}
+            const {NUM_CLIENTE: id, RAZON: razon, NOM_FANTASIA: nombreFantasia, LISTA_DESCRIP: lista, Vendedor: vendedor} = row
+            return {id, razon, nombreFantasia, lista, vendedor, listaCodigo}
+        })
+    } catch (error) {
+        console.log('ERROR: ', error);
+        return [];
+    }
+} 
+
+const obtenerTipoPedidoUnico = async (query) => {
+    try {
+        const request = await new sql.Request().query(query)
+        return request.recordset.map((row) => {
+            const {COD_COMP: codigo, DESCRIP: nombre} = row
+            return { codigo, nombre }
+        })
+    } catch (error) {
+        console.log('ERROR: ', error);
+        return [];
+    }
+} 
+
+const obtenerListaPedidoUnico = async (query) => {
+    try {
+        const request = await new sql.Request().query(query)
+        return request.recordset.map((row) => {
+            const {LISTA_DESCRIP: lista} = row
+            return { lista }
         })
     } catch (error) {
         console.log('ERROR: ', error);
@@ -29,7 +56,6 @@ const obtenerArticulosPedidoUnico = async (query) => {
     }
 } 
 
-//! Devuelve de todo. Ver que sirve
 const obtenerPartidasPedidoUnico = async (query) => {
     try {
         const request = await new sql.Request().query(query)
@@ -70,8 +96,12 @@ router.post('/pedido-unico/buscar-por-id', async (req, res) => {
 
     //! Consulta a DB
     const resultadosID = await obtenerClientesPedidoUnico(`EXEC may_client_busq @num = '${idPedidoUnico}'`)
-      
+    const tiposPedidoUnico = await obtenerTipoPedidoUnico(`EXEC may_comp_pedidos`)
+    const lista = await obtenerListaPedidoUnico(`EXEC may_lista_precios`)
+
     res.render("pedidoUnico", {
+        lista,
+        tiposPedidoUnico,
         idPedidoUnico,
         resultadosID,
         selectedOption: 1,
@@ -88,8 +118,12 @@ router.post('/pedido-unico/buscar-por-razon', async (req, res) => {
 
     //! Consulta a DB
     const resultadosRazon = await obtenerClientesPedidoUnico(`EXEC may_client_busq_razon @razon = '${razonPedidoUnico}'`)
+    const tiposPedidoUnico = await obtenerTipoPedidoUnico(`EXEC may_comp_pedidos`)
+    const lista = await obtenerListaPedidoUnico(`EXEC may_lista_precios`)
 
     res.render("pedidoUnico", {
+        lista,
+        tiposPedidoUnico,
         razonPedidoUnico,
         resultadosRazon,
         selectedOption: 2,
@@ -106,8 +140,12 @@ router.post('/pedido-unico/buscar-por-nombre', async (req, res) => {
 
     //! Consulta a DB
     const resultadosNombre = await obtenerClientesPedidoUnico(`EXEC may_client_busq_nomb @nom = '${nombrePedidoUnico}'`)
+    const tiposPedidoUnico = await obtenerTipoPedidoUnico(`EXEC may_comp_pedidos`)
+    const lista = await obtenerListaPedidoUnico(`EXEC may_lista_precios`)
 
     res.render("pedidoUnico", {
+        lista,
+        tiposPedidoUnico,
         nombrePedidoUnico,
         resultadosNombre,
         selectedOption: 3,
@@ -123,7 +161,7 @@ router.post("/pedido-unico/obtener-articulos", async (req, res) => {
     const codigoPedidoUnico = req.body.codigoPedidoUnico;
 
     //! Consulta a DB
-    const resultadosCodigo = await obtenerArticulosPedidoUnico(`EXEC may_articulos @cod_art = '${codigoPedidoUnico}'`) //! Sumar lista codigo a la llamada
+    const resultadosCodigo = await obtenerArticulosPedidoUnico(`EXEC may_articulos @cod_art = '${codigoPedidoUnico}', @lista_codi = ''`) //! Sumar lista codigo a la llamada
     const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${codigoPedidoUnico}'`) //! Pedido unico DEP
     
     res.json({

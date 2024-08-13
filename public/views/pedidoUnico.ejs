@@ -283,7 +283,42 @@
                             <div class="row mt-30px">
                                 <div class="col-md-4">
                                     <label for="" class="text-white fw-600 fs-20">Lista</label>
-                                    <input type="text" class="bg-transparent border-color-transparent-white-light" name="listaPedidoUnico">
+                                    <select class="bg-transparent border-color-transparent-white-light" name="tipoPedidoUnico" id="listaPedidoUnico">
+                                        <% if (resultadosRazon && resultadosRazon.length > 0) { %>
+                                        <% if (typeof lista !== 'undefined' && lista.length > 0) { %>
+                                            <option id="listaPorDefecto"></option>
+                                            <% lista.forEach(lista => { %>
+                                                <option value="<%= lista.lista %>"><%= lista.lista %></option>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <option value="">No hay opciones disponibles</option>
+                                        <% } %>
+                                        <% } %>
+
+
+                                        <% if (resultadosID && resultadosID.length > 0) { %>
+                                        <% if (typeof lista !== 'undefined' && lista.length > 0) { %>
+                                            <option id="listaPorDefecto"></option>
+                                            <% lista.forEach(lista => { %>
+                                                <option value="<%= lista.lista %>"><%= lista.lista %></option>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <option value="">No hay opciones disponibles</option>
+                                        <% } %>
+                                        <% } %>
+
+
+                                        <% if (resultadosNombre && resultadosNombre.length > 0) { %>
+                                        <% if (typeof lista !== 'undefined' && lista.length > 0) { %>
+                                            <option id="listaPorDefecto"></option>
+                                            <% lista.forEach(lista => { %>
+                                                <option value="<%= lista.lista %>"><%= lista.lista %></option>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <option value="">No hay opciones disponibles</option>
+                                        <% } %>
+                                        <% } %>
+                                    </select>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="" class="text-white fw-600 fs-20">Vendedor</label>
@@ -292,7 +327,13 @@
                                 <div class="col-md-4">
                                     <label for="" class="text-white fw-600 fs-20">Tipo</label>
                                     <select class="bg-transparent border-color-transparent-white-light" name="tipoPedidoUnico" id="tipoPedidoUnico">
-                                        <option value="aa">aa</option>
+                                        <% if (typeof tiposPedidoUnico !== 'undefined' && tiposPedidoUnico.length > 0) { %>
+                                            <% tiposPedidoUnico.forEach(tipo => { %>
+                                                <option value="<%= tipo.codigo %>"><%= tipo.nombre %></option>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <option value="">No hay opciones disponibles</option>
+                                        <% } %>
                                     </select>
                                 </div>
                             </div>
@@ -333,7 +374,7 @@
                     <div class="row mb-15px filaFormularioArticulo" id="filaFormularioArticulo">
                         <div class="col-md-3 d-flex">
                             <input type="text" 
-                                class="bg-transparent border-color-transparent-white-light w-70" 
+                                class="bg-transparent border-color-transparent-white-light w-70 codigoPedidoUnico" 
                                 aria-describedby="basic-addon2" 
                                 name="codigoPedidoUnico"
                                 id="codigoPedidoUnico">
@@ -342,7 +383,7 @@
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <input type="text" class="bg-transparent border-color-transparent-white-light" name="nombreArticuloPedidoUnico" id="nombreArticuloPedidoUnico">
+                            <input type="text" class="bg-transparent border-color-transparent-white-light nombreArticuloPedidoUnico" name="nombreArticuloPedidoUnico" id="nombreArticuloPedidoUnico">
                         </div>
                         <div class="col-md-1">
                             <input type="text" class="bg-transparent border-color-transparent-white-light cantidadPedidoUnico" name="cantidadPedidoUnico" id="cantidadPedidoUnico">
@@ -492,7 +533,8 @@
             
             document.addEventListener('DOMContentLoaded', () => {
                 const confirmarClienteButton = document.getElementById('confirmarCliente');
-                const inputListaPedidoUnico = document.querySelector('input[name="listaPedidoUnico"]');
+                const inputListaPedidoUnico = document.querySelector('#listaPedidoUnico');
+                const listaPorDefecto = document.querySelector('#listaPorDefecto');
                 const inputVendedorPedidoUnico = document.querySelector('input[name="vendedorPedidoUnico"]');
                 const inputTipoPedidoUnico = document.querySelector('#tipoPedidoUnico');
                 const inputFechaPedidoUnico = document.querySelector('#fechaPedidoUnico');
@@ -524,7 +566,7 @@
                 
                 document.getElementById('confirmarSeleccion').addEventListener('click', () => {
                     if (selectedResult) {
-                        inputListaPedidoUnico.value = selectedResult.lista
+                        listaPorDefecto.textContent = selectedResult.lista
                         inputVendedorPedidoUnico.value = selectedResult.vendedor
                     }
                 });
@@ -568,6 +610,31 @@
                     eliminarFila.forEach(boton => {
                         boton.disabled = !boton.disabled; 
                     });
+
+                    let filteredInputs = Array.from(document.querySelectorAll('input')).filter(input =>
+                        input.classList.contains('codigoPedidoUnico') ||
+                        input.classList.contains('nombreArticuloPedidoUnico') ||
+                        input.classList.contains('cantidadPedidoUnico') ||
+                        input.classList.contains('costoPedidoUnico') ||
+                        input.classList.contains('precioPedidoUnico')
+                    ); 
+
+                    let inputValues = filteredInputs.map(input => input.value);
+
+                    function groupElements(elements) {
+                        const grouped = [];
+    
+                        for (let i = 0; i < elements.length; i += 5) {
+                            grouped.push(elements.slice(i, i + 5));
+                        }
+    
+                        return grouped;
+                    }
+
+                    const resultInputValues = groupElements(inputValues)
+                    retrievedData.articulos = resultInputValues
+
+                    console.log(retrievedData)
                 });
             });
 
@@ -585,7 +652,23 @@
                     nuevaFila.classList.add(`filaFormularioArticulo-${uniqueID}`)
 
                     nuevaFila.querySelectorAll('input').forEach(input => input.value = '');
-
+               
+                    let filteredInputs = Array.from(nuevaFila.querySelectorAll('input')).filter(input =>
+                        input.classList.contains('cantidadPedidoUnico') 
+                    );      
+                    
+                    const datosArticulosArr = []
+                    let datosArticulo = {
+                        id: uniqueID,
+                        cantidad: "",
+                    }
+                    
+                    filteredInputs.forEach(input => {
+                        input.addEventListener("input", () => {
+                            //todo: cantidad 
+                        })
+                    })
+                    
                     nuevaFila.querySelectorAll('.verPartidas').forEach(button => {
                         button.id = uniqueID
                         button.setAttribute('data-target', `#verPartidasPedidoUnico-${uniqueID}`);
@@ -665,30 +748,6 @@
                         partidasContainer.addEventListener('click', handlePartidaClick);       
                         
                         confirmarBtn.addEventListener("click", function(){
-                            let datosArticulo = {
-                                cantidad: undefined,
-                                costo: undefined,
-                                precio: undefined
-                            }
-
-                            let fila = document.querySelectorAll(".filaFormularioArticulo")
-                            let data = Array.from(fila[0].querySelectorAll(".col-md-1"))
-                            console.log(fila)
-                            console.log(data.slice(0,3))
-
-                            fila.forEach(fila => {
-                                let inputs = fila.querySelectorAll('input');
-                                let filteredInputs = Array.from(inputs).filter(input =>
-                                    input.classList.contains('cantidadPedidoUnico') ||
-                                    input.classList.contains('costoPedidoUnico') ||
-                                    input.classList.contains('precioPedidoUnico')
-                                );
-
-                                filteredInputs.forEach(input => {
-
-                                });
-                            });
-
                             confirmarSeleccionPartidas(uniqueID === null ? 1 : uniqueID, null, partidasContainer)
                         })                 
                         return result;
