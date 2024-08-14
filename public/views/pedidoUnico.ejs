@@ -132,7 +132,8 @@
                                                                     data-nombreFantasia="<%= resultado.nombreFantasia ? resultado.nombreFantasia : "No Definido" %>"
                                                                     data-razon="<%= resultado.razon ? resultado.razon : "No Definido" %>"
                                                                     data-vendedor="<%= resultado.vendedor ? resultado.vendedor : "No Definido" %>"
-                                                                    data-lista="<%= resultado.lista ? resultado.lista : "No Definido" %>">
+                                                                    data-lista="<%= resultado.lista ? resultado.lista : "No Definido" %>"
+                                                                    data-listaCodigo="<%= resultado.listaCodigo ? resultado.listaCodigo : "No Definido" %>">
                                                                     
                                                                     <div class="col-md-2">
                                                                         <span><%= resultado.id %></span>
@@ -188,7 +189,8 @@
                                                                     data-nombreFantasia="<%= resultado.nombreFantasia ? resultado.nombreFantasia : "No Definido" %>"
                                                                     data-razon="<%= resultado.razon ? resultado.razon : "No Definido" %>"
                                                                     data-vendedor="<%= resultado.vendedor ? resultado.vendedor : "No Definido" %>"
-                                                                    data-lista="<%= resultado.lista ? resultado.lista : "No Definido" %>">
+                                                                    data-lista="<%= resultado.lista ? resultado.lista : "No Definido" %>"
+                                                                    data-listaCodigo="<%= resultado.listaCodigo ? resultado.listaCodigo : "No Definido" %>">
                                                                     
                                                                     <div class="col-md-2">
                                                                         <span><%= resultado.id %></span>
@@ -244,8 +246,9 @@
                                                                     data-nombreFantasia="<%= resultado.nombreFantasia ? resultado.nombreFantasia : "No Definido" %>"
                                                                     data-razon="<%= resultado.razon ? resultado.razon : "No Definido" %>"
                                                                     data-vendedor="<%= resultado.vendedor ? resultado.vendedor : "No Definido" %>"
-                                                                    data-lista="<%= resultado.lista ? resultado.lista : "No Definido" %>">
-                                                                    
+                                                                    data-lista="<%= resultado.lista ? resultado.lista : "No Definido" %>"
+                                                                    data-listaCodigo="<%= resultado.listaCodigo ? resultado.listaCodigo : "No Definido" %>">
+
                                                                     <div class="col-md-2">
                                                                         <span><%= resultado.id %></span>
                                                                     </div>
@@ -418,6 +421,13 @@
                                 </div>
 
                                 <div class="modal-body row">
+                                    <div class="col-md-2"><b>Numero</b></div>
+                                    <div class="col-md-2"><b>Cantidad</b></div>
+                                    <div class="col-md-2"><b>Deposito</b></div>
+                                    <div class="col-md-2"><b>Costo Unitario</b></div>
+                                    <div class="col-md-2"><b>Ubicación</b></div>
+                                    <div class="col-md-2"><b>Definir Cantidad</b></div>
+
                                     <div class="col-md-12">
 
                                         <div class="partidasResultadosPedidoUnico" id="partidasResultadosPedidoUnico">
@@ -556,6 +566,7 @@
                             razon: item.getAttribute('data-razon'),
                             nombreFantasia: item.getAttribute('data-nombreFantasia'),
                             lista: item.getAttribute('data-lista'),
+                            listaCodigo: item.getAttribute('data-listaCodigo'),
                             vendedor: item.getAttribute('data-vendedor'),
                             fecha: "",
                             tipo: ""
@@ -644,7 +655,7 @@
                 const nombreArticuloPedidoUnico = document.getElementById("nombreArticuloPedidoUnico")
 
                 document.getElementById("cantidadPedidoUnico").addEventListener("input", () => {
-                    document.querySelector("#cantidadModal").textContent = input.value;
+                    document.querySelector("#cantidadModal").textContent = document.getElementById("cantidadPedidoUnico").value;
                 })
 
                 document.getElementById('agregarFila').addEventListener('click', function() {
@@ -702,7 +713,10 @@
                     let inputCodigoPedidoUnico = fila.querySelector('input[name="codigoPedidoUnico"]');
                     let codigo = inputCodigoPedidoUnico.value;
 
-                    const data = { codigoPedidoUnico: codigo };
+                    const data = { 
+                        codigoPedidoUnico: codigo,
+                        listaCodigo: retrievedData.listaCodigo
+                    };
 
                     fetch(`/admin/pedido-unico/obtener-articulos`, {
                         method: 'POST',
@@ -713,6 +727,7 @@
                     })
                     .then(response => response.json())
                     .then(result => {
+                        console.log(result)
                         let nombreArticuloPedidoUnico = fila.querySelector('input[name="nombreArticuloPedidoUnico"]');
                         nombreArticuloPedidoUnico.value = result.resultadosCodigo[0].nombre;
 
@@ -729,13 +744,31 @@
                         confirmarBtn.textContent = 'Confirmar Selección';
                         
                         const partidaDivs = result.resultadosPartidas.map(item => {
+                            const { numero , cantidad, codigoDeposito, costoUnitario, ubicacion } = item
+                            const container = document.createElement("div")
                             const partidaDiv = document.createElement('div');
-                            const partidaSpan = document.createElement('span');
+                            partidaDiv.className = 'partida row pt-15px pb-15px';
 
-                            partidaDiv.className = 'partida';
-                            partidaSpan.textContent = item;
+                            const input = document.createElement('input');
+                            input.type = 'text'
+                            input.className = 'form-control';
 
-                            partidaDiv.appendChild(partidaSpan);
+                            const contents = [
+                                numero || 'No Definido',
+                                cantidad || 'No Definido',
+                                codigoDeposito || 'No Definido',
+                                costoUnitario || 'No Definido',
+                                ubicacion || 'No Definido',
+                            ];
+
+                            for (let i = 0; i < 5; i++) {
+                                const colDiv = document.createElement('div');
+                                colDiv.className = 'col-md-2';
+                                colDiv.textContent = contents[i];
+
+                                partidaDiv.appendChild(colDiv);
+                            }
+
                             return partidaDiv;
                         });
 

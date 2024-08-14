@@ -74,12 +74,12 @@ const config = {
         instancename: INSTANCENAME
     }
 };
-
+console.log(config)
 const start = async () => {
     try {
         await sql.connect(config);
-        app.listen(3000, () => {
-            console.log('Server on Port 3000')
+        app.listen(8080, () => {
+            console.log('Server on Port 8080')
         })
     } catch (error) {
         console.log('ERROR while connecting to DB: ', error)

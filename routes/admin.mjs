@@ -2,14 +2,16 @@ import express from "express";
 import { v4 as uuidv4 } from 'uuid';
 import { checkAuthenticated } from '../middlewares/auth.mjs';
 import sql from 'mssql';
+const router = express.Router()
+router.use(checkAuthenticated)
 
 const obtenerClientesPedidoUnico = async (query) => {
     try {
-        let listaCodigo = 123
         const request = await new sql.Request().query(query)
         return request.recordset.map((row) => {
-            const {NUM_CLIENTE: id, RAZON: razon, NOM_FANTASIA: nombreFantasia, LISTA_DESCRIP: lista, Vendedor: vendedor} = row
-            return {id, razon, nombreFantasia, lista, vendedor, listaCodigo}
+            console.log(row)
+            const { NUM_CLIENTE: id, RAZON: razon, NOM_FANTASIA: nombreFantasia, LISTA_DESCRIP: lista, Vendedor: vendedor, LISTA_CODI: listaCodigo } = row
+            return { id, razon, nombreFantasia, lista, vendedor, listaCodigo }
         })
     } catch (error) {
         console.log('ERROR: ', error);
@@ -60,8 +62,8 @@ const obtenerPartidasPedidoUnico = async (query) => {
     try {
         const request = await new sql.Request().query(query)
         return request.recordset.map((row) => {
-            const { NUM } = row
-            return NUM
+            const { NUM: numero, CANTI: cantidad, COD_DEPO: codigoDeposito, COSTO_UNI: costoUnitario, UBICACION_PARTIDA: ubicacion } = row
+            return { numero, cantidad, codigoDeposito, costoUnitario, ubicacion }
         })
     } catch (error) {
         console.log('ERROR: ', error);
@@ -69,8 +71,16 @@ const obtenerPartidasPedidoUnico = async (query) => {
     }
 } 
 
-const router = express.Router()
-router.use(checkAuthenticated)
+const obtenerListaVendedoresPedidoUnico = async (query) => {
+    try {
+        const request = await new sql.Request().query(query)
+        console.log(request)
+        return request.recordset
+    } catch (error) {
+        console.log('ERROR: ', error);
+        return [];
+    }
+} 
 
 router.get('/', (req, res) => {
     res.render('admin')
@@ -98,6 +108,8 @@ router.post('/pedido-unico/buscar-por-id', async (req, res) => {
     const resultadosID = await obtenerClientesPedidoUnico(`EXEC may_client_busq @num = '${idPedidoUnico}'`)
     const tiposPedidoUnico = await obtenerTipoPedidoUnico(`EXEC may_comp_pedidos`)
     const lista = await obtenerListaPedidoUnico(`EXEC may_lista_precios`)
+    // const listaVendedor = await obtenerListaVendedoresPedidoUnico(`EXEC may_lista_vendedores`)
+    // console.log(listaVendedor)
 
     res.render("pedidoUnico", {
         lista,
@@ -159,10 +171,11 @@ router.post('/pedido-unico/buscar-por-nombre', async (req, res) => {
 
 router.post("/pedido-unico/obtener-articulos", async (req, res) => {
     const codigoPedidoUnico = req.body.codigoPedidoUnico;
+    const listaCodigo = req.body.listaCodigo
 
     //! Consulta a DB
-    const resultadosCodigo = await obtenerArticulosPedidoUnico(`EXEC may_articulos @cod_art = '${codigoPedidoUnico}', @lista_codi = ''`) //! Sumar lista codigo a la llamada
-    const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${codigoPedidoUnico}'`) //! Pedido unico DEP
+    const resultadosCodigo = await obtenerArticulosPedidoUnico(`EXEC may_articulos @cod_art = '${codigoPedidoUnico}', @lista_cod = '${listaCodigo}'`) 
+    const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${codigoPedidoUnico}'`)
     
     res.json({
         resultadosCodigo,
