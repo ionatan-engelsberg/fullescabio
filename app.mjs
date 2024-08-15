@@ -74,7 +74,7 @@ const config = {
         instancename: INSTANCENAME
     }
 };
-console.log(config)
+
 const start = async () => {
     try {
         await sql.connect(config);

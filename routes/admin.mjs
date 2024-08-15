@@ -9,8 +9,7 @@ const obtenerClientesPedidoUnico = async (query) => {
     try {
         const request = await new sql.Request().query(query)
         return request.recordset.map((row) => {
-            console.log(row)
-            const { NUM_CLIENTE: id, RAZON: razon, NOM_FANTASIA: nombreFantasia, LISTA_DESCRIP: lista, Vendedor: vendedor, LISTA_CODI: listaCodigo } = row
+            const { NUM_CLIENTE: id, RAZON: razon, NOM_FANTASIA: nombreFantasia, LISTA_DESCRIP: lista, VENDEDOR: vendedor, LISTA_CODI: listaCodigo } = row
             return { id, razon, nombreFantasia, lista, vendedor, listaCodigo }
         })
     } catch (error) {
@@ -49,8 +48,8 @@ const obtenerArticulosPedidoUnico = async (query) => {
     try {
         const request = await new sql.Request().query(query)
         return request.recordset.map((row) => {
-            const {COD_ARTICULO: codigo, DESCRIP_ARTI: nombre} = row
-            return {codigo, nombre}
+            const {COD_ARTICULO: codigo, DESCRIP_ARTI: nombre, PRECIO_VTA: precio} = row
+            return {codigo, nombre, precio}
         })
     } catch (error) {
         console.log('ERROR: ', error);
@@ -74,8 +73,10 @@ const obtenerPartidasPedidoUnico = async (query) => {
 const obtenerListaVendedoresPedidoUnico = async (query) => {
     try {
         const request = await new sql.Request().query(query)
-        console.log(request)
-        return request.recordset
+        return request.recordset.map((row) => {
+            const {CODI_VENDE: codigo, NOMBRE: nombre} = row
+            return {codigo, nombre}
+        })
     } catch (error) {
         console.log('ERROR: ', error);
         return [];
@@ -108,11 +109,11 @@ router.post('/pedido-unico/buscar-por-id', async (req, res) => {
     const resultadosID = await obtenerClientesPedidoUnico(`EXEC may_client_busq @num = '${idPedidoUnico}'`)
     const tiposPedidoUnico = await obtenerTipoPedidoUnico(`EXEC may_comp_pedidos`)
     const lista = await obtenerListaPedidoUnico(`EXEC may_lista_precios`)
-    // const listaVendedor = await obtenerListaVendedoresPedidoUnico(`EXEC may_lista_vendedores`)
-    // console.log(listaVendedor)
+    const listaVendedor = await obtenerListaVendedoresPedidoUnico(`EXEC may_lista_vendedores`)
 
     res.render("pedidoUnico", {
         lista,
+        listaVendedor,
         tiposPedidoUnico,
         idPedidoUnico,
         resultadosID,
@@ -132,9 +133,11 @@ router.post('/pedido-unico/buscar-por-razon', async (req, res) => {
     const resultadosRazon = await obtenerClientesPedidoUnico(`EXEC may_client_busq_razon @razon = '${razonPedidoUnico}'`)
     const tiposPedidoUnico = await obtenerTipoPedidoUnico(`EXEC may_comp_pedidos`)
     const lista = await obtenerListaPedidoUnico(`EXEC may_lista_precios`)
+    const listaVendedor = await obtenerListaVendedoresPedidoUnico(`EXEC may_lista_vendedores`)
 
     res.render("pedidoUnico", {
         lista,
+        listaVendedor,
         tiposPedidoUnico,
         razonPedidoUnico,
         resultadosRazon,
@@ -154,9 +157,11 @@ router.post('/pedido-unico/buscar-por-nombre', async (req, res) => {
     const resultadosNombre = await obtenerClientesPedidoUnico(`EXEC may_client_busq_nomb @nom = '${nombrePedidoUnico}'`)
     const tiposPedidoUnico = await obtenerTipoPedidoUnico(`EXEC may_comp_pedidos`)
     const lista = await obtenerListaPedidoUnico(`EXEC may_lista_precios`)
+    const listaVendedor = await obtenerListaVendedoresPedidoUnico(`EXEC may_lista_vendedores`)
 
     res.render("pedidoUnico", {
         lista,
+        listaVendedor,
         tiposPedidoUnico,
         nombrePedidoUnico,
         resultadosNombre,

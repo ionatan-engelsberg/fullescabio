@@ -325,7 +325,42 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="" class="text-white fw-600 fs-20">Vendedor</label>
-                                    <input type="text" class="bg-transparent border-color-transparent-white-light" name="vendedorPedidoUnico">
+                                    <select class="bg-transparent border-color-transparent-white-light" name="vendedorPedidoUnico" id="vendedorPedidoUnico">
+                                        <% if (resultadosRazon && resultadosRazon.length > 0) { %>
+                                        <% if (typeof listaVendedor !== 'undefined' && listaVendedor.length > 0) { %>
+                                            <option id="vendedorPorDefecto"></option>
+                                            <% listaVendedor.forEach(vendedor => { %>
+                                                <option value="<%= vendedor.codigo %>"><%= vendedor.nombre %></option>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <option value="">No hay opciones disponibles</option>
+                                        <% } %>
+                                        <% } %>
+
+
+                                        <% if (resultadosID && resultadosID.length > 0) { %>
+                                        <% if (typeof listaVendedor !== 'undefined' && listaVendedor.length > 0) { %>
+                                            <option id="vendedorPorDefecto"></option>
+                                            <% listaVendedor.forEach(vendedor => { %>
+                                                <option value="<%= vendedor.codigo %>"><%= vendedor.nombre %></option>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <option value="">No hay opciones disponibles</option>
+                                        <% } %>
+                                        <% } %>
+
+
+                                        <% if (resultadosNombre && resultadosNombre.length > 0) { %>
+                                        <% if (typeof listaVendedor !== 'undefined' && listaVendedor.length > 0) { %>
+                                            <option id="vendedorPorDefecto"></option>
+                                            <% listaVendedor.forEach(vendedor => { %>
+                                                <option value="<%= vendedor.codigo %>"><%= vendedor.nombre %></option>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <option value="">No hay opciones disponibles</option>
+                                        <% } %>
+                                        <% } %>
+                                    </select>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="" class="text-white fw-600 fs-20">Tipo</label>
@@ -410,7 +445,7 @@
                               <div class="modal-content">
                                 <div class="modal-header">
                                   <h5 class="modal-title" id="exampleModalLabel">Asignar Partidas</h5>
-                                  <h6 id="cantidadModal" class="mb-0"></h6>
+                                  <span>Cantidad: <span id="cantidadModal" class="mb-0" style="font-weight: 800;"></span></span>
                                   <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="
                                   background: none;
                                   border: none;
@@ -546,7 +581,8 @@
                 const confirmarClienteButton = document.getElementById('confirmarCliente');
                 const inputListaPedidoUnico = document.querySelector('#listaPedidoUnico');
                 const listaPorDefecto = document.querySelector('#listaPorDefecto');
-                const inputVendedorPedidoUnico = document.querySelector('input[name="vendedorPedidoUnico"]');
+                const vendedorPorDefecto = document.querySelector('#vendedorPorDefecto');
+                const inputVendedorPedidoUnico = document.querySelector('#vendedorPedidoUnico');
                 const inputTipoPedidoUnico = document.querySelector('#tipoPedidoUnico');
                 const inputFechaPedidoUnico = document.querySelector('#fechaPedidoUnico');
                 const inputCodigoPedidoUnico = document.getElementById("codigoPedidoUnico")
@@ -579,7 +615,7 @@
                 document.getElementById('confirmarSeleccion').addEventListener('click', () => {
                     if (selectedResult) {
                         listaPorDefecto.textContent = selectedResult.lista
-                        inputVendedorPedidoUnico.value = selectedResult.vendedor
+                        vendedorPorDefecto.textContent = selectedResult.vendedor
                     }
                 });
 
@@ -727,15 +763,24 @@
                     })
                     .then(response => response.json())
                     .then(result => {
-                        console.log(result)
-                        let nombreArticuloPedidoUnico = fila.querySelector('input[name="nombreArticuloPedidoUnico"]');
-                        nombreArticuloPedidoUnico.value = result.resultadosCodigo[0].nombre;
-
                         let partidasContainer = uniqueID != null 
                         ? fila.querySelector(`#verPartidasPedidoUnico-${uniqueID} #partidasResultadosPedidoUnico`) 
                         : fila.querySelector('#verPartidasPedidoUnico #partidasResultadosPedidoUnico');
-
+                        
                         partidasContainer.innerHTML = '';
+
+                        let nombreArticuloPedidoUnico = fila.querySelector('input[name="nombreArticuloPedidoUnico"]');
+                        nombreArticuloPedidoUnico.value = result.resultadosCodigo[0].nombre;
+
+                        let precioArticuloPedidoUnico = fila.querySelector('input[name="precioPedidoUnico"]')
+                        precioArticuloPedidoUnico.value = result.resultadosCodigo[0].precio;
+
+                        let cantidadModal = 0
+                        let cantidadModalElement = fila.querySelector("#cantidadModal")
+                        let verPartidas = fila.querySelector(".col-md-2 .verPartidas")
+                        verPartidas.addEventListener("click", () => {
+                            cantidadModal = cantidadModalElement.textContent
+                        })
 
                         const confirmarBtn = document.createElement('button');
                         confirmarBtn.type = 'button';
@@ -750,8 +795,18 @@
                             partidaDiv.className = 'partida row pt-15px pb-15px';
 
                             const input = document.createElement('input');
-                            input.type = 'text'
+                            input.type = 'number'
                             input.className = 'form-control';
+
+                            if (cantidad <= 0) {
+                                input.disabled = true;
+                            } else {
+                                input.addEventListener('input', function() {
+                                    if (parseInt(input.value, 10) > cantidad) {
+                                        input.value = cantidad;
+                                    }
+                                });
+                            }                       
 
                             const contents = [
                                 numero || 'No Definido',
@@ -769,6 +824,11 @@
                                 partidaDiv.appendChild(colDiv);
                             }
 
+                            const colInput = document.createElement('div');
+                            colInput.className = 'col-md-2';
+                            colInput.appendChild(input)
+                            partidaDiv.appendChild(colInput)
+
                             return partidaDiv;
                         });
 
@@ -777,6 +837,26 @@
                         if (!partidasContainer.querySelector('.confirmarSeleccionPartidas')) {
                             partidasContainer.appendChild(confirmarBtn);
                         }          
+
+                        let botonesCantidad = partidasContainer.querySelectorAll("input")
+                        botonesCantidad.forEach(function(input) {
+                            input.addEventListener("input", function(event) {
+                                let total = 0;
+                                botonesCantidad.forEach(function(input) {
+                                    let valor = parseInt(input.value, 10);
+                                    if (!isNaN(valor)) {
+                                        total += valor;
+                                    }
+                                });
+
+                                //todo: calculo de cantidad a favor
+                                //todo: desabilitar btn partida
+                                //todo: pulir styles partidas
+                                //todo: pulir seleccion partidas
+                                //todo: cerrar modal una vez seleccionadas partidas
+                                confirmarBtn.disabled = (total > cantidadModal);
+                            });
+                        });
 
                         partidasContainer.addEventListener('click', handlePartidaClick);       
                         
