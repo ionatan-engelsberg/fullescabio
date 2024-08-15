@@ -424,16 +424,16 @@
                             <input type="text" class="bg-transparent border-color-transparent-white-light nombreArticuloPedidoUnico" name="nombreArticuloPedidoUnico" id="nombreArticuloPedidoUnico">
                         </div>
                         <div class="col-md-1">
-                            <input type="text" class="bg-transparent border-color-transparent-white-light cantidadPedidoUnico" name="cantidadPedidoUnico" id="cantidadPedidoUnico">
+                            <input type="number" class="bg-transparent border-color-transparent-white-light cantidadPedidoUnico" name="cantidadPedidoUnico" id="cantidadPedidoUnico">
                         </div>
                         <div class="col-md-1">
-                            <input type="text" class="bg-transparent border-color-transparent-white-light costoPedidoUnico" name="costoPedidoUnico" id="costoPedidoUnico">
+                            <input type="number" class="bg-transparent border-color-transparent-white-light costoPedidoUnico" name="costoPedidoUnico" id="costoPedidoUnico">
                         </div>
                         <div class="col-md-1">
-                            <input type="text" class="bg-transparent border-color-transparent-white-light precioPedidoUnico" name="precioPedidoUnico" id="precioPedidoUnico">
+                            <input type="number" class="bg-transparent border-color-transparent-white-light precioPedidoUnico" name="precioPedidoUnico" id="precioPedidoUnico">
                         </div>
                         <div class="col-md-2 d-flex flex-wrap justify-content-between">
-                            <button type="button" class="btn btn-primary w-50 verPartidas" data-toggle="modal" data-target="#verPartidasPedidoUnico">Partida</button>
+                            <button type="button" class="btn btn-primary w-50 verPartidas" data-toggle="modal" data-target="#verPartidasPedidoUnico" disabled>Partida</button>
                             <button type="button" class="btn btn-danger w-45 eliminarFila">Eliminar</button>
                         </div>
                         <div class="col-md-1 d-flex flex-wrap justify-content-center">
@@ -692,6 +692,8 @@
 
                 document.getElementById("cantidadPedidoUnico").addEventListener("input", () => {
                     document.querySelector("#cantidadModal").textContent = document.getElementById("cantidadPedidoUnico").value;
+                    let btnVerPartidas = document.querySelector(".verPartidas")
+                    btnVerPartidas.disabled = false
                 })
 
                 document.getElementById('agregarFila').addEventListener('click', function() {
@@ -777,6 +779,8 @@
 
                         let cantidadModal = 0
                         let cantidadModalElement = fila.querySelector("#cantidadModal")
+                        console.log(cantidadModalElement)
+
                         let verPartidas = fila.querySelector(".col-md-2 .verPartidas")
                         verPartidas.addEventListener("click", () => {
                             cantidadModal = cantidadModalElement.textContent
