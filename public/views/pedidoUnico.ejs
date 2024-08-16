@@ -445,7 +445,7 @@
                               <div class="modal-content">
                                 <div class="modal-header">
                                   <h5 class="modal-title" id="exampleModalLabel">Asignar Partidas</h5>
-                                  <span>Cantidad A Favor: <span id="cantidadModal" class="mb-0" style="font-weight: 800;"></span></span>
+                                  <span>Cantidad A Favor: <span id="cantidadModal" class="mb-0" style="color: green; font-weight: 800;"></span></span>
                                   <span>Cantidad Seleccionada: <span id="cantidadAFavorModal" class="mb-0" style="font-weight: 800;">0</span></span>
                                   <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="
                                   background: none;
@@ -466,7 +466,7 @@
 
                                     <div class="col-md-12">
 
-                                        <div class="partidasResultadosPedidoUnico" id="partidasResultadosPedidoUnico">
+                                        <div class="partidasResultadosPedidoUnico" id="partidasResultadosPedidoUnico" style="overflow: hidden; overflow-y: scroll; height: 700px;">
                                             
                                         </div>
                                         
@@ -628,15 +628,13 @@
 
                 confirmarClienteButton.addEventListener('click', () => {
                     if (confirmarClienteButton.textContent.trim().startsWith("Confirmar")) {
-                        confirmarClienteButton.innerHTML = 'Desconfirmar <i class="bi bi-x-lg text-white"></i>';
-
                         confirmarClienteButton.classList.remove('btn-green-color');
                         confirmarClienteButton.classList.add('btn-base-color');
-                    } else {
-                        confirmarClienteButton.innerHTML = 'Confirmar <i class="bi bi-check-circle-fill text-white"></i>';
-
+                        confirmarClienteButton.innerHTML = 'Desconfirmar <i class="bi bi-x-lg text-white"></i>';
+                    } else {                        
                         confirmarClienteButton.classList.remove('btn-base-color');
                         confirmarClienteButton.classList.add('btn-green-color');
+                        confirmarClienteButton.innerHTML = 'Confirmar <i class="bi bi-check-circle-fill text-white"></i>';
                     }
 
                     inputListaPedidoUnico.disabled = !inputListaPedidoUnico.disabled;
@@ -739,11 +737,12 @@
                         modal.setAttribute('data-uniqueid', uniqueID);
         
                         const confirmarBtns = modal.querySelectorAll('.confirmarSeleccionPartidas');
+                        console.log(confirmarBtns)
 
                         confirmarBtns.forEach(confirmarBtn => {
                             confirmarBtn.addEventListener('click', function() {
                                 confirmarSeleccionPartidas(uniqueID); 
-
+                                //todo: corregir bug
                                 const modalInstance = bootstrap.Modal.getInstance(modal) || new bootstrap.Modal(modal);
                                 modalInstance.hide();
                             });
@@ -799,6 +798,7 @@
                         let precioArticuloPedidoUnico = fila.querySelector('input[name="precioPedidoUnico"]')
                         precioArticuloPedidoUnico.value = result.resultadosCodigo[0].precio;
 
+                        let cantidadAFavor = fila.querySelector("#cantidadAFavorModal")
                         let cantidadModal
                         let cantidadModalElement = fila.querySelector("#cantidadModal")
 
@@ -812,11 +812,21 @@
                             verPartidas.disabled = false
                         })
 
+
+                        const rowConfirmarBtn = document.createElement('div');
+                        rowConfirmarBtn.className = "row"
+
+                        const colConfirmarBtn = document.createElement('div');
+                        colConfirmarBtn.className = "col-md-12 text-center"
+
                         const confirmarBtn = document.createElement('button');
                         confirmarBtn.type = 'button';
                         confirmarBtn.className = 'btn btn-primary mt-3 confirmarSeleccionPartidas';
                         confirmarBtn.id = `confirmarSeleccionPartidas-${uniqueID}`;
                         confirmarBtn.textContent = 'Confirmar Selección';
+
+                        colConfirmarBtn.appendChild(confirmarBtn)
+                        rowConfirmarBtn.appendChild(colConfirmarBtn)
                         
                         const partidaDivs = result.resultadosPartidas.map(item => {
                             const { numero , cantidad, codigoDeposito, costoUnitario, ubicacion } = item
@@ -849,7 +859,7 @@
 
                             for (let i = 0; i < 5; i++) {
                                 const colDiv = document.createElement('div');
-                                colDiv.className = 'col-md-2';
+                                colDiv.className = 'col-md-2 h-100';
                                 colDiv.textContent = contents[i];
 
                                 partidaDiv.appendChild(colDiv);
@@ -866,10 +876,11 @@
                         partidaDivs.forEach(partidaDiv => partidasContainer.appendChild(partidaDiv));          
 
                         if (!partidasContainer.querySelector('.confirmarSeleccionPartidas')) {
-                            partidasContainer.appendChild(confirmarBtn);
+                            partidasContainer.appendChild(rowConfirmarBtn);
                         }          
 
                         verPartidas.addEventListener("click", () => {
+                            let partidaRow 
                             let cantidadInput = fila.querySelector("#cantidadPedidoUnico").value
                             let cantidadActual = cantidadModalElement.textContent
                             let botonesCantidad = partidasContainer.querySelectorAll("input");
@@ -894,11 +905,25 @@
                                     valorPrevio = valorActual;
 
                                     if (cantidadActual < 0) {
-                                        cantidadActual = 0;
+                                        cantidadModalElement.style = "color: red !important; font-weight: 800"
+                                    } else {
+                                        cantidadModalElement.style = "color: green !important; font-weight: 800"
                                     }
 
                                     cantidadModalElement.textContent = cantidadActual;
-                                    confirmarBtn.disabled = (cantidadActual === 0);
+                                    confirmarBtn.disabled = (cantidadActual < 0);
+                                });
+                            });
+
+                            botonesCantidad.forEach(function(input) {
+                                input.addEventListener("input", function(event) {
+                                    let total = 0;
+                                    botonesCantidad.forEach(function(input) {
+                                        let valor = parseInt(input.value, 10) || 0;
+                                        total += valor;
+                                    });
+
+                                    cantidadAFavor.textContent = total
                                 });
                             });
                         });
