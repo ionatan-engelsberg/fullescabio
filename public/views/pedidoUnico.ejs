@@ -735,18 +735,6 @@
                     nuevaFila.querySelectorAll('.modalVerPartidas').forEach(modal => {
                         modal.id = `verPartidasPedidoUnico-${uniqueID}`;
                         modal.setAttribute('data-uniqueid', uniqueID);
-        
-                        const confirmarBtns = modal.querySelectorAll('.confirmarSeleccionPartidas');
-                        console.log(confirmarBtns)
-
-                        confirmarBtns.forEach(confirmarBtn => {
-                            confirmarBtn.addEventListener('click', function() {
-                                confirmarSeleccionPartidas(uniqueID); 
-                                //todo: corregir bug
-                                const modalInstance = bootstrap.Modal.getInstance(modal) || new bootstrap.Modal(modal);
-                                modalInstance.hide();
-                            });
-                        });
                     });
 
                     let filteredInputs = Array.from(nuevaFila.querySelectorAll('input')).filter(input =>
@@ -812,7 +800,7 @@
                             verPartidas.disabled = false
                         })
 
-
+                        //todo: btn debe figurar en todo momento en el scroll
                         const rowConfirmarBtn = document.createElement('div');
                         rowConfirmarBtn.className = "row"
 
@@ -945,6 +933,10 @@
             });
 
             function confirmarSeleccionPartidas(modalID, object, elements) {
+                //todo: corregir bug
+                let modal = new bootstrap.Modal(document.getElementById(`verPartidasPedidoUnico-${modalID}`));
+                modal.hide()
+
                 const arr = Array.from(elements.querySelectorAll('.partida'));
                 const selectedPartidas = arr.filter(arr => arr.classList.contains('selected'));
 
