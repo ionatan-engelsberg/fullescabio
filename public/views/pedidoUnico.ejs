@@ -505,10 +505,10 @@
 
         <script>
             //todo: calculo de cantidad a favor
-            //todo: desabilitar btn partida
             //todo: pulir styles partida
-            //todo: pulir seleccion partidas
+            //todo: input seleccion cantidad partidas modal no debe poder ingresarse valores mayores a cantidad a favor
             //todo: cerrar modal una vez seleccionadas partidas
+
 
             sessionStorage.setItem("session-data", JSON.stringify(null))
             let retrievedData = JSON.parse(sessionStorage.getItem('session-data'));
@@ -627,6 +627,18 @@
                 });
 
                 confirmarClienteButton.addEventListener('click', () => {
+                    if (confirmarClienteButton.textContent.trim().startsWith("Confirmar")) {
+                        confirmarClienteButton.innerHTML = 'Desconfirmar <i class="bi bi-x-lg text-white"></i>';
+
+                        confirmarClienteButton.classList.remove('btn-green-color');
+                        confirmarClienteButton.classList.add('btn-base-color');
+                    } else {
+                        confirmarClienteButton.innerHTML = 'Confirmar <i class="bi bi-check-circle-fill text-white"></i>';
+
+                        confirmarClienteButton.classList.remove('btn-base-color');
+                        confirmarClienteButton.classList.add('btn-green-color');
+                    }
+
                     inputListaPedidoUnico.disabled = !inputListaPedidoUnico.disabled;
                     inputListaPedidoUnico.classList.toggle('input-disabled'); 
 
@@ -714,17 +726,6 @@
 
                     nuevaFila.querySelectorAll('input').forEach(input => input.value = '');
 
-                    let cantidadModal = nuevaFila.querySelector("#cantidadModal")
-                    let filteredInputs = Array.from(nuevaFila.querySelectorAll('input')).filter(input =>
-                        input.classList.contains('cantidadPedidoUnico') 
-                    );      
-                                        
-                    filteredInputs.forEach(input => {
-                        input.addEventListener("input", () => {
-                            cantidadModal.textContent = input.value;
-                        })
-                    })
-
                     let btnPartidas = nuevaFila.querySelector(".verPartidas")
                     btnPartidas.disabled = true
                     
@@ -748,6 +749,17 @@
                             });
                         });
                     });
+
+                    let filteredInputs = Array.from(nuevaFila.querySelectorAll('input')).filter(input =>
+                        input.classList.contains('cantidadPedidoUnico') 
+                    );      
+                                        
+                    let cantidadModal = nuevaFila.querySelector("#cantidadModal")
+                    filteredInputs.forEach(input => {
+                        input.addEventListener("input", () => {
+                            cantidadModal.textContent = input.value;
+                        })
+                    })
 
                     formularioArticulos.appendChild(nuevaFila);
                     agregarEventoEliminar(nuevaFila, uniqueID);
