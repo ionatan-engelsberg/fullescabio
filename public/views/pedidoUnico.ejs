@@ -445,7 +445,8 @@
                               <div class="modal-content">
                                 <div class="modal-header">
                                   <h5 class="modal-title" id="exampleModalLabel">Asignar Partidas</h5>
-                                  <span>Cantidad: <span id="cantidadModal" class="mb-0" style="font-weight: 800;"></span></span>
+                                  <span>Cantidad A Favor: <span id="cantidadModal" class="mb-0" style="font-weight: 800;"></span></span>
+                                  <span>Cantidad Seleccionada: <span id="cantidadAFavorModal" class="mb-0" style="font-weight: 800;">0</span></span>
                                   <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="
                                   background: none;
                                   border: none;
@@ -503,6 +504,12 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
         <script>
+            //todo: calculo de cantidad a favor
+            //todo: desabilitar btn partida
+            //todo: pulir styles partida
+            //todo: pulir seleccion partidas
+            //todo: cerrar modal una vez seleccionadas partidas
+
             sessionStorage.setItem("session-data", JSON.stringify(null))
             let retrievedData = JSON.parse(sessionStorage.getItem('session-data'));
             let usedIDs = new Set();
@@ -717,6 +724,9 @@
                             cantidadModal.textContent = input.value;
                         })
                     })
+
+                    let btnPartidas = nuevaFila.querySelector(".verPartidas")
+                    btnPartidas.disabled = true
                     
                     nuevaFila.querySelectorAll('.verPartidas').forEach(button => {
                         button.id = uniqueID
@@ -777,13 +787,17 @@
                         let precioArticuloPedidoUnico = fila.querySelector('input[name="precioPedidoUnico"]')
                         precioArticuloPedidoUnico.value = result.resultadosCodigo[0].precio;
 
-                        let cantidadModal = 0
+                        let cantidadModal
                         let cantidadModalElement = fila.querySelector("#cantidadModal")
-                        console.log(cantidadModalElement)
 
                         let verPartidas = fila.querySelector(".col-md-2 .verPartidas")
                         verPartidas.addEventListener("click", () => {
                             cantidadModal = cantidadModalElement.textContent
+                        })
+
+                        let inputCantidadPedidoUnico = fila.querySelector("#cantidadPedidoUnico")
+                        inputCantidadPedidoUnico.addEventListener("input", () => {
+                            verPartidas.disabled = false
                         })
 
                         const confirmarBtn = document.createElement('button');
@@ -801,6 +815,7 @@
                             const input = document.createElement('input');
                             input.type = 'number'
                             input.className = 'form-control';
+                            input.setAttribute('min', '0');
 
                             if (cantidad <= 0) {
                                 input.disabled = true;
@@ -842,23 +857,37 @@
                             partidasContainer.appendChild(confirmarBtn);
                         }          
 
-                        let botonesCantidad = partidasContainer.querySelectorAll("input")
-                        botonesCantidad.forEach(function(input) {
-                            input.addEventListener("input", function(event) {
-                                let total = 0;
-                                botonesCantidad.forEach(function(input) {
-                                    let valor = parseInt(input.value, 10);
-                                    if (!isNaN(valor)) {
-                                        total += valor;
-                                    }
-                                });
+                        verPartidas.addEventListener("click", () => {
+                            let cantidadInput = parseInt(document.querySelector("#cantidadPedidoUnico").value, 10) || 0;
+                            let cantidadActual = cantidadModalElement.textContent
+                            let botonesCantidad = partidasContainer.querySelectorAll("input");
+                            
+                            let totalSuma = 0;
+                            botonesCantidad.forEach(function(input) {
+                                let valorInput = Number(input.value) || 0; 
+                                totalSuma += valorInput;
+                            });
+                            
+                            cantidadInput = cantidadInput - totalSuma
+                            cantidadModalElement.textContent = cantidadInput
+                            cantidadActual = cantidadInput
 
-                                //todo: calculo de cantidad a favor
-                                //todo: desabilitar btn partida
-                                //todo: pulir styles partidas
-                                //todo: pulir seleccion partidas
-                                //todo: cerrar modal una vez seleccionadas partidas
-                                confirmarBtn.disabled = (total > cantidadModal);
+                            botonesCantidad.forEach(function(input) {
+                                let valorPrevio = parseInt(input.value, 10) || 0;
+                                input.addEventListener("input", function(event) {
+                                    let valorActual = parseInt(input.value, 10) || 0;
+                                    let diferencia = valorActual - valorPrevio;
+
+                                    cantidadActual -= diferencia;
+                                    valorPrevio = valorActual;
+
+                                    if (cantidadActual < 0) {
+                                        cantidadActual = 0;
+                                    }
+
+                                    cantidadModalElement.textContent = cantidadActual;
+                                    confirmarBtn.disabled = (cantidadActual === 0);
+                                });
                             });
                         });
 
