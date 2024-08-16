@@ -858,7 +858,7 @@
                         }          
 
                         verPartidas.addEventListener("click", () => {
-                            let cantidadInput = parseInt(document.querySelector("#cantidadPedidoUnico").value, 10) || 0;
+                            let cantidadInput = fila.querySelector("#cantidadPedidoUnico").value
                             let cantidadActual = cantidadModalElement.textContent
                             let botonesCantidad = partidasContainer.querySelectorAll("input");
                             
