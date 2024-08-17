@@ -146,7 +146,12 @@
                                                                     </div>
                                                                 </div>
                                                             <% }) %>
-                                                            <button id="confirmarSeleccion" class="btn btn-primary mt-3" disabled>Confirmar Selección</button>
+                                                            
+                                                            <div class="row">
+                                                                <div class="col-md-12 text-center">
+                                                                    <button id="confirmarSeleccion" class="btn btn-primary mt-3" disabled>Confirmar Selección</button>
+                                                                </div>
+                                                            </div>
                                                         <% } else { %>
                                                             <p>No hay resultados.</p>
                                                         <% } %>
@@ -203,7 +208,11 @@
                                                                     </div>
                                                                 </div>
                                                             <% }) %>
-                                                            <button id="confirmarSeleccion" class="btn btn-primary mt-3" disabled>Confirmar Selección</button>
+                                                            <div class="row">
+                                                                <div class="col-md-12 text-center">
+                                                                    <button id="confirmarSeleccion" class="btn btn-primary mt-3" disabled>Confirmar Selección</button>
+                                                                </div>
+                                                            </div>
                                                         <% } else { %>
                                                             <p>No hay resultados.</p>
                                                         <% } %>
@@ -261,7 +270,11 @@
                                                                 </div>
                                                             <% }) %>
 
-                                                            <button id="confirmarSeleccion" type="button" class="btn btn-primary mt-3" disabled>Confirmar Selección</button>
+                                                            <div class="row">
+                                                                <div class="col-md-12 text-center">
+                                                                    <button id="confirmarSeleccion" class="btn btn-primary mt-3 w-40" disabled>Confirmar Selección</button>
+                                                                </div>
+                                                            </div>
 
                                                         <% } else { %>
                                                             <p>No hay resultados.</p>
@@ -388,24 +401,22 @@
                     <div class="col-md-3">
                         <p class="text-white text-center fs-20 fw-600">Código</p>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <p class="text-white text-center fs-20 fw-600">Nombre</p>
                     </div>
                     <div class="col-md-1">
                         <p class="text-white text-center fs-20 fw-600">Cantidad</p>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <p class="text-white text-center fs-20 fw-600">Costo</p>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <p class="text-white text-center fs-20 fw-600">Precio</p>
                     </div>
                     <div class="col-md-2">
                         <p class="text-white text-center fs-20 fw-600">Opciones</p>
                     </div>
-                    <div class="col-md-1">
-                        <p class="text-white text-center fs-20 fw-600">P. Elegidas</p>
-                    </div>
+                   
                 </div>
                 <div id="formularioArticulos">
                     <!-- La primera fila inicial -->
@@ -420,24 +431,21 @@
                                 <button class="btn btn-success h-100 buscarCodigoPedidoUnico" type="button" id="buscarCodigoPedidoUnico">Buscar</button>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <input type="text" class="bg-transparent border-color-transparent-white-light nombreArticuloPedidoUnico" name="nombreArticuloPedidoUnico" id="nombreArticuloPedidoUnico">
                         </div>
                         <div class="col-md-1">
                             <input type="number" class="bg-transparent border-color-transparent-white-light cantidadPedidoUnico" name="cantidadPedidoUnico" id="cantidadPedidoUnico">
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-md-2">
                             <input type="number" class="bg-transparent border-color-transparent-white-light costoPedidoUnico" name="costoPedidoUnico" id="costoPedidoUnico">
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-md-2">
                             <input type="number" class="bg-transparent border-color-transparent-white-light precioPedidoUnico" name="precioPedidoUnico" id="precioPedidoUnico">
                         </div>
                         <div class="col-md-2 d-flex flex-wrap justify-content-between">
                             <button type="button" class="btn btn-primary w-50 verPartidas" data-toggle="modal" data-target="#verPartidasPedidoUnico" disabled>Partida</button>
                             <button type="button" class="btn btn-danger w-45 eliminarFila">Eliminar</button>
-                        </div>
-                        <div class="col-md-1 d-flex flex-wrap justify-content-center">
-                            <button type="button" class="btn btn-light w-50"><i class="bi-arrows-angle-expand"></i></button>
                         </div>
 
                         <div class="modal fade modalVerPartidas" id="verPartidasPedidoUnico" tabindex="-1" role="dialog" aria-labelledby="verPartidasPedidoUnico" aria-hidden="true" data-target=".bd-example-modal-lg">
@@ -579,7 +587,7 @@
                 confirmButton.addEventListener('click', () => {
                     if (selectedItemId) {
                         confirmButton.disabled = true;            
-                        modal.hide()                        
+                        modal.hide()      
                     }
                 });
             });
@@ -695,9 +703,12 @@
     
                         return grouped;
                     }
-
+                    
                     const resultInputValues = groupElements(inputValues)
-                    retrievedData.articulos = resultInputValues
+
+                    for (let i = 0; i < retrievedData.partidas.length; i++) {
+                        retrievedData.partidas[i].articulos = resultInputValues[i]
+                    }
 
                     console.log(retrievedData)
                 });
@@ -919,6 +930,13 @@
                         partidasContainer.addEventListener('click', handlePartidaClick);       
                         
                         confirmarBtn.addEventListener("click", function(){
+                            let modalContainer = uniqueID === null ? document.getElementById(`verPartidasPedidoUnico`) : document.getElementById(`verPartidasPedidoUnico-${uniqueID}`)
+                            let modal = new bootstrap.Modal(modalContainer);
+                            //todo: solucionar bug
+                            setTimeout(() => {
+                             modal.hide();
+                            }, 100);
+                            
                             confirmarSeleccionPartidas(uniqueID === null ? 1 : uniqueID, null, partidasContainer)
                         })                 
                         return result;
@@ -933,10 +951,7 @@
             });
 
             function confirmarSeleccionPartidas(modalID, object, elements) {
-                //todo: corregir bug
-                let modal = new bootstrap.Modal(document.getElementById(`verPartidasPedidoUnico-${modalID}`));
-                modal.hide()
-
+                //todo: retrievedData --> partidas debe tener los datos del elemento
                 const arr = Array.from(elements.querySelectorAll('.partida'));
                 const selectedPartidas = arr.filter(arr => arr.classList.contains('selected'));
 
@@ -948,7 +963,7 @@
                 if (existingIndex !== -1) {
                     retrievedData.partidas[existingIndex].data = selectedPartidas;
                 } else {
-                    retrievedData.partidas.push({ id: Number(modalID), data: selectedPartidas});
+                    retrievedData.partidas.push({ id: Number(modalID), data: selectedPartidas, articulos: ""});
                 }
             }
 
