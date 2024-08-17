@@ -954,6 +954,19 @@
                 //todo: retrievedData --> partidas debe tener los datos del elemento
                 const arr = Array.from(elements.querySelectorAll('.partida'));
                 const selectedPartidas = arr.filter(arr => arr.classList.contains('selected'));
+                let conjuntoPartidas = []
+                for(let i = 0; i < selectedPartidas.length; i++){
+                    let array = Array.from(selectedPartidas[i].querySelectorAll(".col-md-2")).slice(0, 5);
+                    let dataPartidas = {
+                        numero: Number(array[0].textContent),
+                        stock: Number(array[1].textContent),
+                        deposito: array[2].textContent,
+                        costoUnitario: Number(array[3].textContent),
+                        ubicacion: array[4].textContent, 
+                        cantidad: Number(selectedPartidas[i].querySelector("input").value)
+                    }
+                    conjuntoPartidas.push(dataPartidas)
+                }
 
                 if (!retrievedData.partidas) {
                     retrievedData.partidas = [];
@@ -961,9 +974,9 @@
                 
                 const existingIndex = retrievedData.partidas.findIndex(partida => Number(partida.id) === Number(modalID));
                 if (existingIndex !== -1) {
-                    retrievedData.partidas[existingIndex].data = selectedPartidas;
+                    retrievedData.partidas[existingIndex].data = conjuntoPartidas;
                 } else {
-                    retrievedData.partidas.push({ id: Number(modalID), data: selectedPartidas, articulos: ""});
+                    retrievedData.partidas.push({ id: Number(modalID), data: conjuntoPartidas, articulos: ""});
                 }
             }
 
