@@ -292,8 +292,34 @@
                                     </div>
                                 </div>       
                                 <div class="col-md-6 text-end">
-                                    <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="confirmarCliente">Confirmar <i class="bi bi-check-circle-fill text-white"></i></button>
-                                    <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="finaliar">Finalizar (Desarrollo Pendiente)</button>
+                                    <button class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="confirmarCliente">Confirmar <i class="bi bi-check-circle-fill text-white"></i></button>
+
+                                    <button class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="verPedido" data-toggle="modal" data-target="#verPedidoModal">Ver Pedido <i class="bi bi-arrows-angle-expand text-white"></i></button>
+                                    <div class="modal fade" id="verPedidoModal" tabindex="-1" role="dialog" aria-labelledby="verPedidoModal" aria-hidden="true" data-target=".bd-example-modal-lg">
+                                        <div class="modal-dialog" role="document">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h5 class="modal-title" id="exampleModalLabel">Ver Pedido</h5>
+                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="
+                                              background: none;
+                                              border: none;
+                                              font-size: 40px;
+                                              color: red">
+                                                <span aria-hidden="true">&times;</span>
+                                              </button>
+                                            </div>
+                            
+                                            <div class="modal-body text-start" id="infoPedido">
+                                                
+                                            </div>
+                                            <div class="modal-footer">
+                                             
+                                            </div>
+                                          </div>
+                                        </div>
+                                    </div>
+
+                                    <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="finaliarPedido">Finalizar<i class="bi bi-send-fill text-white"></i></button>
                                 </div>                          
                             </div>
                             <div class="row mt-30px">
@@ -481,15 +507,13 @@
                                     </div>
                                     
                                 </div>
-                                <div class="modal-footer">
-                                 
+                                <div class="modal-footer" id="modal-footer">
+                                    
                                 </div>
                               </div>
                             </div>
                         </div>
                     </div>
-
-
                 </div>
                 
                 <!-- Botón para agregar otra fila -->
@@ -498,8 +522,6 @@
                         <button id="agregarFila" type="button" class="btn btn-secondary mt-30px">Agregar otra fila</button>
                     </div>
                 </div>
-                
-                
             </div>
         </section>
 
@@ -510,13 +532,13 @@
         <script type="text/javascript" src="/../js/main.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         <script>
-            //todo: calculo de cantidad a favor
             //todo: pulir styles partida
-            //todo: input seleccion cantidad partidas modal no debe poder ingresarse valores mayores a cantidad a favor
-            //todo: cerrar modal una vez seleccionadas partidas
-
+            //todo: colores claros
+            //todo: revisar desabilitaciones de inputs acorde al flujo de la apliacion
+            //todo: modalfooter
 
             sessionStorage.setItem("session-data", JSON.stringify(null))
             let retrievedData = JSON.parse(sessionStorage.getItem('session-data'));
@@ -706,6 +728,7 @@
                     
                     const resultInputValues = groupElements(inputValues)
 
+                    //todo: solucionar bug de inconsistencia de matcheo de datos cuando se cargan articulas de forma no ordenada
                     for (let i = 0; i < retrievedData.partidas.length; i++) {
                         retrievedData.partidas[i].articulos = resultInputValues[i]
                     }
@@ -713,6 +736,82 @@
                     console.log(retrievedData)
                 });
             });
+
+            document.addEventListener('DOMContentLoaded', () => {
+                let containerPedido = document.querySelector("#infoPedido")
+                let verPedidoBTN = document.querySelector("#verPedido")
+           
+                verPedidoBTN.addEventListener("click", () => {
+                    const htmlContent = `
+                    <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <p><strong>Razón:</strong> ${retrievedData.razon}</p>
+                </div>
+                <div class="col-md-4">
+                    <p><strong>Nombre Fantasía:</strong> ${retrievedData.nombreFantasia}</p>
+                </div>
+                <div class="col-md-4">
+                    <p><strong>Lista:</strong> ${retrievedData.lista} (${retrievedData.listaCodigo})</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <p><strong>Vendedor:</strong> ${retrievedData.vendedor}</p>
+                </div>
+                <div class="col-md-4">
+                    <p><strong>Fecha:</strong> ${retrievedData.fecha}</p>
+                </div>
+                <div class="col-md-4">
+                    <p><strong>Tipo:</strong> ${retrievedData.tipo}</p>
+                </div>
+            </div>
+        ${retrievedData.partidas.map(partida => `
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title">Item</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Artículo</th>
+                                <th>Cantidad</th>
+                                <th>Costo</th>
+                                <th>Precio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                ${partida.articulos.map(articulo => `
+                                    <td>${articulo}</td>
+                                `).join('')}
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h6 class="fs-24 mb-15px mt-30px">Partidas Seleccionadas</h6>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                ${Object.keys(partida.data[0]).map(key => `<th>${key}</th>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${partida.data.map(d => `
+                                <tr>${Object.values(d).map(value => `<td>${value}</td>`).join('')}</tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `).join('')}
+    `;
+    
+    containerPedido.innerHTML = htmlContent;
+
+                })
+            })
 
             document.addEventListener('DOMContentLoaded', () => {
                 const modal = document.getElementById('verPartidasPedidoUnico');
@@ -788,7 +887,7 @@
                         let partidasContainer = uniqueID != null 
                         ? fila.querySelector(`#verPartidasPedidoUnico-${uniqueID} #partidasResultadosPedidoUnico`) 
                         : fila.querySelector('#verPartidasPedidoUnico #partidasResultadosPedidoUnico');
-                        
+
                         partidasContainer.innerHTML = '';
 
                         let nombreArticuloPedidoUnico = fila.querySelector('input[name="nombreArticuloPedidoUnico"]');
@@ -811,7 +910,9 @@
                             verPartidas.disabled = false
                         })
 
-                        //todo: btn debe figurar en todo momento en el scroll
+                        //todo: Pasar el btn a modalFooter
+                        let modalFooter = fila.querySelector("#modal-footer")
+                    
                         const rowConfirmarBtn = document.createElement('div');
                         rowConfirmarBtn.className = "row"
 
@@ -827,6 +928,20 @@
                         colConfirmarBtn.appendChild(confirmarBtn)
                         rowConfirmarBtn.appendChild(colConfirmarBtn)
                         
+                        let costoPartidas = []
+                        if(result.resultadosPartidas.length == 0){
+                            costoPartidas.push(0)
+                        } else {
+                            result.resultadosPartidas.map(item => {
+                                const { costoUnitario } = item
+                                costoPartidas.push(item.costoUnitario)
+                            })
+                        }
+                        let costoMenor = Math.min(...costoPartidas)
+                        let costoPedidoUnico = fila.querySelector('input[name="costoPedidoUnico"]')
+                        costoPedidoUnico.value = costoMenor;
+
+
                         const partidaDivs = result.resultadosPartidas.map(item => {
                             const { numero , cantidad, codigoDeposito, costoUnitario, ubicacion } = item
                             const container = document.createElement("div")
@@ -936,6 +1051,14 @@
                             setTimeout(() => {
                              modal.hide();
                             }, 100);
+
+                            Swal.fire({
+                                position: "top-end",
+                                icon: "success",
+                                title: "Seleccion Guardada",
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
                             
                             confirmarSeleccionPartidas(uniqueID === null ? 1 : uniqueID, null, partidasContainer)
                         })                 
@@ -951,7 +1074,6 @@
             });
 
             function confirmarSeleccionPartidas(modalID, object, elements) {
-                //todo: retrievedData --> partidas debe tener los datos del elemento
                 const arr = Array.from(elements.querySelectorAll('.partida'));
                 const selectedPartidas = arr.filter(arr => arr.classList.contains('selected'));
                 let conjuntoPartidas = []
