@@ -424,50 +424,35 @@
                         </div>
                     </div>
                 <div class="row mt-5">
-                    <div class="col-md-3">
-                        <p class="text-dark text-center fs-20 fw-600">Código</p>
+                    <div class="col-md-12 text-center text-dark">
+                        <h6>Seleccion de Articulos</h6>
                     </div>
-                    <div class="col-md-2">
-                        <p class="text-dark text-center fs-20 fw-600">Nombre</p>
-                    </div>
-                    <div class="col-md-1">
-                        <p class="text-dark text-center fs-20 fw-600">Cantidad</p>
-                    </div>
-                    <div class="col-md-2">
-                        <p class="text-dark text-center fs-20 fw-600">Costo</p>
-                    </div>
-                    <div class="col-md-2">
-                        <p class="text-dark text-center fs-20 fw-600">Precio</p>
-                    </div>
-                    <div class="col-md-2">
-                        <p class="text-dark text-center fs-20 fw-600">Opciones</p>
-                    </div>
-                   
                 </div>
                 <div id="formularioArticulos">
                     <!-- La primera fila inicial -->
                     <div class="row mb-15px filaFormularioArticulo" id="filaFormularioArticulo">
-                        <div class="col-md-3 d-flex">
+                        <div class="col-md-2 d-flex">
                             <input type="text" 
-                                class=" w-70 codigoPedidoUnico form-control" 
+                                class=" w-60 codigoPedidoUnico form-control" 
                                 aria-describedby="basic-addon2" 
                                 name="codigoPedidoUnico"
-                                id="codigoPedidoUnico">
+                                id="codigoPedidoUnico" placeholder="Código">
                             <div class="input-group-append">
                                 <button class="btn btn-success h-100 buscarCodigoPedidoUnico" type="button" id="buscarCodigoPedidoUnico" disabled>Buscar</button>
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <input type="text" class="form-control nombreArticuloPedidoUnico" name="nombreArticuloPedidoUnico" id="nombreArticuloPedidoUnico">
-                        </div>
-                        <div class="col-md-1">
-                            <input type="number" class="form-control cantidadPedidoUnico" name="cantidadPedidoUnico" id="cantidadPedidoUnico">
+                            <input type="text" class="form-control nombreArticuloPedidoUnico" name="nombreArticuloPedidoUnico" id="nombreArticuloPedidoUnico" placeholder="Nombre">
                         </div>
                         <div class="col-md-2">
-                            <input type="number" class="form-control costoPedidoUnico" name="costoPedidoUnico" id="costoPedidoUnico">
+                            <input type="number" class="form-control cantidadPedidoUnico" name="cantidadPedidoUnico" id="cantidadPedidoUnico" placeholder="Cantidad">
                         </div>
                         <div class="col-md-2">
-                            <input type="number" class="form-control precioPedidoUnico" name="precioPedidoUnico" id="precioPedidoUnico">
+                            
+                            <input type="number" class="form-control costoPedidoUnico" name="costoPedidoUnico" id="costoPedidoUnico" placeholder="Costo $">
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" class="form-control precioPedidoUnico" name="precioPedidoUnico" id="precioPedidoUnico" placeholder="Precio $">
                         </div>
                         <div class="col-md-2 d-flex flex-wrap justify-content-between">
                             <button type="button" class="btn btn-primary w-50 verPartidas" data-toggle="modal" data-target="#verPartidasPedidoUnico" disabled>Partida</button>
