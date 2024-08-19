@@ -19263,7 +19263,7 @@ footer .footer-navbar .nav-item:last-child a {
 }
 
 .sidebar-admin {
-  border-right: 2px solid white
+  border-right: 2px solid black;
 }
 .adminContainer {
   padding: 60px;
