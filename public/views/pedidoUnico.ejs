@@ -53,7 +53,7 @@
                         <div class="col-md-12 list-admin">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <button class="btn btn-medium btn-base-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" data-toggle="modal" data-target="#seleccionarClienteModalPedidoUnico">Buscar Cliente<i class="bi bi-search text-white"></i></button>
+                                    <button class="btn btn-medium btn-base-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" data-toggle="modal" data-target="#seleccionarClienteModalPedidoUnico" id="buscarCliente">Buscar Cliente<i class="bi bi-search text-white"></i></button>
 
                                     <div class="modal fade" id="seleccionarClienteModalPedidoUnico" tabindex="-1" role="dialog" aria-labelledby="seleccionarClienteModalPedidoUnico" aria-hidden="true" data-target=".bd-example-modal-lg">
                                         <div class="modal-dialog" role="document">
@@ -292,9 +292,9 @@
                                     </div>
                                 </div>       
                                 <div class="col-md-6 text-end">
-                                    <button class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="confirmarCliente">Confirmar <i class="bi bi-check-circle-fill text-white"></i></button>
+                                    <button class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="confirmarCliente" disabled>Confirmar <i class="bi bi-check-circle-fill text-white"></i></button>
 
-                                    <button class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="verPedido" data-toggle="modal" data-target="#verPedidoModal">Ver Pedido <i class="bi bi-arrows-angle-expand text-white"></i></button>
+                                    <button class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="verPedido" data-toggle="modal" data-target="#verPedidoModal" disabled>Ver Pedido <i class="bi bi-arrows-angle-expand text-white"></i></button>
                                     <div class="modal fade" id="verPedidoModal" tabindex="-1" role="dialog" aria-labelledby="verPedidoModal" aria-hidden="true" data-target=".bd-example-modal-lg">
                                         <div class="modal-dialog" role="document">
                                           <div class="modal-content">
@@ -319,7 +319,7 @@
                                         </div>
                                     </div>
 
-                                    <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="finaliarPedido">Finalizar<i class="bi bi-send-fill text-white"></i></button>
+                                    <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="finaliarPedido" disabled>Finalizar<i class="bi bi-send-fill text-white"></i></button>
                                 </div>                          
                             </div>
                             <div class="row mt-30px">
@@ -454,7 +454,7 @@
                                 name="codigoPedidoUnico"
                                 id="codigoPedidoUnico">
                             <div class="input-group-append">
-                                <button class="btn btn-success h-100 buscarCodigoPedidoUnico" type="button" id="buscarCodigoPedidoUnico">Buscar</button>
+                                <button class="btn btn-success h-100 buscarCodigoPedidoUnico" type="button" id="buscarCodigoPedidoUnico" disabled>Buscar</button>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -519,7 +519,7 @@
                 <!-- Botón para agregar otra fila -->
                 <div class="row text-center">
                     <div class="col-12">
-                        <button id="agregarFila" type="button" class="btn btn-secondary mt-30px">Agregar otra fila</button>
+                        <button id="agregarFila" type="button" class="btn btn-secondary mt-30px" disabled>Agregar otra fila</button>
                     </div>
                 </div>
             </div>
@@ -594,6 +594,7 @@
                 if (showModal === 'true') {
                     modal.show();
                 }
+
                 const resultItems = document.querySelectorAll('.result-item');
                 const confirmButton = document.getElementById('confirmarSeleccion');
                 let selectedItemId = null;
@@ -606,8 +607,12 @@
                     });
                 });
 
+                let buscarArticuloBTN = document.querySelector("#buscarCodigoPedidoUnico")
+                let agregarFilaBTN = document.querySelector("#agregarFila")
                 confirmButton.addEventListener('click', () => {
                     if (selectedItemId) {
+                        buscarArticuloBTN.disabled = false
+                        agregarFilaBTN.disabled = false
                         confirmButton.disabled = true;            
                         modal.hide()      
                     }
@@ -657,6 +662,9 @@
                 });
 
                 confirmarClienteButton.addEventListener('click', () => {
+                    let buscarClienteBTN = document.querySelector("#buscarCliente")
+                    buscarClienteBTN.disabled = !buscarClienteBTN.disabled
+
                     if (confirmarClienteButton.textContent.trim().startsWith("Confirmar")) {
                         confirmarClienteButton.classList.remove('btn-green-color');
                         confirmarClienteButton.classList.add('btn-base-color');
@@ -692,7 +700,10 @@
                             input.classList.toggle('input-disabled');
                         });
                     });
-                    
+
+                    let agregarFilaBTN = document.querySelector("#agregarFila")
+                    agregarFilaBTN.disabled = !agregarFilaBTN.disabled
+
                     let botonesBuscar = document.querySelectorAll('.buscarCodigoPedidoUnico');
                     let verPartidas = document.querySelectorAll('.verPartidas');
                     let eliminarFila = document.querySelectorAll('.eliminarFila');
@@ -821,6 +832,18 @@
                     document.querySelector("#cantidadModal").textContent = document.getElementById("cantidadPedidoUnico").value;
                     let btnVerPartidas = document.querySelector(".verPartidas")
                     btnVerPartidas.disabled = false
+                })
+
+                let confirmarClienteBTN = document.querySelector("#confirmarCliente") 
+                let verPedidoBTN = document.querySelector("#verPedido")
+                let finalizarPedidoBTN = document.querySelector("#finaliarPedido")
+                let verPartidasBTN = document.querySelector(".verPartidas")
+                verPartidasBTN.addEventListener("click", () => {
+                    confirmarClienteBTN.disabled = false
+                })
+                confirmarClienteBTN.addEventListener("click", () => {
+                    verPedidoBTN.disabled = !verPedidoBTN.disabled;
+                    finalizarPedidoBTN.disabled = !finalizarPedidoBTN.disabled;
                 })
 
                 document.getElementById('agregarFila').addEventListener('click', function() {
