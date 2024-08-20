@@ -479,14 +479,14 @@
 
                                     <div class="col-md-12">
 
-                                        <div class="partidasResultadosPedidoUnico" id="partidasResultadosPedidoUnico" style="overflow: hidden; overflow-y: scroll; height: 700px;">
+                                        <div class="partidasResultadosPedidoUnico" id="partidasResultadosPedidoUnico" style="overflow: hidden; overflow-y: scroll; max-height: 700px; height: 100%;">
                                             
                                         </div>
                                         
                                     </div>
                                     
                                 </div>
-                                <div class="modal-footer" id="modal-footer">
+                                <div class="modal-footer d-block" id="modal-footer">
                                     
                                 </div>
                               </div>
@@ -917,9 +917,7 @@
                             verPartidas.disabled = false
                         })
 
-                        //todo: Pasar el btn a modalFooter
                         let modalFooter = fila.querySelector("#modal-footer")
-                    
                         const rowConfirmarBtn = document.createElement('div');
                         rowConfirmarBtn.className = "row"
 
@@ -928,12 +926,16 @@
 
                         const confirmarBtn = document.createElement('button');
                         confirmarBtn.type = 'button';
-                        confirmarBtn.className = 'btn btn-primary mt-3 confirmarSeleccionPartidas';
+                        confirmarBtn.className = 'btn btn-primary confirmarSeleccionPartidas';
                         confirmarBtn.id = `confirmarSeleccionPartidas-${uniqueID}`;
                         confirmarBtn.textContent = 'Confirmar Selección';
 
                         colConfirmarBtn.appendChild(confirmarBtn)
                         rowConfirmarBtn.appendChild(colConfirmarBtn)
+
+                        if (!modalFooter.querySelector('.confirmarSeleccionPartidas')) {
+                            modalFooter.appendChild(rowConfirmarBtn)
+                        } 
                         
                         let costoPartidas = []
                         if(result.resultadosPartidas.length == 0){
@@ -948,7 +950,6 @@
                         let costoPedidoUnico = fila.querySelector('input[name="costoPedidoUnico"]')
                         costoPedidoUnico.value = costoMenor;
 
-
                         const partidaDivs = result.resultadosPartidas.map(item => {
                             const { numero , cantidad, codigoDeposito, costoUnitario, ubicacion } = item
                             const container = document.createElement("div")
@@ -959,6 +960,13 @@
                             input.type = 'number'
                             input.className = 'form-control';
                             input.setAttribute('min', '0');
+
+                            input.addEventListener("click", () => {
+                                partidaDiv.classList.add("selected")
+                                if(input.value == 0){
+                                    partidaDiv.classList.remove("selected")
+                                }
+                            }) 
 
                             if (cantidad <= 0) {
                                 input.disabled = true;
@@ -994,17 +1002,14 @@
                             return partidaDiv;
                         });
 
-                        partidaDivs.forEach(partidaDiv => partidasContainer.appendChild(partidaDiv));          
-
-                        if (!partidasContainer.querySelector('.confirmarSeleccionPartidas')) {
-                            partidasContainer.appendChild(rowConfirmarBtn);
-                        }          
+                        partidaDivs.forEach(partidaDiv => partidasContainer.appendChild(partidaDiv));                   
 
                         verPartidas.addEventListener("click", () => {
                             let partidaRow 
                             let cantidadInput = fila.querySelector("#cantidadPedidoUnico").value
                             let cantidadActual = cantidadModalElement.textContent
                             let botonesCantidad = partidasContainer.querySelectorAll("input");
+                            let confirmarBtn = modalFooter.querySelector(".confirmarSeleccionPartidas")
                             
                             let totalSuma = 0;
                             botonesCantidad.forEach(function(input) {
@@ -1043,7 +1048,6 @@
                                         let valor = parseInt(input.value, 10) || 0;
                                         total += valor;
                                     });
-
                                     cantidadAFavor.textContent = total
                                 });
                             });
@@ -1051,7 +1055,7 @@
 
                         partidasContainer.addEventListener('click', handlePartidaClick);       
                         
-                        confirmarBtn.addEventListener("click", function(){
+                        modalFooter.querySelector(".confirmarSeleccionPartidas").addEventListener("click", function(){
                             let modalContainer = uniqueID === null ? document.getElementById(`verPartidasPedidoUnico`) : document.getElementById(`verPartidasPedidoUnico-${uniqueID}`)
                             let modal = new bootstrap.Modal(modalContainer);
                             //todo: solucionar bug
