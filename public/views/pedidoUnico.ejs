@@ -517,7 +517,6 @@
             //todo: pulir styles partida
             //todo: filtros de busqueda de clientes
             //todo: revisar desabilitaciones de inputs acorde al flujo de la apliacion
-            //todo: modalfooter en modals
             //todo: agregar 1 fila a la vez
 
             sessionStorage.setItem("session-data", JSON.stringify(null))
@@ -799,7 +798,7 @@
         `).join('')}
     `;
     
-    containerPedido.innerHTML = htmlContent;
+                    containerPedido.innerHTML = htmlContent;
 
                 })
             })
@@ -929,6 +928,7 @@
                         confirmarBtn.className = 'btn btn-primary confirmarSeleccionPartidas';
                         confirmarBtn.id = `confirmarSeleccionPartidas-${uniqueID}`;
                         confirmarBtn.textContent = 'Confirmar Selección';
+                        confirmarBtn.disabled = true
 
                         colConfirmarBtn.appendChild(confirmarBtn)
                         rowConfirmarBtn.appendChild(colConfirmarBtn)
@@ -1037,7 +1037,6 @@
                                     }
 
                                     cantidadModalElement.textContent = cantidadActual;
-                                    confirmarBtn.disabled = (cantidadActual < 0);
                                 });
                             });
 
@@ -1048,6 +1047,10 @@
                                         let valor = parseInt(input.value, 10) || 0;
                                         total += valor;
                                     });
+                                    
+                                    confirmarBtn.disabled = (cantidadActual < 0);
+                                    console.log(cantidadActual)
+                                    
                                     cantidadAFavor.textContent = total
                                 });
                             });
