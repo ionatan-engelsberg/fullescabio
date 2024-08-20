@@ -114,6 +114,7 @@
 
                                                     <div id="idResultadosPedidoUnico">
                                                         <% if (resultadosID && resultadosID.length > 0) { %>
+                                                            
                                                             <p>Resultados de la busqueda: <b><%= idPedidoUnico %></b></p>
                                                             <div class="row">
                                                                 <div class="col-md-2">
@@ -147,11 +148,6 @@
                                                                 </div>
                                                             <% }) %>
                                                             
-                                                            <div class="row">
-                                                                <div class="col-md-12 text-center">
-                                                                    <button id="confirmarSeleccion" class="btn btn-primary mt-3" disabled>Confirmar Selección</button>
-                                                                </div>
-                                                            </div>
                                                         <% } else { %>
                                                             <p>No hay resultados.</p>
                                                         <% } %>
@@ -174,7 +170,7 @@
                                                         </form>
                                                     </div>
 
-                                                    <div id="nombreResultadosPedidoUnico">
+                                                    <div id="nombreResultadosPedidoUnico" class="h-500px resultadosCliente">
                                                         <% if (resultadosNombre && resultadosNombre.length > 0) { %>
                                                             <p>Resultados de la busqueda: <b><%= nombrePedidoUnico %></b></p>
                                                             <div class="row">
@@ -208,11 +204,7 @@
                                                                     </div>
                                                                 </div>
                                                             <% }) %>
-                                                            <div class="row">
-                                                                <div class="col-md-12 text-center">
-                                                                    <button id="confirmarSeleccion" class="btn btn-primary mt-3" disabled>Confirmar Selección</button>
-                                                                </div>
-                                                            </div>
+                                                            
                                                         <% } else { %>
                                                             <p>No hay resultados.</p>
                                                         <% } %>
@@ -235,7 +227,7 @@
                                                         </form>
                                                     </div>
 
-                                                    <div id="razonResultadosPedidoUnico">
+                                                    <div id="razonResultadosPedidoUnico" class="h-500px resultadosCliente">
                                                         <% if (resultadosRazon && resultadosRazon.length > 0) { %>
                                                             <p>Resultados de la busqueda: <b><%= razonPedidoUnico %></b></p>
                                                                 <div class="row">
@@ -270,11 +262,7 @@
                                                                 </div>
                                                             <% }) %>
 
-                                                            <div class="row">
-                                                                <div class="col-md-12 text-center">
-                                                                    <button id="confirmarSeleccion" class="btn btn-primary mt-3 w-40" disabled>Confirmar Selección</button>
-                                                                </div>
-                                                            </div>
+                                                            
 
                                                         <% } else { %>
                                                             <p>No hay resultados.</p>
@@ -284,8 +272,12 @@
                                                 </div>
                                                 
                                             </div>
-                                            <div class="modal-footer">
-                                             
+                                            <div class="modal-footer d-block">
+                                                <div class="row">
+                                                    <div class="col-md-12 text-center">
+                                                        <button id="confirmarSeleccion" class="btn btn-primary mt-3 w-40" disabled>Confirmar Selección</button>
+                                                    </div>
+                                                </div>
                                             </div>
                                           </div>
                                         </div>
@@ -318,6 +310,8 @@
                                           </div>
                                         </div>
                                     </div>
+
+                                    <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow mr-10px" type="button" id="guardarPedido" disabled>Guardar<i class="bi bi-floppy2-fill text-white"></i></button>
 
                                     <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="finaliarPedido" disabled>Finalizar<i class="bi bi-send-fill text-white"></i></button>
                                 </div>                          
@@ -424,8 +418,8 @@
                         </div>
                     </div>
                 <div class="row mt-5">
-                    <div class="col-md-12 text-center text-dark">
-                        <h6>Seleccion de Articulos</h6>
+                    <div class="col-md-12 text-center text-dark fw-600">
+                        <h5>Seleccion de Articulos</h5>
                     </div>
                 </div>
                 <div id="formularioArticulos">
@@ -521,9 +515,10 @@
 
         <script>
             //todo: pulir styles partida
-            //todo: colores claros
+            //todo: filtros de busqueda de clientes
             //todo: revisar desabilitaciones de inputs acorde al flujo de la apliacion
-            //todo: modalfooter
+            //todo: modalfooter en modals
+            //todo: agregar 1 fila a la vez
 
             sessionStorage.setItem("session-data", JSON.stringify(null))
             let retrievedData = JSON.parse(sessionStorage.getItem('session-data'));
@@ -821,6 +816,7 @@
 
                 let confirmarClienteBTN = document.querySelector("#confirmarCliente") 
                 let verPedidoBTN = document.querySelector("#verPedido")
+                let guardarPedidoBTN = document.querySelector("#guardarPedido")
                 let finalizarPedidoBTN = document.querySelector("#finaliarPedido")
                 let verPartidasBTN = document.querySelector(".verPartidas")
                 verPartidasBTN.addEventListener("click", () => {
@@ -829,6 +825,7 @@
                 confirmarClienteBTN.addEventListener("click", () => {
                     verPedidoBTN.disabled = !verPedidoBTN.disabled;
                     finalizarPedidoBTN.disabled = !finalizarPedidoBTN.disabled;
+                    guardarPedidoBTN.disabled = !guardarPedidoBTN.disabled
                 })
 
                 document.getElementById('agregarFila').addEventListener('click', function() {
@@ -914,7 +911,9 @@
                         })
 
                         let inputCantidadPedidoUnico = fila.querySelector("#cantidadPedidoUnico")
+                        inputCantidadPedidoUnico.style = "border: 1px solid red"
                         inputCantidadPedidoUnico.addEventListener("input", () => {
+                            inputCantidadPedidoUnico.style = "border: 1px solid #e4e4e4"
                             verPartidas.disabled = false
                         })
 
@@ -1144,6 +1143,10 @@
                 border: 1px solid #157347 !important;
                 cursor: not-allowed;
             }   
+            .resultadosCliente {
+                overflow-y: scroll;
+                overflow-x: hidden;
+            }
         </style>
     </body>
 </html>
