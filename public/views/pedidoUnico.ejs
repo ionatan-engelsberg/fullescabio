@@ -49,11 +49,11 @@
 
         <section>
             <div class="container adminContainer" style="max-width: 100% !important">
-                    <div class="row">
+                <div class="row">
                         <div class="col-md-12 list-admin">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <button class="btn btn-medium btn-base-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" data-toggle="modal" data-target="#seleccionarClienteModalPedidoUnico" id="buscarCliente">Buscar Cliente<i class="bi bi-search text-white"></i></button>
+                                    <button class="btn btn-medium btn-base-color btn-hover-animation btn-round-edge btn-box-shadow mr-10px" type="button" data-toggle="modal" data-target="#seleccionarClienteModalPedidoUnico" id="buscarCliente">Buscar Cliente<i class="bi bi-search text-white"></i></button>
 
                                     <div class="modal fade" id="seleccionarClienteModalPedidoUnico" tabindex="-1" role="dialog" aria-labelledby="seleccionarClienteModalPedidoUnico" aria-hidden="true" data-target=".bd-example-modal-lg">
                                         <div class="modal-dialog" role="document">
@@ -261,9 +261,6 @@
                                                                     </div>
                                                                 </div>
                                                             <% }) %>
-
-                                                            
-
                                                         <% } else { %>
                                                             <p>No hay resultados.</p>
                                                         <% } %>
@@ -282,6 +279,8 @@
                                           </div>
                                         </div>
                                     </div>
+
+                                    <input type="date" class="form-control w-40 d-inline" name="fechaPedidoUnico" id="fechaPedidoUnico" placeholder="aa">
                                 </div>       
                                 <div class="col-md-6 text-end">
                                     <button class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="confirmarCliente" disabled>Confirmar <i class="bi bi-check-circle-fill text-white"></i></button>
@@ -319,7 +318,7 @@
                             <div class="row mt-30px">
                                 <div class="col-md-4">
                                     <label for="" class="text-dark fw-600 fs-20">Lista</label>
-                                    <select class="form-control" name="tipoPedidoUnico" id="listaPedidoUnico">
+                                    <select class="form-select" name="tipoPedidoUnico" id="listaPedidoUnico">
                                         <% if (resultadosRazon && resultadosRazon.length > 0) { %>
                                         <% if (typeof lista !== 'undefined' && lista.length > 0) { %>
                                             <option id="listaPorDefecto"></option>
@@ -358,7 +357,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="" class="text-dark fw-600 fs-20">Vendedor</label>
-                                    <select class="form-control" name="vendedorPedidoUnico" id="vendedorPedidoUnico">
+                                    <select class="form-select" name="vendedorPedidoUnico" id="vendedorPedidoUnico">
                                         <% if (resultadosRazon && resultadosRazon.length > 0) { %>
                                         <% if (typeof listaVendedor !== 'undefined' && listaVendedor.length > 0) { %>
                                             <option id="vendedorPorDefecto"></option>
@@ -397,7 +396,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="" class="text-dark fw-600 fs-20">Tipo</label>
-                                    <select class="form-control" name="tipoPedidoUnico" id="tipoPedidoUnico">
+                                    <select class="form-select" name="tipoPedidoUnico" id="tipoPedidoUnico">
                                         <% if (typeof tiposPedidoUnico !== 'undefined' && tiposPedidoUnico.length > 0) { %>
                                             <% tiposPedidoUnico.forEach(tipo => { %>
                                                 <option value="<%= tipo.codigo %>"><%= tipo.nombre %></option>
@@ -408,18 +407,29 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="row mt-30px">
-                                <div class="col-md-12">
-                                    <label for="" class="text-dark fw-600 fs-20">Fecha de entrega</label>
-                                    <input type="date" class="form-control " name="fechaPedidoUnico" id="fechaPedidoUnico">
-                                </div>
-                            </div>
+                            
                           
                         </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-md-2">
+                        <p class="text-dark mb-0 fw-600">Código</p>
                     </div>
-                <div class="row mt-5">
-                    <div class="col-md-12 text-center text-dark fw-600">
-                        <h5>Seleccion de Articulos</h5>
+                    <div class="col-md-2">
+                        <p class="text-dark mb-0 fw-600">Nombre</p>
+                    </div>
+                    <div class="col-md-2">
+                        <p class="text-dark mb-0 fw-600">Cantidad</p>
+                    </div>
+                    <div class="col-md-2">
+                        <p class="text-dark mb-0 fw-600">Costo</p>
+                    </div>
+                    <div class="col-md-2">
+                        <p class="text-dark mb-0 fw-600">Precio</p>
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <p class="text-dark mb-5px fw-600">Opciones</p>
                     </div>
                 </div>
                 <div id="formularioArticulos">
@@ -442,11 +452,20 @@
                             <input type="number" class="form-control cantidadPedidoUnico" name="cantidadPedidoUnico" id="cantidadPedidoUnico" placeholder="Cantidad">
                         </div>
                         <div class="col-md-2">
-                            
-                            <input type="number" class="form-control costoPedidoUnico" name="costoPedidoUnico" id="costoPedidoUnico" placeholder="Costo $">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text h-100" id="basic-addon1">$</span>
+                                </div>
+                                <input type="number" class="form-control costoPedidoUnico" name="costoPedidoUnico" id="costoPedidoUnico" placeholder="Costo">
+                            </div>
                         </div>
                         <div class="col-md-2">
-                            <input type="number" class="form-control precioPedidoUnico" name="precioPedidoUnico" id="precioPedidoUnico" placeholder="Precio $">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text h-100" id="basic-addon1">$</span>
+                                </div>
+                                <input type="number" class="form-control precioPedidoUnico" name="precioPedidoUnico" id="precioPedidoUnico" placeholder="Precio">
+                            </div>
                         </div>
                         <div class="col-md-2 d-flex flex-wrap justify-content-between">
                             <button type="button" class="btn btn-primary w-50 verPartidas" data-toggle="modal" data-target="#verPartidasPedidoUnico" disabled>Partida</button>
@@ -498,7 +517,7 @@
                 <!-- Botón para agregar otra fila -->
                 <div class="row text-center">
                     <div class="col-12">
-                        <button id="agregarFila" type="button" class="btn btn-secondary mt-30px" disabled>Agregar otra fila</button>
+                        <button id="agregarFila" type="button" class="btn btn-secondary mt-30px" disabled>Agregar fila</button>
                     </div>
                 </div>
             </div>
@@ -549,10 +568,12 @@
 
             document.getElementById('optionSelect').dispatchEvent(new Event('change'));
 
+            const agregarFilaBTN = document.querySelector("#agregarFila")
             function agregarEventoEliminar(fila, partidaID) {
                 const botonEliminar = fila.querySelector('.eliminarFila');
                 botonEliminar.addEventListener('click', function() {
                     fila.remove();
+                    agregarFilaBTN.disabled = false
                     eliminarPartidaDeSession(partidaID)
                 });
             }
@@ -587,11 +608,9 @@
                 });
 
                 let buscarArticuloBTN = document.querySelector("#buscarCodigoPedidoUnico")
-                let agregarFilaBTN = document.querySelector("#agregarFila")
                 confirmButton.addEventListener('click', () => {
                     if (selectedItemId) {
                         buscarArticuloBTN.disabled = false
-                        agregarFilaBTN.disabled = false
                         confirmButton.disabled = true;            
                         modal.hide()      
                     }
@@ -831,7 +850,10 @@
                     const formularioArticulos = document.getElementById('formularioArticulos');
                     const filaOriginal = document.querySelector('#filaFormularioArticulo');
                     const nuevaFila = filaOriginal.cloneNode(true);
+                    const agregarFilaBTN = document.querySelector("#agregarFila")
                     const uniqueID = randomID(); 
+
+                    agregarFilaBTN.disabled = true
 
                     nuevaFila.classList.add(`filaFormularioArticulo`)
                     nuevaFila.classList.add(`filaFormularioArticulo-${uniqueID}`)
@@ -1058,10 +1080,11 @@
 
                         partidasContainer.addEventListener('click', handlePartidaClick);       
                         
+                        let agregarFilaBTN = document.querySelector("#agregarFila")
                         modalFooter.querySelector(".confirmarSeleccionPartidas").addEventListener("click", function(){
+                            //todo: solucionar bug
                             let modalContainer = uniqueID === null ? document.getElementById(`verPartidasPedidoUnico`) : document.getElementById(`verPartidasPedidoUnico-${uniqueID}`)
                             let modal = new bootstrap.Modal(modalContainer);
-                            //todo: solucionar bug
                             setTimeout(() => {
                              modal.hide();
                             }, 100);
@@ -1073,6 +1096,8 @@
                                 showConfirmButton: false,
                                 timer: 1500
                             });
+
+                            agregarFilaBTN.disabled = false
                             
                             confirmarSeleccionPartidas(uniqueID === null ? 1 : uniqueID, null, partidasContainer)
                         })                 
