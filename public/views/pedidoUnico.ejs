@@ -581,7 +581,6 @@
             function eliminarPartidaDeSession(partidaID) {
                 if (retrievedData.partidas) {
                     const partidaIndex = retrievedData.partidas.findIndex(partida => partida.id === partidaID);
-
                     if (partidaIndex !== -1) {
                         retrievedData.partidas.splice(partidaIndex, 1);
                     }
@@ -737,7 +736,6 @@
                     
                     const resultInputValues = groupElements(inputValues)
 
-                    //todo: solucionar bug de inconsistencia de matcheo de datos cuando se cargan articulas de forma no ordenada
                     for (let i = 0; i < retrievedData.partidas.length; i++) {
                         retrievedData.partidas[i].articulos = resultInputValues[i]
                     }
@@ -925,7 +923,6 @@
                         precioArticuloPedidoUnico.value = result.resultadosCodigo[0].precio;
 
                         let cantidadAFavor = fila.querySelector("#cantidadAFavorModal")
-                        console.log(cantidadAFavor)
                         let cantidadModal
                         let cantidadModalElement = fila.querySelector("#cantidadModal")
 
@@ -1105,10 +1102,6 @@
                         
                         let agregarFilaBTN = document.querySelector("#agregarFila")
                         modalFooter.querySelector(".confirmarSeleccionPartidas").addEventListener("click", function(){
-                            //todo: solucionar bug
-                            let modalContainer = uniqueID === null ? document.getElementById(`verPartidasPedidoUnico`) : document.getElementById(`verPartidasPedidoUnico-${uniqueID}`)
-                            let modal = new bootstrap.Modal(modalContainer);
-                            modal.hide();
 
                             if(Number(cantidadModalElement.textContent) !== 0){
                                 Swal.fire({
