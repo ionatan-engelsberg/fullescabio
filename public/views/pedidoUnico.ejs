@@ -1108,17 +1108,26 @@
                             //todo: solucionar bug
                             let modalContainer = uniqueID === null ? document.getElementById(`verPartidasPedidoUnico`) : document.getElementById(`verPartidasPedidoUnico-${uniqueID}`)
                             let modal = new bootstrap.Modal(modalContainer);
-                            setTimeout(() => {
-                             modal.hide();
-                            }, 100);
+                            modal.hide();
 
-                            Swal.fire({
-                                position: "top-end",
-                                icon: "success",
-                                title: "Seleccion Guardada",
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
+                            if(Number(cantidadModalElement.textContent) !== 0){
+                                Swal.fire({
+                                    position: "top-end",
+                                    icon: "warning",
+                                    title: "Seleccion Guardada",
+                                    html: '<span class="fw-600" style="color: red; font-size: 20px;">ATENCIÓN: Quedan artículos por asignarse</span>',
+                                    showConfirmButton: false,
+                                    timer: 4000
+                                }); 
+                            } else {
+                                Swal.fire({
+                                    position: "top-end",
+                                    icon: "success",
+                                    title: "Seleccion Guardada",
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });   
+                            }
 
                             agregarFilaBTN.disabled = false
                             
