@@ -52,7 +52,7 @@
                 <div class="row">
                         <div class="col-md-12 list-admin">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <button class="btn btn-medium btn-base-color btn-hover-animation btn-round-edge btn-box-shadow mr-10px" type="button" data-toggle="modal" data-target="#seleccionarClienteModalPedidoUnico" id="buscarCliente">Buscar Cliente<i class="bi bi-search text-white"></i></button>
 
                                     <div class="modal fade" id="seleccionarClienteModalPedidoUnico" tabindex="-1" role="dialog" aria-labelledby="seleccionarClienteModalPedidoUnico" aria-hidden="true" data-target=".bd-example-modal-lg">
@@ -170,7 +170,7 @@
                                                         </form>
                                                     </div>
 
-                                                    <div id="nombreResultadosPedidoUnico" class="h-500px resultadosCliente">
+                                                    <div id="nombreResultadosPedidoUnico" class="h-300px resultadosCliente">
                                                         <% if (resultadosNombre && resultadosNombre.length > 0) { %>
                                                             <p>Resultados de la busqueda: <b><%= nombrePedidoUnico %></b></p>
                                                             <div class="row">
@@ -280,9 +280,9 @@
                                         </div>
                                     </div>
 
-                                    <input type="date" class="form-control w-40 d-inline" name="fechaPedidoUnico" id="fechaPedidoUnico" placeholder="aa">
+                                    <input type="date" class="form-control d-inline" name="fechaPedidoUnico" id="fechaPedidoUnico" placeholder="aa" style="width: 49%;">
                                 </div>       
-                                <div class="col-md-6 text-end">
+                                <div class="col-md-8 text-end">
                                     <button class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="confirmarCliente" disabled>Confirmar <i class="bi bi-check-circle-fill text-white"></i></button>
 
                                     <button class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="verPedido" data-toggle="modal" data-target="#verPedidoModal" disabled>Ver Pedido <i class="bi bi-arrows-angle-expand text-white"></i></button>
@@ -315,7 +315,7 @@
                                     <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="finaliarPedido" disabled>Finalizar<i class="bi bi-send-fill text-white"></i></button>
                                 </div>                          
                             </div>
-                            <div class="row mt-30px">
+                            <div class="row mt-50px">
                                 <div class="col-md-4">
                                     <label for="" class="text-dark fw-600 fs-20">Lista</label>
                                     <select class="form-select" name="tipoPedidoUnico" id="listaPedidoUnico">
@@ -412,7 +412,7 @@
                         </div>
                 </div>
                 
-                <div class="row mt-3">
+                <div class="row mt-50px">
                     <div class="col-md-2">
                         <p class="text-dark mb-0 fw-600">Código</p>
                     </div>
@@ -437,12 +437,12 @@
                     <div class="row mb-15px filaFormularioArticulo" id="filaFormularioArticulo">
                         <div class="col-md-2 d-flex">
                             <input type="text" 
-                                class=" w-60 codigoPedidoUnico form-control" 
+                                class=" w-90 codigoPedidoUnico form-control" 
                                 aria-describedby="basic-addon2" 
                                 name="codigoPedidoUnico"
                                 id="codigoPedidoUnico" placeholder="Código">
                             <div class="input-group-append">
-                                <button class="btn btn-success h-100 buscarCodigoPedidoUnico" type="button" id="buscarCodigoPedidoUnico" disabled>Buscar</button>
+                                <button class="btn btn-success h-100 buscarCodigoPedidoUnico" type="button" id="buscarCodigoPedidoUnico" disabled><i class="bi bi-search text-white"></i></button>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -469,7 +469,7 @@
                         </div>
                         <div class="col-md-2 d-flex flex-wrap justify-content-between">
                             <button type="button" class="btn btn-primary w-50 verPartidas" data-toggle="modal" data-target="#verPartidasPedidoUnico" disabled>Partida</button>
-                            <button type="button" class="btn btn-danger w-45 eliminarFila">Eliminar</button>
+                            <button type="button" class="btn btn-danger w-45 eliminarFila"><i class="bi bi-trash3-fill text-white"></i></button>
                         </div>
 
                         <div class="modal fade modalVerPartidas" id="verPartidasPedidoUnico" tabindex="-1" role="dialog" aria-labelledby="verPartidasPedidoUnico" aria-hidden="true" data-target=".bd-example-modal-lg">
@@ -498,7 +498,7 @@
 
                                     <div class="col-md-12">
 
-                                        <div class="partidasResultadosPedidoUnico" id="partidasResultadosPedidoUnico" style="overflow: hidden; overflow-y: scroll; max-height: 700px; height: 100%;">
+                                        <div class="partidasResultadosPedidoUnico" id="partidasResultadosPedidoUnico" style="overflow: hidden; overflow-y: scroll; max-height: 425px; height: 100%;">
                                             
                                         </div>
                                         
