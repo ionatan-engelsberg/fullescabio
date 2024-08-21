@@ -48,7 +48,7 @@
         </header>
 
         <section>
-            <div class="container adminContainer" style="max-width: 100% !important">
+            <div class="container adminContainer" style="max-width: 100% !important; background: rgba(0,0,0,0.05);">
                 <div class="row">
                         <div class="col-md-12 list-admin">
                             <div class="row">
@@ -837,9 +837,11 @@
                 let guardarPedidoBTN = document.querySelector("#guardarPedido")
                 let finalizarPedidoBTN = document.querySelector("#finaliarPedido")
                 let verPartidasBTN = document.querySelector(".verPartidas")
+                
                 verPartidasBTN.addEventListener("click", () => {
                     confirmarClienteBTN.disabled = false
                 })
+
                 confirmarClienteBTN.addEventListener("click", () => {
                     verPedidoBTN.disabled = !verPedidoBTN.disabled;
                     finalizarPedidoBTN.disabled = !finalizarPedidoBTN.disabled;
@@ -923,6 +925,7 @@
                         precioArticuloPedidoUnico.value = result.resultadosCodigo[0].precio;
 
                         let cantidadAFavor = fila.querySelector("#cantidadAFavorModal")
+                        console.log(cantidadAFavor)
                         let cantidadModal
                         let cantidadModalElement = fila.querySelector("#cantidadModal")
 
@@ -983,12 +986,26 @@
                             input.className = 'form-control';
                             input.setAttribute('min', '0');
 
-                            input.addEventListener("click", () => {
-                                partidaDiv.classList.add("selected")
+                            input.addEventListener("input", () => {
+                                partidaDiv.classList.add("selected");
                                 if(input.value == 0){
-                                    partidaDiv.classList.remove("selected")
+                                    partidaDiv.classList.remove("selected");
                                 }
-                            }) 
+                            });
+
+                            input.addEventListener("change", () => {
+                                partidaDiv.classList.add("selected");
+                                if(input.value == 0){
+                                    partidaDiv.classList.remove("selected");
+                                }
+                            });
+
+                            input.addEventListener("click", () => {
+                                partidaDiv.classList.add("selected");
+                                if(input.value == 0){
+                                    partidaDiv.classList.remove("selected");
+                                }
+                            });
 
                             if (cantidad <= 0) {
                                 input.disabled = true;
@@ -1039,9 +1056,17 @@
                                 totalSuma += valorInput;
                             });
                             
+                            cantidadAFavor.textContent = 0
                             cantidadInput = cantidadInput - totalSuma
                             cantidadModalElement.textContent = cantidadInput
                             cantidadActual = cantidadInput
+
+                            if (cantidadActual < 0) {
+                                cantidadModalElement.style = "color: red !important; font-weight: 800"
+                                confirmarBtn.disabled = true
+                            } else {
+                                cantidadModalElement.style = "color: green !important; font-weight: 800"
+                            }
 
                             botonesCantidad.forEach(function(input) {
                                 let valorPrevio = parseInt(input.value, 10) || 0;
@@ -1070,9 +1095,7 @@
                                         total += valor;
                                     });
                                     
-                                    confirmarBtn.disabled = (cantidadActual < 0);
-                                    console.log(cantidadActual)
-                                    
+                                    confirmarBtn.disabled = (cantidadActual < 0);                                    
                                     cantidadAFavor.textContent = total
                                 });
                             });
