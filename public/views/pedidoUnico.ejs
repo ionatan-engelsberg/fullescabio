@@ -787,6 +787,7 @@
                                 <th>Cantidad</th>
                                 <th>Costo</th>
                                 <th>Precio</th>
+                                <th>Margen</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -919,9 +920,7 @@
                         let nombreArticuloPedidoUnico = fila.querySelector('input[name="nombreArticuloPedidoUnico"]');
                         nombreArticuloPedidoUnico.value = result.resultadosCodigo[0].nombre;
 
-                        let precioArticuloPedidoUnico = fila.querySelector('input[name="precioPedidoUnico"]')
-                        
-                        //precioArticuloPedidoUnico.value = result.resultadosCodigo[0].precio;
+                        let precioArticuloPedidoUnico = result.resultadosCodigo[0].precio;                 
 
                         let cantidadAFavor = fila.querySelector("#cantidadAFavorModal")
                         let cantidadModal
@@ -1125,14 +1124,20 @@
                                 retrievedData.partidas.forEach(partida => {
                                     let id = uniqueID == null ? 1 : uniqueID
                                     let costoTotal = 0
+                                    let precioTotal = 0
+                                    precioTotal = precioArticuloPedidoUnico
 
                                     if(partida.id == id){
                                         partida.data.forEach(costo => {
                                             const { cantidad, costoUnitario } = costo
-                                            costoTotal += ( cantidad * costoUnitario )                                            
+                                            costoTotal += ( cantidad * costoUnitario )    
+                                            precioTotal *= cantidad                                        
                                         })
-                                        
-                                        costoTotalInput.value = costoTotal
+
+                                        costoTotalInput.value = costoTotal.toFixed(2)
+
+                                        //todo solucionar BUG
+                                        precioTotalInput.value = precioTotal.toFixed(2)
                                     }
                                 })
 

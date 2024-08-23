@@ -181,6 +181,8 @@ router.post("/pedido-unico/obtener-articulos", async (req, res) => {
     //! Consulta a DB
     const resultadosCodigo = await obtenerArticulosPedidoUnico(`EXEC may_articulos @cod_art = '${codigoPedidoUnico}', @lista_cod = '${listaCodigo}'`) 
     const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${codigoPedidoUnico}', @cod_depo = "DEP"`)
+
+    console.log(resultadosCodigo)
     
     res.json({
         resultadosCodigo,
