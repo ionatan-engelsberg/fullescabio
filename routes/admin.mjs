@@ -180,7 +180,7 @@ router.post("/pedido-unico/obtener-articulos", async (req, res) => {
 
     //! Consulta a DB
     const resultadosCodigo = await obtenerArticulosPedidoUnico(`EXEC may_articulos @cod_art = '${codigoPedidoUnico}', @lista_cod = '${listaCodigo}'`) 
-    const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${codigoPedidoUnico}'`)
+    const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${codigoPedidoUnico}', @cod_depo = "DEP"`)
     
     res.json({
         resultadosCodigo,
@@ -189,7 +189,16 @@ router.post("/pedido-unico/obtener-articulos", async (req, res) => {
 })
 
 router.get('/pedido-mayorista', (req, res) => {
-    res.render('pedidoMayorista')
+    res.render('pedidoUnico', {
+        selectedOption: 1,
+        showModal: false,
+        resultadosNombre: false,
+        resultadosID: false,
+        resultadosRazon: false,
+        nombrePedidoUnico: false,
+        idPedidoUnico: false,
+        razonPedidoUnico: false
+    })
 })
 
 router.get('/ventas-adicionales', (req, res) => {

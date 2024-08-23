@@ -423,10 +423,10 @@
                         <p class="text-dark mb-0 fw-600">Cantidad</p>
                     </div>
                     <div class="col-md-2">
-                        <p class="text-dark mb-0 fw-600">Costo</p>
+                        <p class="text-dark mb-0 fw-600">Costo Total</p>
                     </div>
                     <div class="col-md-2">
-                        <p class="text-dark mb-0 fw-600">Precio</p>
+                        <p class="text-dark mb-0 fw-600">Precio Total</p>
                     </div>
                     <div class="col-md-2 text-center">
                         <p class="text-dark mb-5px fw-600">Opciones</p>
@@ -456,7 +456,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text h-100" id="basic-addon1">$</span>
                                 </div>
-                                <input type="number" class="form-control costoPedidoUnico" name="costoPedidoUnico" id="costoPedidoUnico" placeholder="Costo">
+                                <input type="number" class="form-control costoPedidoUnico" name="costoPedidoUnico" id="costoPedidoUnico" placeholder="Costo Total">
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -464,7 +464,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text h-100" id="basic-addon1">$</span>
                                 </div>
-                                <input type="number" class="form-control precioPedidoUnico" name="precioPedidoUnico" id="precioPedidoUnico" placeholder="Precio">
+                                <input type="number" class="form-control precioPedidoUnico" name="precioPedidoUnico" id="precioPedidoUnico" placeholder="Precio Total">
                             </div>
                         </div>
                         <div class="col-md-2 d-flex flex-wrap justify-content-between">
@@ -920,7 +920,8 @@
                         nombreArticuloPedidoUnico.value = result.resultadosCodigo[0].nombre;
 
                         let precioArticuloPedidoUnico = fila.querySelector('input[name="precioPedidoUnico"]')
-                        precioArticuloPedidoUnico.value = result.resultadosCodigo[0].precio;
+                        
+                        //precioArticuloPedidoUnico.value = result.resultadosCodigo[0].precio;
 
                         let cantidadAFavor = fila.querySelector("#cantidadAFavorModal")
                         let cantidadModal
@@ -970,7 +971,8 @@
                         }
                         let costoMenor = Math.min(...costoPartidas)
                         let costoPedidoUnico = fila.querySelector('input[name="costoPedidoUnico"]')
-                        costoPedidoUnico.value = costoMenor;
+                        
+                        //costoPedidoUnico.value = costoMenor;
 
                         const partidaDivs = result.resultadosPartidas.map(item => {
                             const { numero , cantidad, codigoDeposito, costoUnitario, ubicacion } = item
@@ -1102,17 +1104,38 @@
                         
                         let agregarFilaBTN = document.querySelector("#agregarFila")
                         modalFooter.querySelector(".confirmarSeleccionPartidas").addEventListener("click", function(){
+                            let costoTotalInput = fila.querySelector("#costoPedidoUnico")
+                            let precioTotalInput = fila.querySelector("#precioPedidoUnico")
+                            let cantidadInput = fila.querySelector("#cantidadPedidoUnico")
 
                             if(Number(cantidadModalElement.textContent) !== 0){
                                 Swal.fire({
                                     position: "top-end",
                                     icon: "warning",
-                                    title: "Seleccion Guardada",
-                                    html: '<span class="fw-600" style="color: red; font-size: 20px;">ATENCIÓN: Quedan artículos por asignarse</span>',
+                                    title: "ATENCIÓN",
+                                    html: '<span class="fw-600" style="font-size: 20px;">Quedan artículos por asignarse. <br> Por favor, asigne la totalidad de articulos insertados.</span>',
                                     showConfirmButton: false,
                                     timer: 4000
                                 }); 
                             } else {
+                                confirmarSeleccionPartidas(uniqueID === null ? 1 : uniqueID, null, partidasContainer)
+                                
+                                agregarFilaBTN.disabled = false
+                                                            
+                                retrievedData.partidas.forEach(partida => {
+                                    let id = uniqueID == null ? 1 : uniqueID
+                                    let costoTotal = 0
+
+                                    if(partida.id == id){
+                                        partida.data.forEach(costo => {
+                                            const { cantidad, costoUnitario } = costo
+                                            costoTotal += ( cantidad * costoUnitario )                                            
+                                        })
+                                        
+                                        costoTotalInput.value = costoTotal
+                                    }
+                                })
+
                                 Swal.fire({
                                     position: "top-end",
                                     icon: "success",
@@ -1121,10 +1144,6 @@
                                     timer: 1500
                                 });   
                             }
-
-                            agregarFilaBTN.disabled = false
-                            
-                            confirmarSeleccionPartidas(uniqueID === null ? 1 : uniqueID, null, partidasContainer)
                         })                 
                         return result;
                     })

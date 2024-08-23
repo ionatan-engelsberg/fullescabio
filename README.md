@@ -31,3 +31,41 @@ UNICO = DEP
 
 Boton partidas --> Elije cantidad de cada partida
 Campo costo viene por sp de partidas y siempre se debe cargar el menor costo
+
+
+Precio total
+Cambiar de lugar precio x costo
+Costo cambia de valor, ver por cual
+
+Cantidad a favor tiene que ser igual a cantidad seleccionada si o si
+
+Agregar total venta
+Quitar costo de ver pedido 
+Quitar costo unitario
+Agregar columna "margen"
+
+ALTER procedure [dbo].[pediweb_pedi_cabe_alta]
+@tipo varchar(3)=null,
+@num_web varchar(20)=null,
+@num_cliente varchar(20)=null,
+@usuario varchar(30)=null,
+@num_factu varchar(20)=null,
+@fecha varchar(20)=null,
+@total varchar(20)=null,
+@codi_vende varchar(5)=null,
+@mone varchar(3)=null,
+@mone_coti varchar(20)=null,
+@lista_codi varchar(5)=null,
+@condi_venta varchar(5)=null,
+@obser varchar(255)=null,
+@porcen_descuen varchar(20)=null,
+@cant_max_items_web varchar(20)=null,
+@codi_lugar varchar(20)=null
+ALTER procedure [dbo].[pediweb_pedi_items_alta]
+@tipo varchar(3)=null,
+@num_web varchar(20)=null,
+@renglon varchar(20)=null,
+@articulo varchar(30)=null,
+@cant varchar(20)=null,
+@precio varchar(20)=null,
+@porcen_descuen_item varchar(20)=null
