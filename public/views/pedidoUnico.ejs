@@ -456,7 +456,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text h-100" id="basic-addon1">$</span>
                                 </div>
-                                <input type="number" class="form-control costoPedidoUnico" name="costoPedidoUnico" id="costoPedidoUnico" placeholder="Costo Total">
+                                <input type="number" class="form-control costoPedidoUnico" name="costoPedidoUnico" id="costoPedidoUnico" placeholder="Costo Total" disabled>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -464,7 +464,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text h-100" id="basic-addon1">$</span>
                                 </div>
-                                <input type="number" class="form-control precioPedidoUnico" name="precioPedidoUnico" id="precioPedidoUnico" placeholder="Precio Total">
+                                <input type="number" class="form-control precioPedidoUnico" name="precioPedidoUnico" id="precioPedidoUnico" placeholder="Precio Total" disabled>
                             </div>
                         </div>
                         <div class="col-md-2 d-flex flex-wrap justify-content-between">
@@ -749,6 +749,17 @@
                 let verPedidoBTN = document.querySelector("#verPedido")
            
                 verPedidoBTN.addEventListener("click", () => {
+                    retrievedData.partidas.map(partida => {
+                        partida.articulos[5] = Number(partida.articulos[4]) -  Number(partida.articulos[3])
+                        partida.articulos[3] = formatPrice(Number(partida.articulos[3]))
+                        partida.articulos[4] = formatPrice(Number(partida.articulos[4]))
+                        partida.articulos[5] = formatPrice(partida.articulos[5])
+
+                        partida.data.map(props => {
+                            props.costoUnitario = formatPrice(props.costoUnitario)
+                        })
+                    })
+
                     const htmlContent = `
                     <div class="container">
             <div class="row">
@@ -802,7 +813,12 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                ${Object.keys(partida.data[0]).map(key => `<th>${key}</th>`).join('')}
+                                <th>Numero</th>
+                                <th>Stock</th>
+                                <th>Deposito</th>
+                                <th>Costo Unitario</th>
+                                <th>Ubicación</th>
+                                <th>Cantidad</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -815,9 +831,7 @@
             </div>
         `).join('')}
     `;
-    
                     containerPedido.innerHTML = htmlContent;
-
                 })
             })
 
@@ -971,8 +985,6 @@
                         let costoMenor = Math.min(...costoPartidas)
                         let costoPedidoUnico = fila.querySelector('input[name="costoPedidoUnico"]')
                         
-                        //costoPedidoUnico.value = costoMenor;
-
                         const partidaDivs = result.resultadosPartidas.map(item => {
                             const { numero , cantidad, codigoDeposito, costoUnitario, ubicacion } = item
                             const container = document.createElement("div")
@@ -1125,18 +1137,19 @@
                                     let id = uniqueID == null ? 1 : uniqueID
                                     let costoTotal = 0
                                     let precioTotal = 0
+                                    let cantidadTotal = 0
                                     precioTotal = precioArticuloPedidoUnico
 
                                     if(partida.id == id){
                                         partida.data.forEach(costo => {
                                             const { cantidad, costoUnitario } = costo
                                             costoTotal += ( cantidad * costoUnitario )    
-                                            precioTotal *= cantidad                                        
+                                            cantidadTotal += cantidad   
                                         })
 
                                         costoTotalInput.value = costoTotal.toFixed(2)
 
-                                        //todo solucionar BUG
+                                        precioTotal *= cantidadTotal 
                                         precioTotalInput.value = precioTotal.toFixed(2)
                                     }
                                 })
@@ -1194,6 +1207,13 @@
                 if (event.target.classList.contains('partida')) {
                     event.target.classList.toggle('selected');
                 }
+            }
+
+            function formatPrice(num) {
+                const str = num.toFixed(2);
+                const parts = str.split('.');
+                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                return parts.join(',');
             }
             
         </script>
