@@ -53,15 +53,7 @@
                         <div class="col-md-12 list-admin">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <div class="row">
-                                        <div class="col-md-5">
-                                            <button class="btn btn-medium btn-base-color btn-hover-animation btn-round-edge btn-box-shadow mr-10px" type="button" data-toggle="modal" data-target="#seleccionarClienteModalPedidoUnico" id="buscarCliente">Buscar Cliente<i class="bi bi-search text-white"></i></button>
-
-                                        </div>
-                                        <div class="col-md-7">
-                                            <input type="date" class="form-control d-inline" name="fechaPedidoUnico" id="fechaPedidoUnico" placeholder="aa">
-                                        </div>
-                                    </div>
+                                    <button class="btn btn-medium btn-base-color btn-hover-animation btn-round-edge btn-box-shadow mr-10px" type="button" data-toggle="modal" data-target="#seleccionarClienteModalPedidoUnico" id="buscarCliente">Buscar Cliente<i class="bi bi-search text-white"></i></button>
 
                                     <div class="modal fade" id="seleccionarClienteModalPedidoUnico" tabindex="-1" role="dialog" aria-labelledby="seleccionarClienteModalPedidoUnico" aria-hidden="true" data-target=".bd-example-modal-lg">
                                         <div class="modal-dialog" role="document">
@@ -287,6 +279,8 @@
                                           </div>
                                         </div>
                                     </div>
+
+                                    <input type="date" class="form-control d-inline" name="fechaPedidoUnico" id="fechaPedidoUnico" placeholder="aa" style="width: 49%;">
                                 </div>       
                                 <div class="col-md-8 text-end">
                                     <button class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="confirmarCliente" disabled>Confirmar <i class="bi bi-check-circle-fill text-white"></i></button>
@@ -919,22 +913,35 @@
                     let codigo = inputCodigoPedidoUnico.value;
 
                     let nombreArticuloPedidoUnico = fila.querySelector('input[name="nombreArticuloPedidoUnico"]');
-                    nombreArticuloPedidoUnico.value = "Cargando..."
 
                     const data = { 
                         codigoPedidoUnico: codigo,
                         listaCodigo: retrievedData.listaCodigo
                     };
 
-                    fetch(`/admin/pedido-unico/obtener-articulos`, {
+                    let allInputCodigo = formularioArticulos.querySelectorAll('input[name="codigoPedidoUnico"]') 
+                    let hayDuplicados = false;
+                    const codigosVistos = new Set();
+                    allInputCodigo.forEach(input => {
+                        const valor = input.value;
+                        if (codigosVistos.has(valor)) {
+                            hayDuplicados = true; 
+                        } else {
+                            codigosVistos.add(valor);
+                        }
+                    });
+                    
+                    if(!hayDuplicados){
+                        nombreArticuloPedidoUnico.value = "Cargando..."
+                        fetch(`/admin/pedido-unico/obtener-articulos`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify(data)
                     })
-                    .then(response => response.json())
-                    .then(result => {
+                        .then(response => response.json())
+                        .then(result => {
                         let partidasContainer = uniqueID != null 
                         ? fila.querySelector(`#verPartidasPedidoUnico-${uniqueID} #partidasResultadosPedidoUnico`) 
                         : fila.querySelector('#verPartidasPedidoUnico #partidasResultadosPedidoUnico');
@@ -1173,12 +1180,18 @@
                         })                 
                         return result;
                     })
-                    .catch(error => {
-                        console.log(error);
-                        let nombreArticuloPedidoUnico = fila.querySelector('input[name="nombreArticuloPedidoUnico"]');
-                        nombreArticuloPedidoUnico.value = "No hay resultados";
-                        return error;
-                    });
+                        .catch(error => {
+                            console.log(error);
+                            let nombreArticuloPedidoUnico = fila.querySelector('input[name="nombreArticuloPedidoUnico"]');
+                            nombreArticuloPedidoUnico.value = "No hay resultados";
+                            return error;
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Codigo ya utilizado",
+                        });
+                    }
                 }});
             });
 
