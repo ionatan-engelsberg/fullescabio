@@ -69,3 +69,6 @@ ALTER procedure [dbo].[pediweb_pedi_items_alta]
 @cant varchar(20)=null,
 @precio varchar(20)=null,
 @porcen_descuen_item varchar(20)=null
+
+NO se puede 2 filas con mismo articulo
+Pedido mayorista no usa transferencia

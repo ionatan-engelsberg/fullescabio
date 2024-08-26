@@ -456,7 +456,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text h-100" id="basic-addon1">$</span>
                                 </div>
-                                <input type="number" class="form-control costoPedidoUnico" name="costoPedidoUnico" id="costoPedidoUnico" placeholder="Costo Total" readonly>
+                                <input type="text" class="form-control costoPedidoUnico" name="costoPedidoUnico" id="costoPedidoUnico" placeholder="Costo Total" readonly>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -464,7 +464,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text h-100" id="basic-addon1">$</span>
                                 </div>
-                                <input type="number" class="form-control precioPedidoUnico" name="precioPedidoUnico" id="precioPedidoUnico" placeholder="Precio Total" readonly>
+                                <input type="text" class="form-control precioPedidoUnico" name="precioPedidoUnico" id="precioPedidoUnico" placeholder="Precio Total" readonly>
                             </div>
                         </div>
                         <div class="col-md-2 d-flex flex-wrap justify-content-between">
@@ -747,16 +747,13 @@
             document.addEventListener('DOMContentLoaded', () => {
                 let containerPedido = document.querySelector("#infoPedido")
                 let verPedidoBTN = document.querySelector("#verPedido")
-           
+
                 verPedidoBTN.addEventListener("click", () => {
                     retrievedData.partidas.map(partida => {
-                        partida.articulos[5] = Number(partida.articulos[4]) -  Number(partida.articulos[3])
-                        partida.articulos[3] = formatPrice(Number(partida.articulos[3]))
-                        partida.articulos[4] = formatPrice(Number(partida.articulos[4]))
-                        partida.articulos[5] = formatPrice(partida.articulos[5])
-
+                        partida.articulos[5] = formatNumber(partida.articulos[4]) - formatNumber(partida.articulos[3])
+                        partida.articulos[5] = formatPrice(Number(partida.articulos[5]))
                         partida.data.map(props => {
-                            props.costoUnitario = formatPrice(props.costoUnitario)
+                            props.costoUnitario = formatearCostoUnico(props.costoUnitario)
                         })
                     })
 
@@ -803,8 +800,8 @@
                         </thead>
                         <tbody>
                             <tr>
-                                ${partida.articulos.map(articulo => `
-                                    <td>${articulo}</td>
+                                ${partida.articulos.map((articulo, index) => `
+                                    <td>${[3, 4, 5].includes(index) ? '$ ' + articulo : articulo}</td>
                                 `).join('')}
                             </tr>
                         </tbody>
@@ -823,8 +820,12 @@
                         </thead>
                         <tbody>
                             ${partida.data.map(d => `
-                                <tr>${Object.values(d).map(value => `<td>${value}</td>`).join('')}</tr>
-                            `).join('')}
+                                <tr>
+                                    ${Object.values(d).map((value, index) => `
+                                     <td>${index === 3 ? '$ ' + value : value}</td>
+                                    `).join('')}
+                                </tr>
+                                `).join('')}
                         </tbody>
                     </table>
                 </div>
@@ -1147,10 +1148,9 @@
                                             cantidadTotal += cantidad   
                                         })
 
-                                        costoTotalInput.value = costoTotal.toFixed(2)
-
+                                        costoTotalInput.value = formatPrice(Number(costoTotal))
                                         precioTotal *= cantidadTotal 
-                                        precioTotalInput.value = precioTotal.toFixed(2)
+                                        precioTotalInput.value = formatPrice(Number(precioTotal))
                                     }
                                 })
 
@@ -1188,6 +1188,7 @@
                         ubicacion: array[4].textContent, 
                         cantidad: Number(selectedPartidas[i].querySelector("input").value)
                     }
+                    
                     conjuntoPartidas.push(dataPartidas)
                 }
 
@@ -1214,6 +1215,18 @@
                 const parts = str.split('.');
                 parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
                 return parts.join(',');
+            }
+
+            function formatNumber(formateado) {
+                const numeroLimpio = formateado.replace(/\./g, '').replace(',', '.');
+                const numero = parseFloat(numeroLimpio);
+                return numero;
+            }
+            
+            function formatearCostoUnico(numero) {
+                let [entera, decimal] = numero.toString().split('.');
+                entera = entera.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                return decimal ? `${entera},${decimal}` : entera;
             }
             
         </script>
