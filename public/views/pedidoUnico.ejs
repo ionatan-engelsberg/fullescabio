@@ -53,7 +53,15 @@
                         <div class="col-md-12 list-admin">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <button class="btn btn-medium btn-base-color btn-hover-animation btn-round-edge btn-box-shadow mr-10px" type="button" data-toggle="modal" data-target="#seleccionarClienteModalPedidoUnico" id="buscarCliente">Buscar Cliente<i class="bi bi-search text-white"></i></button>
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <button class="btn btn-medium btn-base-color btn-hover-animation btn-round-edge btn-box-shadow mr-10px" type="button" data-toggle="modal" data-target="#seleccionarClienteModalPedidoUnico" id="buscarCliente">Buscar Cliente<i class="bi bi-search text-white"></i></button>
+
+                                        </div>
+                                        <div class="col-md-7">
+                                            <input type="date" class="form-control d-inline" name="fechaPedidoUnico" id="fechaPedidoUnico" placeholder="aa">
+                                        </div>
+                                    </div>
 
                                     <div class="modal fade" id="seleccionarClienteModalPedidoUnico" tabindex="-1" role="dialog" aria-labelledby="seleccionarClienteModalPedidoUnico" aria-hidden="true" data-target=".bd-example-modal-lg">
                                         <div class="modal-dialog" role="document">
@@ -279,8 +287,6 @@
                                           </div>
                                         </div>
                                     </div>
-
-                                    <input type="date" class="form-control d-inline" name="fechaPedidoUnico" id="fechaPedidoUnico" placeholder="aa" style="width: 49%;">
                                 </div>       
                                 <div class="col-md-8 text-end">
                                     <button class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="confirmarCliente" disabled>Confirmar <i class="bi bi-check-circle-fill text-white"></i></button>
@@ -310,7 +316,7 @@
                                         </div>
                                     </div>
 
-                                    <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow mr-10px" type="button" id="guardarPedido" disabled>Guardar<i class="bi bi-floppy2-fill text-white"></i></button>
+                                    <!-- <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow mr-10px" type="button" id="guardarPedido" disabled>Guardar<i class="bi bi-floppy2-fill text-white"></i></button> -->
 
                                     <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="finaliarPedido" disabled>Finalizar<i class="bi bi-send-fill text-white"></i></button>
                                 </div>                          
@@ -540,8 +546,8 @@
 
             sessionStorage.setItem("session-data", JSON.stringify(null))
             let retrievedData = JSON.parse(sessionStorage.getItem('session-data'));
-            let usedIDs = new Set();
 
+            let usedIDs = new Set();
             function randomID() {
                 let id;
                 do {
@@ -912,6 +918,9 @@
                     let inputCodigoPedidoUnico = fila.querySelector('input[name="codigoPedidoUnico"]');
                     let codigo = inputCodigoPedidoUnico.value;
 
+                    let nombreArticuloPedidoUnico = fila.querySelector('input[name="nombreArticuloPedidoUnico"]');
+                    nombreArticuloPedidoUnico.value = "Cargando..."
+
                     const data = { 
                         codigoPedidoUnico: codigo,
                         listaCodigo: retrievedData.listaCodigo
@@ -932,7 +941,6 @@
 
                         partidasContainer.innerHTML = '';
 
-                        let nombreArticuloPedidoUnico = fila.querySelector('input[name="nombreArticuloPedidoUnico"]');
                         nombreArticuloPedidoUnico.value = result.resultadosCodigo[0].nombre;
 
                         let precioArticuloPedidoUnico = result.resultadosCodigo[0].precio;                 
