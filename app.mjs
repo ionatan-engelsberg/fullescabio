@@ -85,7 +85,6 @@ const start = async () => {
         app.listen(8080, () => {
             console.log('Server on Port 8080')
         })
-        pipeline()
     } catch (error) {
         console.log('ERROR while connecting to DB: ', error)
     }
