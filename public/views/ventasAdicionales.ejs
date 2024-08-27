@@ -49,9 +49,8 @@
         <section>
             <div class="container adminContainer" style="max-width: 100% !important">
                 <div class="row mb-3">
-                    <div class="col-12">
+                    <div class="col-md-4">
                       <div class="" data-toggle="buttons">
-                        
                         <label class="btn btn-primary">
                           <input type="radio" name="options" id="option1" autocomplete="off" checked> SP (dinamico)
                         </label>
@@ -60,12 +59,77 @@
                         </label>
                       </div>
                     </div>
+
+                    <div class="col-md-8 text-end" id="botonesSpDinamico">
+                      <button class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button">Confirmar <i class="bi bi-check-circle-fill text-white"></i></button>
+
+                      <button class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="verPedido" data-toggle="modal" data-target="#verPedidoModal" disabled>Ver Pedido <i class="bi bi-arrows-angle-expand text-white"></i></button>
+                      
+                      <div class="modal fade" id="verPedidoModal" tabindex="-1" role="dialog" aria-labelledby="verPedidoModal" aria-hidden="true" data-target=".bd-example-modal-lg">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Ver Pedido</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="
+                                background: none;
+                                border: none;
+                                font-size: 40px;
+                                color: red">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+              
+                              <div class="modal-body text-start" id="infoPedido">
+                                  
+                              </div>
+                              <div class="modal-footer">
+                               
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+
+                      <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="finaliarPedido" disabled>Finalizar<i class="bi bi-send-fill text-white"></i></button>
+                    </div> 
+
+                    <div class="col-md-8 text-end" id="botonesImportadorDirecto">
+                      <button class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button">Confirmar <i class="bi bi-check-circle-fill text-white"></i></button>
+
+                      <button class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="verPedido" data-toggle="modal" data-target="#verPedidoModal" disabled>Ver Pedido <i class="bi bi-arrows-angle-expand text-white"></i></button>
+                      
+                      <div class="modal fade" id="verPedidoModal" tabindex="-1" role="dialog" aria-labelledby="verPedidoModal" aria-hidden="true" data-target=".bd-example-modal-lg">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Ver Pedido</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="
+                                background: none;
+                                border: none;
+                                font-size: 40px;
+                                color: red">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+              
+                              <div class="modal-body text-start" id="infoPedido">
+                                  
+                              </div>
+                              <div class="modal-footer">
+                               
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+
+                      <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="finaliarPedido" disabled>Finalizar<i class="bi bi-send-fill text-white"></i></button>
+                    </div> 
                   </div>
+
                   <div id="spDinamicoSection">
                     <form id="spDinamicoForm">
                       <div class="row">
                         <div class="col-md-12 mb-2">
-                          <label for="" class="text-dark fw-600 fs-20">Subir Excel. <a href="">Ver Plantila</a></label>
+                          <h6 class="text-dark fw-600 mb-5px">Subir Excel. <a href="">Ver Plantila</a></h6>
                           <form action="/admin/productos/upload" method="POST" enctype="multipart/form-data">                        
                             <div class="input-group">
                                 <input type="file" class="form-control  file-input" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload" name="file">
@@ -92,6 +156,7 @@
                       </div>
                     </form>
                   </div>
+
                   <div id="importadorDirectoSection" class="hidden">
                     <div class="row">
                       <div class="col-md-12 mb-2">
@@ -107,7 +172,7 @@
 
                     <div class="row">
                       <div class="col-md-12">
-                        <h6 class="text-dark fw-600 mb-5px">Carga Manual</h6>
+                        <h6 class="text-dark fw-600 mb-10px">Carga Manual</h6>
                         <table class="table table-bordered">
                           <thead>
                               <tr>
@@ -157,6 +222,9 @@
     const spDinamicoSection = document.getElementById('spDinamicoSection');
     const importadorDirectoSection = document.getElementById('importadorDirectoSection');
 
+    const botonesSpDinamico = document.getElementById("botonesSpDinamico")
+    const botonesImportadorDirecto = document.getElementById("botonesImportadorDirecto")
+
     const option1 = document.getElementById('option1');
     const option2 = document.getElementById('option2');
 
@@ -164,9 +232,13 @@
       if (option1.checked) {
         spDinamicoSection.style.display = 'block';
         importadorDirectoSection.style.display = 'none';
+        botonesSpDinamico.style.display = "block"
+        botonesImportadorDirecto.style.display = "none"
       } else if (option2.checked) {
         spDinamicoSection.style.display = 'none';
         importadorDirectoSection.style.display = 'block';
+        botonesSpDinamico.style.display = "none"
+        botonesImportadorDirecto.style.display = "block"
       }
     }
 
@@ -210,5 +282,13 @@
 <style>
     .hidden {
       display: none;
+    }
+    .btn-green-color {
+      background-color: #157347;
+      color: white;
+    }
+    .btn-green-color:hover {
+      background-color: #157347;
+      color: white;
     }
 </style>
