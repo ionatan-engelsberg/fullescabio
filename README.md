@@ -33,16 +33,15 @@ Boton partidas --> Elije cantidad de cada partida
 Campo costo viene por sp de partidas y siempre se debe cargar el menor costo
 
 
-Precio total
-Cambiar de lugar precio x costo
-Costo cambia de valor, ver por cual
+Precio total -- ok
+Cambiar de lugar precio x costo -- ok
+Costo cambia de valor, ver por cual -- ok
 
 Cantidad a favor tiene que ser igual a cantidad seleccionada si o si
 
-Agregar total venta
-Quitar costo de ver pedido 
-Quitar costo unitario
-Agregar columna "margen"
+Agregar total venta -- ok
+Quitar costo unitario -- ok
+Agregar columna "margen" -- ok
 
 ALTER procedure [dbo].[pediweb_pedi_cabe_alta]
 @tipo varchar(3)=null,
@@ -70,5 +69,9 @@ ALTER procedure [dbo].[pediweb_pedi_items_alta]
 @precio varchar(20)=null,
 @porcen_descuen_item varchar(20)=null
 
-NO se puede 2 filas con mismo articulo
-Pedido mayorista no usa transferencia
+NO se puede 2 filas con mismo articulo -- ok
+Pedido mayorista no usa transferencia -- revisar
+
+Ventas Adicionales
+Uno incluye SP, el otro no. 
+No incluye: Desde Front valido que cada uno de los clientes recibidos x backend existan. 

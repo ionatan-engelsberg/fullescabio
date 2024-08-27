@@ -18,7 +18,7 @@
         <link rel="stylesheet" href="/css/responsive.css"/>
         <link rel="stylesheet" href="/demos/conference/conference.css" />
     </head>
-    <body data-mobile-nav-style="classic" class="bg-dark">  
+    <body data-mobile-nav-style="classic" class="bg-midnight-blue">  
 
         <header> 
             <nav class="navbar navbar-expand-lg header-transparent bg-transparent disable-fixed mt-2">
@@ -65,45 +65,82 @@
                     <form id="spDinamicoForm">
                       <div class="row">
                         <div class="col-md-12 mb-2">
-                          <label for="" class="text-white fw-600 fs-20">Subir Excel. <a href="">Ver Plantila</a></label>
+                          <label for="" class="text-dark fw-600 fs-20">Subir Excel. <a href="">Ver Plantila</a></label>
                           <form action="/admin/productos/upload" method="POST" enctype="multipart/form-data">                        
                             <div class="input-group">
-                                <input type="file" class="form-control bg-transparent border-color-transparent-white-light file-input" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload" name="file">
+                                <input type="file" class="form-control  file-input" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload" name="file">
                                 <button class="btn btn-base-color btn-hover-animation btn-round-edge btn-box-shadow" type="submit" id="inputGroupFileAddon04">Subir</button>
                             </div>
                         </form>
                       </div>
                       </div>
                       <div class="form-group row">
-                        <div class="col-md-12">
-                            <label for="" class="text-white fw-600 fs-20">Razon</label>
-                            <input type="text" class="bg-transparent border-color-transparent-white-light" name="razonPedidoUnico">
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <label for="" class="text-dark fw-600 fs-20">Desde</label>
+                          <input type="date" class="form-control " name="nombrePedidoUnico">
+                        </div>
+                        <div class="col-md-6">
+                          <label for="" class="text-dark fw-600 fs-20">Hasta</label>
+                          <input type="date" class="form-control " name="nombrePedidoUnico">
                         </div>
                       </div>
-                      <div class="row mt-30px">
-                        <div class="col-md-6">
-                            <label for="" class="text-white fw-600 fs-20">Desde</label>
-                            <input type="date" class="form-control bg-transparent border-color-transparent-white-light" name="nombrePedidoUnico">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="" class="text-white fw-600 fs-20">Hasta</label>
-                            <input type="date" class="form-control bg-transparent border-color-transparent-white-light" name="nombrePedidoUnico">
-                        </div>
-                    </div>
+                      <div class="col-md-12 mt-30px">
+                          <label for="" class="text-dark fw-600 fs-20">Razon</label>
+                          <input type="text" class="form-control" name="razonPedidoUnico">
+                      </div>
                     </form>
                   </div>
                   <div id="importadorDirectoSection" class="hidden">
-                    <h3>Importador (directo)</h3>
                     <div class="row">
                       <div class="col-md-12 mb-2">
-                        <label for="" class="text-white fw-600 fs-20">Subir Excel. <a href="">Ver Plantila</a></label>
+                        <h6 class="text-dark mb-5px fw-600">Subir Excel. <a href="">Ver Plantila</a></h6>
                         <form action="/admin/productos/upload" method="POST" enctype="multipart/form-data">                        
                           <div class="input-group">
-                              <input type="file" class="form-control bg-transparent border-color-transparent-white-light file-input" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload" name="file">
+                              <input type="file" class="form-control file-input" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload" name="file">
                               <button class="btn btn-base-color btn-hover-animation btn-round-edge btn-box-shadow" type="submit" id="inputGroupFileAddon04">Subir</button>
                           </div>
                       </form>
                     </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-12">
+                        <h6 class="text-dark fw-600 mb-5px">Carga Manual</h6>
+                        <table class="table table-bordered">
+                          <thead>
+                              <tr>
+                                  <th>SKU</th>
+                                  <th>DESCRIPCIÓN</th>
+                                  <th>CANTIDAD</th>
+                                  <th>PRECIO</th>
+                                  <th>CLIENTE</th>
+                                  <th>S/C</th>
+                                  <th>DESCUENTO</th>
+                              </tr>
+                          </thead>
+                          <tbody id="tabla-body">
+                              <tr>
+                                  <td><input type="text" class="form-control" placeholder="SKU"></td>
+                                  <td><input type="text" class="form-control" placeholder="Descripción"></td>
+                                  <td><input type="number" class="form-control" placeholder="Cantidad"></td>
+                                  <td><input type="number" class="form-control" placeholder="Precio"></td>
+                                  <td><input type="text" class="form-control" placeholder="Cliente"></td>
+                                  <td><input type="text" class="form-control" placeholder="S/C"></td>
+                                  <td><input type="number" class="form-control" placeholder="Descuento"></td>
+                              </tr>
+                          </tbody>
+                      </table>
+                      
+                        <div class="row">
+                          <div class="col-md-12 text-center">
+                            <button id="agregar-fila" class="btn btn-primary">Agregar Fila</button>
+                            <button id="eliminar-fila" class="btn btn-danger">Eliminar Última Fila</button>
+                          </div>
+                        </div>
+
+                      </div>
                     </div>
                   </div>
             </div>
@@ -116,31 +153,57 @@
 </html>
 
 <script>
-document.addEventListener('DOMContentLoaded', (event) => {
-  const spDinamicoSection = document.getElementById('spDinamicoSection');
-  const importadorDirectoSection = document.getElementById('importadorDirectoSection');
+  document.addEventListener('DOMContentLoaded', (event) => {
+    const spDinamicoSection = document.getElementById('spDinamicoSection');
+    const importadorDirectoSection = document.getElementById('importadorDirectoSection');
 
-  const option1 = document.getElementById('option1');
-  const option2 = document.getElementById('option2');
+    const option1 = document.getElementById('option1');
+    const option2 = document.getElementById('option2');
 
-  // Function to toggle visibility based on selected option
-  function toggleSections() {
-    if (option1.checked) {
-      spDinamicoSection.style.display = 'block';
-      importadorDirectoSection.style.display = 'none';
-    } else if (option2.checked) {
-      spDinamicoSection.style.display = 'none';
-      importadorDirectoSection.style.display = 'block';
+    function toggleSections() {
+      if (option1.checked) {
+        spDinamicoSection.style.display = 'block';
+        importadorDirectoSection.style.display = 'none';
+      } else if (option2.checked) {
+        spDinamicoSection.style.display = 'none';
+        importadorDirectoSection.style.display = 'block';
+      }
     }
-  }
 
-  // Add event listeners to radio buttons
-  option1.addEventListener('change', toggleSections);
-  option2.addEventListener('change', toggleSections);
+    option1.addEventListener('change', toggleSections);
+    option2.addEventListener('change', toggleSections);
 
-  // Initialize visibility based on initial state
-  toggleSections();
-});
+    toggleSections();
+  });
+
+  document.addEventListener('DOMContentLoaded', (event) => {
+    document.getElementById('agregar-fila').addEventListener('click', function() {
+      const tablaBody = document.getElementById('tabla-body');
+
+      const nuevaFila = document.createElement('tr');
+
+      nuevaFila.innerHTML = `
+          <td><input type="text" class="form-control" placeholder="SKU"></td>
+          <td><input type="text" class="form-control" placeholder="Descripción"></td>
+          <td><input type="number" class="form-control" placeholder="Cantidad"></td>
+          <td><input type="number" class="form-control" placeholder="Precio"></td>
+          <td><input type="text" class="form-control" placeholder="Cliente"></td>
+          <td><input type="text" class="form-control" placeholder="S/C"></td>
+          <td><input type="number" class="form-control" placeholder="Descuento"></td>
+      `;
+
+      tablaBody.appendChild(nuevaFila);
+    });
+
+    document.getElementById('eliminar-fila').addEventListener('click', function() {
+        const tablaBody = document.getElementById('tabla-body');
+        const filas = tablaBody.querySelectorAll('tr');
+        if (filas.length > 1) {
+            tablaBody.removeChild(filas[filas.length - 1]);
+        }
+    });
+  });
+
 
 </script>
 
