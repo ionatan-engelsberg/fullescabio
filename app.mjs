@@ -14,6 +14,10 @@ import passport from 'passport';
 import initializePassport from './passport-config.mjs';
 import sql from 'mssql';
 
+//
+import { pipeline } from './xlsx.mjs';
+//
+
 const app = express();
 const __dirname = path.resolve();
 
@@ -81,6 +85,7 @@ const start = async () => {
         app.listen(8080, () => {
             console.log('Server on Port 8080')
         })
+        pipeline()
     } catch (error) {
         console.log('ERROR while connecting to DB: ', error)
     }
