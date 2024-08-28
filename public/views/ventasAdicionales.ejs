@@ -276,7 +276,7 @@
                 Subir Excel. <a href="">Ver Plantila</a>
               </h6>
               <form
-                action="/admin/productos/upload"
+                action="/admin/ventas-adicionales/upload"
                 method="POST"
                 enctype="multipart/form-data"
               >
@@ -401,7 +401,7 @@
                 Subir Excel. <a href="">Ver Plantila</a>
               </h6>
               <form
-                action="/admin/productos/upload"
+                action="/admin/ventas-adicionales/upload"
                 method="POST"
                 enctype="multipart/form-data"
               >
@@ -480,6 +480,7 @@
     const botonSeleccionarImportar = document.getElementById("botonSeleccionarImportar");
     const botonSeleccionarCarga = document.getElementById("botonSeleccionarCarga");
 
+    const buttonUploadFile = document.getElementById("inputGroupFileAddon04")
     const uploadFile = document.getElementById("inputGroupFile04")
     const cargaManual = document.getElementById("tabla-body")
     const inputGroup = cargaManual.querySelectorAll("input")
@@ -490,6 +491,7 @@
     function toggleSections() {
       if (botonSeleccionarImportar.checked) {
         uploadFile.disabled = false
+        buttonUploadFile.disabled = false
 
         inputGroup.forEach(input => {
           input.disabled = true
@@ -498,6 +500,7 @@
         eliminarFila.disabled = true
       } else if (botonSeleccionarCarga.checked) {
         uploadFile.disabled = true
+        buttonUploadFile.disabled = true
 
         inputGroup.forEach(input => {
           input.disabled = false

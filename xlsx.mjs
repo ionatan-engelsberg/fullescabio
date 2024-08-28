@@ -1,5 +1,8 @@
 import sql from 'mssql';
 import xlsx from 'xlsx';
+import path from 'path';
+const __dirname = path.resolve();
+
 
 // COPIADA DE admin.mjs
 const getClientById = async (clientId) => {
@@ -30,10 +33,6 @@ const getProductBySku = async (sku, lista) => {
     return [];
   }
 }
-
-
-
-
 
 const validateRow = async (row, rowCounter, sp) => {
   const { sku, cantidad, precio, cliente, descuento } = row
@@ -120,19 +119,21 @@ const validateWorkbook = async (file, sp) => {
 }
 
 
-export const pipeline = async () => {
-  const file_path = './Book1.xlsx';
-  const workbook = xlsx.readFile(file_path);
+export const parsedWorkbook = async (fileName, sp) => {
+  const filePath = path.join(__dirname, 'uploads', fileName);
+  const workbook = xlsx.readFile(filePath);
   try {
-    const sp = true;
     const items = await validateWorkbook(workbook, sp);
     console.log('PARSED ITEMS: ', items);
+    return items
   } catch (error) {
     const rowError = error.cause
     if (typeof rowError == 'number') {
       console.log(`ERROR at row ${rowError}: ${error}`);
+      return error
     } else {
       console.log(`ERROR: ${error.cause}`)
+      return error.cause
     }
   }
 }

@@ -14,10 +14,6 @@ import passport from 'passport';
 import initializePassport from './passport-config.mjs';
 import sql from 'mssql';
 
-//
-import { pipeline } from './xlsx.mjs';
-//
-
 const app = express();
 const __dirname = path.resolve();
 

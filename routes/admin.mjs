@@ -1,8 +1,13 @@
 import express from "express";
-import { v4 as uuidv4 } from 'uuid';
-import { checkAuthenticated } from '../middlewares/auth.mjs';
 import sql from 'mssql';
+import uploadExcel from "../middlewares/multer.mjs"
+import path from 'path';
+
+import { checkAuthenticated } from '../middlewares/auth.mjs';
+import { parsedWorkbook } from "../xlsx.mjs";
+
 const router = express.Router()
+const __dirname = path.resolve();
 router.use(checkAuthenticated)
 
 const obtenerClientesPedidoUnico = async (query) => {
@@ -85,6 +90,24 @@ const obtenerListaVendedoresPedidoUnico = async (query) => {
 
 router.get('/', (req, res) => {
     res.render('admin')
+})
+
+
+router.post("/ventas-adicionales/upload", uploadExcel.single("file"), (req, res) => {
+    if (!req.file) {
+        return res.status(400).send('No file uploaded.');
+    }
+
+    const { filename } = req.file
+    parsedWorkbook(filename, true)
+    .then(() => {
+        console.log('Function executed successfully');
+        res.render("ventasAdicionales")
+    })
+    .catch(error => {
+        console.error('Error executing function:', error);
+        res.render("ventasAdicionales")
+    });
 })
 
 //todo: MODULARIZAR
@@ -293,5 +316,6 @@ router.post("/pedido-mayorista/obtener-articulos", async (req, res) => {
 router.get('/ventas-adicionales', (req, res) => {
     res.render('ventasAdicionales')
 })
+
 
 export default router
