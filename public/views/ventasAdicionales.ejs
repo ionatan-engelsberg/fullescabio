@@ -99,7 +99,6 @@
                 <input
                   type="radio"
                   name="subOptions"
-                  id=""
                   autocomplete="off"
                   id="botonSeleccionarImportar"
                 />
@@ -109,7 +108,6 @@
                 <input
                   type="radio"
                   name="subOptions"
-                  id=""
                   autocomplete="off"
                   id="botonSeleccionarCarga"
                 />
@@ -255,128 +253,145 @@
           <div class="row mb-50px">
             <div class="col-md-6">
               <label for="" class="text-dark fw-600 fs-20">Desde</label>
-              <input type="date" class="form-control " name="nombrePedidoUnico">
+              <input
+                type="date"
+                class="form-control"
+                name="nombrePedidoUnico"
+              />
             </div>
             <div class="col-md-6">
               <label for="" class="text-dark fw-600 fs-20">Hasta</label>
-              <input type="date" class="form-control " name="nombrePedidoUnico">
+              <input
+                type="date"
+                class="form-control"
+                name="nombrePedidoUnico"
+              />
             </div>
           </div>
           <hr />
 
-            <div class="row">
-              <div class="col-md-12 mt-30px mb-50px">
-                <h6 class="text-dark fw-600 mb-5px">
-                  Subir Excel. <a href="">Ver Plantila</a>
-                </h6>
-                <form
-                  action="/admin/productos/upload"
-                  method="POST"
-                  enctype="multipart/form-data"
-                >
-                  <div class="input-group">
-                    <input
-                      type="file"
-                      class="form-control file-input"
-                      id="inputGroupFile04"
-                      aria-describedby="inputGroupFileAddon04"
-                      aria-label="Upload"
-                      name="file"
-                    />
-                    <button
-                      class="btn btn-base-color btn-hover-animation btn-round-edge btn-box-shadow"
-                      type="submit"
-                      id="inputGroupFileAddon04"
-                    >
-                      Subir
-                    </button>
-                  </div>
-                </form>
-              </div>
+          <div class="row">
+            <div class="col-md-12 mt-30px mb-50px">
+              <h6 class="text-dark fw-600 mb-5px">
+                Subir Excel. <a href="">Ver Plantila</a>
+              </h6>
+              <form
+                action="/admin/productos/upload"
+                method="POST"
+                enctype="multipart/form-data"
+              >
+                <div class="input-group">
+                  <input
+                    type="file"
+                    class="form-control file-input"
+                    id="inputGroupFile04"
+                    aria-describedby="inputGroupFileAddon04"
+                    aria-label="Upload"
+                    name="file"
+                    disabled
+                  />
+                  <button
+                    class="btn btn-base-color btn-hover-animation btn-round-edge btn-box-shadow"
+                    type="submit"
+                    id="inputGroupFileAddon04"
+                    disabled
+                  >
+                    Subir
+                  </button>
+                </div>
+              </form>
             </div>
-            <hr />
-            <div class="row mt-50px">
-              <div class="col-md-12">
-                <h6 class="text-dark fw-600 mb-10px">Carga Manual</h6>
-                <table class="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th>SKU</th>
-                      <th>DESCRIPCIÓN</th>
-                      <th>CANTIDAD</th>
-                      <th>PRECIO</th>
-                      <th>CLIENTE</th>
-                      <th>S/C</th>
-                      <th>DESCUENTO</th>
-                    </tr>
-                  </thead>
-                  <tbody id="tabla-body">
-                    <tr>
-                      <td>
-                        <input
-                          type="text"
-                          class="form-control"
-                          placeholder="SKU"
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="text"
-                          class="form-control"
-                          placeholder="Descripción"
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          class="form-control"
-                          placeholder="Cantidad"
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          class="form-control"
-                          placeholder="Precio"
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="text"
-                          class="form-control"
-                          placeholder="Cliente"
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="text"
-                          class="form-control"
-                          placeholder="S/C"
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          class="form-control"
-                          placeholder="Descuento"
-                        />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+          </div>
+          <hr />
+          <div class="row mt-50px">
+            <div class="col-md-12">
+              <h6 class="text-dark fw-600 mb-10px">Carga Manual</h6>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>SKU</th>
+                    <th>DESCRIPCIÓN</th>
+                    <th>CANTIDAD</th>
+                    <th>PRECIO</th>
+                    <th>CLIENTE</th>
+                    <th>S/C</th>
+                    <th>DESCUENTO</th>
+                  </tr>
+                </thead>
+                <tbody id="tabla-body">
+                  <tr>
+                    <td>
+                      <input
+                        disabled
+                        type="text"
+                        class="form-control"
+                        placeholder="SKU"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        disabled
+                        type="text"
+                        class="form-control"
+                        placeholder="Descripción"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        disabled
+                        type="number"
+                        class="form-control"
+                        placeholder="Cantidad"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        disabled
+                        type="number"
+                        class="form-control"
+                        placeholder="Precio"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        disabled
+                        type="text"
+                        class="form-control"
+                        placeholder="Cliente"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        disabled
+                        type="text"
+                        class="form-control"
+                        placeholder="S/C"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        disabled
+                        type="number"
+                        class="form-control"
+                        placeholder="Descuento"
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
 
-                <div class="row">
-                  <div class="col-md-12 text-center">
-                    <button id="agregar-fila" class="btn btn-primary">
-                      Agregar Fila
-                    </button>
-                    <button id="eliminar-fila" class="btn btn-danger">
-                      Eliminar Última Fila
-                    </button>
-                  </div>
+              <div class="row">
+                <div class="col-md-12 text-center">
+                  <button id="agregar-fila" class="btn btn-primary" disabled>
+                    Agregar Fila
+                  </button>
+                  <button id="eliminar-fila" class="btn btn-danger" disabled>
+                    Eliminar Última Fila
+                  </button>
                 </div>
               </div>
             </div>
+          </div>
         </div>
 
         <div id="importadorDirectoSection" class="hidden">
@@ -457,6 +472,43 @@
 
     option1.addEventListener("change", toggleSections);
     option2.addEventListener("change", toggleSections);
+
+    toggleSections();
+  });
+
+  document.addEventListener("DOMContentLoaded", (event) => {
+    const botonSeleccionarImportar = document.getElementById("botonSeleccionarImportar");
+    const botonSeleccionarCarga = document.getElementById("botonSeleccionarCarga");
+
+    const uploadFile = document.getElementById("inputGroupFile04")
+    const cargaManual = document.getElementById("tabla-body")
+    const inputGroup = cargaManual.querySelectorAll("input")
+
+    const agregarFila = document.getElementById("agregar-fila")
+    const eliminarFila = document.getElementById("eliminar-fila")
+
+    function toggleSections() {
+      if (botonSeleccionarImportar.checked) {
+        uploadFile.disabled = false
+
+        inputGroup.forEach(input => {
+          input.disabled = true
+        })
+        agregarFila.disabled = true
+        eliminarFila.disabled = true
+      } else if (botonSeleccionarCarga.checked) {
+        uploadFile.disabled = true
+
+        inputGroup.forEach(input => {
+          input.disabled = false
+        })
+        agregarFila.disabled = false
+        eliminarFila.disabled = false
+      }
+    }
+
+    botonSeleccionarImportar.addEventListener("change", toggleSections);
+    botonSeleccionarCarga.addEventListener("change", toggleSections);
 
     toggleSections();
   });
