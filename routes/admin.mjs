@@ -115,8 +115,7 @@ router.get('/ventas-adicionales', async (req, res) => {
         agrupacion,
         dinamicoBTN: false,
         importadorBTN: false,
-        verPedidoButtonSP: false,
-        verPedidoButtonImportadorDirecto: false
+        verPedidoButton: false,
     })
 })
 
@@ -129,8 +128,6 @@ router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req
     await parsedWorkbook(filename, true)
     .then((data) => {
         res.render("ventasAdicionales", { 
-            verPedidoButtonImportadorDirecto: false,
-            verPedidoButtonSP: true,
             agrupacion: data,
             verPedidoButton: true
         })
@@ -138,9 +135,7 @@ router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req
     .catch(error => {
         console.error('Error executing function:', error);
         res.render("ventasAdicionales", { 
-            checkedOption: "option1",
-            error,
-            verPedidoButton: true
+            error
         })
     });
 })
@@ -154,14 +149,13 @@ router.post("/ventas-adicionales/direct-upload", uploadExcel.single("file"), asy
     await parsedWorkbook(filename, false)
     .then((data) => {
         res.render("ventasAdicionales", { 
-            checkedOption: "option2",
-            agrupacion: data 
+            agrupacion: data, 
+            verPedidoButton: true
         })
     })
     .catch(error => {
         console.error('Error executing function:', error);
         res.render("ventasAdicionales", { 
-            checkedOption: "option2",
             error 
         })
     });
