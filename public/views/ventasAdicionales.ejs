@@ -72,8 +72,8 @@
           <div class="col-md-4">
             <div class="" data-toggle="buttons">
               <select class="form-select" name="" id="chooseImportMethod">
-                <option value="SPUpload" id="SPUpload" <%= dinamicoBTN ? 'selected' : '' %>>Dinamico</option>
-                <option value="directUpload" id="directUpload"<%= importadorBTN ? 'selected' : '' %>>Importar Directo</option>
+                <option value="SPUpload" id="SPUpload">Dinamico</option>
+                <option value="directUpload" id="directUpload">Importar Directo</option>
               </select>
             </div>
           </div>
@@ -81,6 +81,7 @@
           <div class="col-md-4 text-center">
             <div id="SPDinamicoElegirMetodo">
               <select class="form-select" name="" id="chooseSPMethod">
+                <option value="default" readonly>Seleccionar Opcion</option>
                 <option value="botonSeleccionarImportar" id="botonSeleccionarImportar">Importar Excel</option>
                 <option value="botonSeleccionarCarga" id="botonSeleccionarCarga">Carga Manual</option>
               </select>
@@ -137,7 +138,34 @@
                     </button>
                   </div>
 
-                  <div class="modal-body text-start" id="infoPedido"></div>
+                  <div class="modal-body text-start" id="infoPedido">
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>SKU</th>
+                          <th>DESCRIPCIÓN</th>
+                          <th>CANTIDAD</th>
+                          <th>PRECIO</th>
+                          <th>CLIENTE</th>
+                          <th>S/C</th>
+                          <th>DESCUENTO</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% data.forEach((item) => { %>
+                          <tr>
+                            <td><%= item.sku || '' %></td>
+                            <td><%= item.descripcion || '' %></td>
+                            <td><%= item.cantidad || '' %></td>
+                            <td><%= item.precio || '' %></td>
+                            <td><%= item.cliente || '' %></td>
+                            <td><%= item.sc || '' %></td>
+                            <td><%= item.descuento || '' %></td>
+                          </tr>
+                        <% }); %>
+                      </tbody>
+                    </table>
+                  </div>
                   <div class="modal-footer"></div>
                 </div>
               </div>

@@ -113,6 +113,7 @@ router.get('/ventas-adicionales', async (req, res) => {
     const agrupacion = await obtenerClienteAgupacion(`EXEC may_client_agru`)
     res.render('ventasAdicionales', { 
         agrupacion,
+        data: [],
         dinamicoBTN: false,
         importadorBTN: false,
         verPedidoButton: false,
@@ -125,16 +126,21 @@ router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req
     }
 
     const { filename } = req.file
+    const agrupacion = await obtenerClienteAgupacion(`EXEC may_client_agru`)
+
     await parsedWorkbook(filename, true)
     .then((data) => {
+        console.log(data)
         res.render("ventasAdicionales", { 
-            agrupacion: data,
+            agrupacion,
+            data,
             verPedidoButton: true
         })
     })
     .catch(error => {
         console.error('Error executing function:', error);
         res.render("ventasAdicionales", { 
+            agrupacion,
             error
         })
     });
@@ -146,16 +152,20 @@ router.post("/ventas-adicionales/direct-upload", uploadExcel.single("file"), asy
     }
 
     const { filename } = req.file
+    const agrupacion = await obtenerClienteAgupacion(`EXEC may_client_agru`)
+
     await parsedWorkbook(filename, false)
     .then((data) => {
         res.render("ventasAdicionales", { 
-            agrupacion: data, 
+            agrupacion,
+            data, 
             verPedidoButton: true
         })
     })
     .catch(error => {
         console.error('Error executing function:', error);
         res.render("ventasAdicionales", { 
+            agrupacion: [],
             error 
         })
     });
