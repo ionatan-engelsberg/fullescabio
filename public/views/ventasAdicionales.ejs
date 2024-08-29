@@ -72,30 +72,21 @@
           <div class="col-md-4">
             <div class="" data-toggle="buttons">
               <label class="btn btn-primary">
-                <input
-                  type="radio"
-                  name="options"
-                  id="option1"
-                  autocomplete="off"
-                  checked
-                />
-                SP (dinamico)
+                <input type="radio" name="options" id="option1"
+                autocomplete="off" <%= checkedOption === 'option1' ? 'checked' :
+                '' %> /> SP (dinamico)
               </label>
               <label class="btn btn-primary">
-                <input
-                  type="radio"
-                  name="options"
-                  id="option2"
-                  autocomplete="off"
-                />
-                Importador (directo)
+                <input type="radio" name="options" id="option2"
+                autocomplete="off" <%= checkedOption === 'option2' ? 'checked' :
+                '' %> /> Importador (directo)
               </label>
             </div>
           </div>
 
           <div class="col-md-4 text-center">
             <div id="SPDinamicoElegirMetodo">
-              <label class="btn btn-primary">
+              <label class="btn btn-success">
                 <input
                   type="radio"
                   name="subOptions"
@@ -104,7 +95,7 @@
                 />
                 Importar Excel
               </label>
-              <label class="btn btn-primary">
+              <label class="btn btn-warning">
                 <input
                   type="radio"
                   name="subOptions"
@@ -251,26 +242,37 @@
 
         <div id="spDinamicoSection">
           <div class="row mb-50px">
-            <div class="col-md-6">
-              <label for="" class="text-dark fw-600 fs-20">Desde</label>
+            
+            <div class="col-md-4">
+              <label for="" class="text-dark fw-600 fs-24">Fecha Desde</label>
               <input
                 type="date"
                 class="form-control"
                 name="nombrePedidoUnico"
               />
             </div>
-            <div class="col-md-6">
-              <label for="" class="text-dark fw-600 fs-20">Hasta</label>
+            <div class="col-md-4">
+              <label for="" class="text-dark fw-600 fs-24">Hasta</label>
               <input
                 type="date"
                 class="form-control"
                 name="nombrePedidoUnico"
               />
+            </div>
+            <div class="col-md-4">
+              <label for="" class="text-dark fw-600 fs-24">Agrupacion (Opcional)</label>
+
+              <select class="form-select" name="nombrePedidoUnico">
+                <% agrupacion.forEach(i => { %>
+                  <option value="<%= i.codigo %>"><%= i.nombre %></option>
+                <% }); %>
+              </select>
             </div>
           </div>
+          
           <hr />
 
-          <div class="row">
+          <div class="row" id="SPUploadExcelContainer">
             <div class="col-md-12 mt-30px mb-50px">
               <h6 class="text-dark fw-600 mb-5px">
                 Subir Excel. <a href="">Ver Plantila</a>
@@ -303,7 +305,7 @@
             </div>
           </div>
           <hr />
-          <div class="row mt-50px">
+          <div class="row pt-30px pb-30px" id="SPManualContenedor">
             <div class="col-md-12">
               <h6 class="text-dark fw-600 mb-10px">Carga Manual</h6>
               <table class="table table-bordered">
@@ -401,7 +403,7 @@
                 Subir Excel. <a href="">Ver Plantila</a>
               </h6>
               <form
-                action="/admin/ventas-adicionales/upload"
+                action="/admin/ventas-adicionales/direct-upload"
                 method="POST"
                 enctype="multipart/form-data"
               >
@@ -477,36 +479,47 @@
   });
 
   document.addEventListener("DOMContentLoaded", (event) => {
-    const botonSeleccionarImportar = document.getElementById("botonSeleccionarImportar");
-    const botonSeleccionarCarga = document.getElementById("botonSeleccionarCarga");
+    const botonSeleccionarImportar = document.getElementById(
+      "botonSeleccionarImportar"
+    );
+    const botonSeleccionarCarga = document.getElementById(
+      "botonSeleccionarCarga"
+    );
 
-    const buttonUploadFile = document.getElementById("inputGroupFileAddon04")
-    const uploadFile = document.getElementById("inputGroupFile04")
-    const cargaManual = document.getElementById("tabla-body")
-    const inputGroup = cargaManual.querySelectorAll("input")
+    const uploadContainer = document.getElementById("SPUploadExcelContainer")
+    const buttonUploadFile = document.getElementById("inputGroupFileAddon04");
+    const uploadFile = document.getElementById("inputGroupFile04");
+    const cargaManual = document.getElementById("tabla-body");
+    const inputGroup = cargaManual.querySelectorAll("input");
 
-    const agregarFila = document.getElementById("agregar-fila")
-    const eliminarFila = document.getElementById("eliminar-fila")
+    const agregarFila = document.getElementById("agregar-fila");
+    const eliminarFila = document.getElementById("eliminar-fila");
 
     function toggleSections() {
       if (botonSeleccionarImportar.checked) {
-        uploadFile.disabled = false
-        buttonUploadFile.disabled = false
+        uploadFile.disabled = false;
+        buttonUploadFile.disabled = false;
 
-        inputGroup.forEach(input => {
-          input.disabled = true
-        })
-        agregarFila.disabled = true
-        eliminarFila.disabled = true
+        uploadContainer.style = "background: rgba(158, 242, 85, 0.3); border: 2px solid #146C43;"
+        SPManualContenedor.style = "background: transparent; border: 2px solid none;"
+
+        inputGroup.forEach((input) => {
+          input.disabled = true;
+        });
+        agregarFila.disabled = true;
+        eliminarFila.disabled = true;
       } else if (botonSeleccionarCarga.checked) {
-        uploadFile.disabled = true
-        buttonUploadFile.disabled = true
+        uploadFile.disabled = true;
+        buttonUploadFile.disabled = true;
 
-        inputGroup.forEach(input => {
-          input.disabled = false
-        })
-        agregarFila.disabled = false
-        eliminarFila.disabled = false
+        SPManualContenedor.style = "background: rgba(255, 248, 143, 0.3); border: 2px solid #FFC824;"
+        uploadContainer.style = "background: transparent; border: 2px solid none;"
+
+        inputGroup.forEach((input) => {
+          input.disabled = false;
+        });
+        agregarFila.disabled = false;
+        eliminarFila.disabled = false;
       }
     }
 

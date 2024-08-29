@@ -124,16 +124,13 @@ export const parsedWorkbook = async (fileName, sp) => {
   const workbook = xlsx.readFile(filePath);
   try {
     const items = await validateWorkbook(workbook, sp);
-    console.log('PARSED ITEMS: ', items);
     return items
   } catch (error) {
     const rowError = error.cause
     if (typeof rowError == 'number') {
-      console.log(`ERROR at row ${rowError}: ${error}`);
-      return error
+      return `ERROR at row ${rowError}: ${error}`
     } else {
-      console.log(`ERROR: ${error.cause}`)
-      return error.cause
+      return `ERROR: ${error.cause}`
     }
   }
 }

@@ -6,6 +6,9 @@ import path from 'path';
 import { checkAuthenticated } from '../middlewares/auth.mjs';
 import { parsedWorkbook } from "../xlsx.mjs";
 
+//! !!!!
+//todo: !!! MODULARIZAR !!!
+//! !!!!
 const router = express.Router()
 const __dirname = path.resolve();
 router.use(checkAuthenticated)
@@ -88,29 +91,75 @@ const obtenerListaVendedoresPedidoUnico = async (query) => {
     }
 } 
 
+const obtenerClienteAgupacion = async (query) => {
+    try {
+        const request = await new sql.Request().query(query)
+        return request.recordset.map((row) => {
+            const { AGRU_3: codigo, DESCRIP_AGRU: nombre } = row
+            return {codigo, nombre}
+        })
+    } catch (error) {
+        console.log('ERROR: ', error);
+        return [];
+    }
+}
+
 router.get('/', (req, res) => {
     res.render('admin')
 })
 
+//! Ventas Adicionales
+router.get('/ventas-adicionales', async (req, res) => {
+    const agrupacion = await obtenerClienteAgupacion(`EXEC may_client_agru`)
+    res.render('ventasAdicionales', { 
+        checkedOption: "option1",
+        agrupacion 
+    })
+})
 
-router.post("/ventas-adicionales/upload", uploadExcel.single("file"), (req, res) => {
+router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req, res) => {
     if (!req.file) {
         return res.status(400).send('No file uploaded.');
     }
 
     const { filename } = req.file
-    parsedWorkbook(filename, true)
-    .then(() => {
-        console.log('Function executed successfully');
-        res.render("ventasAdicionales")
+    await parsedWorkbook(filename, true)
+    .then((data) => {
+        res.render("ventasAdicionales", { 
+            checkedOption: "option1",
+            data 
+        })
     })
     .catch(error => {
         console.error('Error executing function:', error);
-        res.render("ventasAdicionales")
+        res.render("ventasAdicionales", { 
+            checkedOption: "option1",
+            error
+        })
     });
 })
 
-//todo: MODULARIZAR
+router.post("/ventas-adicionales/direct-upload", uploadExcel.single("file"), async (req, res) => {
+    if (!req.file) {
+        return res.status(400).send('No file uploaded.');
+    }
+
+    const { filename } = req.file
+    await parsedWorkbook(filename, false)
+    .then((data) => {
+        res.render("ventasAdicionales", { 
+            checkedOption: "option2",
+            data 
+        })
+    })
+    .catch(error => {
+        console.error('Error executing function:', error);
+        res.render("ventasAdicionales", { 
+            checkedOption: "option2",
+            error 
+        })
+    });
+})
 
 //! Pedido Unico
 router.get('/pedido-unico', async (req, res) => {
@@ -311,11 +360,5 @@ router.post("/pedido-mayorista/obtener-articulos", async (req, res) => {
         resultadosPartidas
     })
 })
-
-//! Ventas Adicionales
-router.get('/ventas-adicionales', (req, res) => {
-    res.render('ventasAdicionales')
-})
-
 
 export default router
