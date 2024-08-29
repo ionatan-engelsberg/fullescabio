@@ -144,7 +144,7 @@
                           <th>DESCUENTO</th>
                         </tr>
                       </thead>
-                      <tbody>
+                      <tbody id="verDetallesPedido">
                         <% data.forEach((item) => { %>
                           <tr>
                             <td><%= item.sku || '' %></td>
@@ -467,6 +467,7 @@
   });
 
   document.addEventListener("DOMContentLoaded", (event) => {
+    const tbody = document.getElementById('verDetallesPedido');
     const confirmarButton = document.getElementById("confirmarButton")
 
     confirmarButton.addEventListener("click", () => {
@@ -484,18 +485,53 @@
       }
 
       const groupedInputs = [];
+      const propertyNames = ['sku', 'descripcion', 'cantidad', 'precio', 'cliente', 'sc', 'descuento'];
+
       for (let i = 0; i < inputs.length; i += 7) {
-        const group = Array.from(inputs).slice(i, i + 7).map(input => input.value);
-        groupedInputs.push(group); 
+        const values = Array.from(inputs).slice(i, i + 7).map(input => input.value);
+        const obj = {};
+        propertyNames.forEach((propertyName, index) => {
+            obj[propertyName] = values[index] || ''; 
+        });
+
+        groupedInputs.push(obj);
+      }      
+      ventasAdicionalesStorage = groupedInputs 
+
+      tbody.innerHTML = '';
+
+      if (ventasAdicionalesStorage && Array.isArray(ventasAdicionalesStorage)) {
+        ventasAdicionalesStorage.forEach(item => {
+          const row = document.createElement('tr');
+
+          const cells = [
+            item.sku || '',
+            item.descripcion || '',
+            item.cantidad || '',
+            item.precio || '',
+            item.cliente || '',
+            item.sc || '',
+            item.descuento || ''
+          ];
+
+          cells.forEach(cellData => {
+            const cell = document.createElement('td');
+            cell.textContent = cellData;
+            row.appendChild(cell);
+          });
+
+          tbody.appendChild(row);
+        });
       }
-      
-      ventasAdicionalesStorage = { ...groupedInputs }
-      console.log(ventasAdicionalesStorage)
 
       inputs.forEach(input => {
-        input.classList.toggle("input-disabled")
         input.disabled = !input.disabled
+        input.classList.toggle("input-disabled")
       })
+
+      document.getElementById("agregar-fila").disabled = !document.getElementById("agregar-fila").disabled
+      document.getElementById("eliminar-fila").disabled = !document.getElementById("eliminar-fila").disabled
+      document.getElementById("verPedido").disabled = !document.getElementById("verPedido").disabled
     })
 
     document
