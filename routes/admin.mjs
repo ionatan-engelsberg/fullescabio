@@ -117,6 +117,8 @@ router.get('/ventas-adicionales', async (req, res) => {
         dinamicoBTN: false,
         importadorBTN: false,
         verPedidoButton: false,
+        chooseImportMethod: false,
+        chooseSPMethod: false
     })
 })
 
@@ -134,7 +136,9 @@ router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req
         res.render("ventasAdicionales", { 
             agrupacion,
             data,
-            verPedidoButton: true
+            verPedidoButton: true,
+            chooseImportMethod: true,
+            chooseSPMethod: true
         })
     })
     .catch(error => {
@@ -159,7 +163,9 @@ router.post("/ventas-adicionales/direct-upload", uploadExcel.single("file"), asy
         res.render("ventasAdicionales", { 
             agrupacion,
             data, 
-            verPedidoButton: true
+            verPedidoButton: true,
+            chooseImportMethod: true,
+            chooseSPMethod: true
         })
     })
     .catch(error => {

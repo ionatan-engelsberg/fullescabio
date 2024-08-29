@@ -71,7 +71,7 @@
         <div class="row mb-3">
           <div class="col-md-4">
             <div class="" data-toggle="buttons">
-              <select class="form-select" name="" id="chooseImportMethod">
+              <select class="form-select" name="" id="chooseImportMethod"  <%= chooseImportMethod ? 'disabled' : '' %> >
                 <option value="SPUpload" id="SPUpload">Dinamico</option>
                 <option value="directUpload" id="directUpload">Importar Directo</option>
               </select>
@@ -80,7 +80,7 @@
 
           <div class="col-md-4 text-center">
             <div id="SPDinamicoElegirMetodo">
-              <select class="form-select" name="" id="chooseSPMethod">
+              <select class="form-select" name="" id="chooseSPMethod" <%= chooseSPMethod ? 'disabled' : '' %>>
                 <option value="default" readonly>Seleccionar Opcion</option>
                 <option value="botonSeleccionarImportar" id="botonSeleccionarImportar">Importar Excel</option>
                 <option value="botonSeleccionarCarga" id="botonSeleccionarCarga">Carga Manual</option>
@@ -204,7 +204,7 @@
               />
             </div>
             <div class="col-md-4">
-              <label for="" class="text-dark fw-600 fs-24">Agrupacion (Opcional)</label>
+              <label for="" class="text-dark fw-600 fs-24">Agrupacion</label>
 
               <select class="form-select" name="nombrePedidoUnico">
                 <% agrupacion.forEach(i => { %>
