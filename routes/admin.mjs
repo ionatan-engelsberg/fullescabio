@@ -113,7 +113,8 @@ router.get('/ventas-adicionales', async (req, res) => {
     const agrupacion = await obtenerClienteAgupacion(`EXEC may_client_agru`)
     res.render('ventasAdicionales', { 
         checkedOption: "option1",
-        agrupacion 
+        agrupacion,
+        verPedidoButton: false
     })
 })
 
@@ -127,14 +128,16 @@ router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req
     .then((data) => {
         res.render("ventasAdicionales", { 
             checkedOption: "option1",
-            data 
+            agrupacion: data,
+            verPedidoButton: true
         })
     })
     .catch(error => {
         console.error('Error executing function:', error);
         res.render("ventasAdicionales", { 
             checkedOption: "option1",
-            error
+            error,
+            verPedidoButton: true
         })
     });
 })
@@ -149,7 +152,7 @@ router.post("/ventas-adicionales/direct-upload", uploadExcel.single("file"), asy
     .then((data) => {
         res.render("ventasAdicionales", { 
             checkedOption: "option2",
-            data 
+            agrupacion: data 
         })
     })
     .catch(error => {
