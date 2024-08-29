@@ -128,9 +128,9 @@ export const parsedWorkbook = async (fileName, sp) => {
   } catch (error) {
     const rowError = error.cause
     if (typeof rowError == 'number') {
-      return `ERROR at row ${rowError}: ${error}`
+      throw new Error(`ERROR at row ${rowError}: ${error}`)
     } else {
-      return `ERROR: ${error.cause}`
+      throw new Error(`ERROR: ${error.cause}`)
     }
   }
 }

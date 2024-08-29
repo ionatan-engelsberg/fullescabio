@@ -145,6 +145,7 @@
                         </tr>
                       </thead>
                       <tbody id="verDetallesPedido">
+                        <% if (Array.isArray(data) && data.length > 0) { %>
                         <% data.forEach((item) => { %>
                           <tr>
                             <td><%= item.sku || '' %></td>
@@ -156,6 +157,11 @@
                             <td><%= item.descuento || '' %></td>
                           </tr>
                         <% }); %>
+                        <% } else { %>
+                          <tr>
+                            <td colspan="7">No hay datos disponibles.</td>
+                          </tr>
+                        <% } %>
                       </tbody>
                     </table>
                   </div>
@@ -173,8 +179,14 @@
               Finalizar<i class="bi bi-send-fill text-white"></i>
             </button>
           </div>
+        </div>
 
-          
+        <div class="row mb-3">
+          <% if (error != "") { %>
+            <div class="alert alert-danger" role="alert">
+              <%= error  %>
+            </div>
+          <% } %>
         </div>
 
         <div id="spDinamicoSection">
