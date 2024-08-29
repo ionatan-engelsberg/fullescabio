@@ -393,6 +393,9 @@
 </html>
 
 <script>
+  sessionStorage.setItem("ventas-adicionales-data", JSON.stringify(null))
+  let ventasAdicionalesStorage = JSON.parse(sessionStorage.getItem('ventas-adicionales-data'));
+
   document.addEventListener("DOMContentLoaded", (event) => {
     const spDinamicoSection = document.getElementById("spDinamicoSection");
     const importadorDirectoSection = document.getElementById(
@@ -402,8 +405,6 @@
     const SPDinamicoElegirMetodo = document.getElementById(
       "SPDinamicoElegirMetodo"
     );
-
-    console.log(SPDinamicoElegirMetodo)
 
     const selectElement = document.getElementById("chooseImportMethod");
     selectElement.addEventListener("change", function() {
@@ -457,7 +458,7 @@
         inputGroup.forEach((input) => {
           input.disabled = false;
         });
-        
+
         confirmarButton.disabled = false
         agregarFila.disabled = false;
         eliminarFila.disabled = false;
@@ -466,6 +467,37 @@
   });
 
   document.addEventListener("DOMContentLoaded", (event) => {
+    const confirmarButton = document.getElementById("confirmarButton")
+
+    confirmarButton.addEventListener("click", () => {
+      const container = document.getElementById("tabla-body");
+      const inputs = container.querySelectorAll("input")
+
+      if (confirmarButton.textContent.trim().startsWith("Confirmar")) {
+        confirmarButton.classList.remove('btn-green-color');
+        confirmarButton.classList.add('btn-base-color');
+        confirmarButton.innerHTML = 'Desconfirmar <i class="bi bi-x-lg text-white"></i>';
+      } else {                        
+        confirmarButton.classList.remove('btn-base-color');
+        confirmarButton.classList.add('btn-green-color');
+        confirmarButton.innerHTML = 'Confirmar <i class="bi bi-check-circle-fill text-white"></i>';
+      }
+
+      const groupedInputs = [];
+      for (let i = 0; i < inputs.length; i += 7) {
+        const group = Array.from(inputs).slice(i, i + 7).map(input => input.value);
+        groupedInputs.push(group); 
+      }
+      
+      ventasAdicionalesStorage = { ...groupedInputs }
+      console.log(ventasAdicionalesStorage)
+
+      inputs.forEach(input => {
+        input.classList.toggle("input-disabled")
+        input.disabled = !input.disabled
+      })
+    })
+
     document
       .getElementById("agregar-fila")
       .addEventListener("click", function () {
@@ -535,4 +567,9 @@
     background-color: #157347;
     color: white;
   }
+  .input-disabled {
+    font-weight: bold;
+    border: 1px solid #157347 !important;
+    cursor: not-allowed;
+  } 
 </style>
