@@ -92,13 +92,6 @@
             <button
               class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow"
               type="button"
-            >
-              Confirmar <i class="bi bi-check-circle-fill text-white"></i>
-            </button>
-
-            <button
-              class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow"
-              type="button"
               id="verPedido"
               data-toggle="modal"
               data-target="#verPedidoModal"
@@ -158,7 +151,7 @@
                             <td><%= item.descripcion || '' %></td>
                             <td><%= item.cantidad || '' %></td>
                             <td><%= item.precio || '' %></td>
-                            <td><%= item.cliente || '' %></td>
+                            <td class="client-cell"><%= item.cliente || '' %></td>
                             <td><%= item.sc || '' %></td>
                             <td><%= item.descuento || '' %></td>
                           </tr>
@@ -193,6 +186,7 @@
                 type="date"
                 class="form-control"
                 name="nombrePedidoUnico"
+                <%= fechas ? 'disabled' : '' %>
               />
             </div>
             <div class="col-md-4">
@@ -201,14 +195,16 @@
                 type="date"
                 class="form-control"
                 name="nombrePedidoUnico"
+                <%= fechas ? 'disabled' : '' %>
               />
             </div>
             <div class="col-md-4">
               <label for="" class="text-dark fw-600 fs-24">Agrupacion</label>
 
-              <select class="form-select" name="nombrePedidoUnico">
+              <select class="form-select" name="agrupacionVentasAdicionales" id="agrupacionVentasAdicionales" <%= selectAgrupacion ? 'disabled' : '' %>>
                 <% agrupacion.forEach(i => { %>
-                  <option value="<%= i.codigo %>"><%= i.nombre %></option>
+                  <option value="<%= i.codigo %>"
+                    <%= i.codigo === agrupacionSeleccionada ? 'selected' : '' %>><%= i.nombre %></option>
                 <% }); %>
               </select>
             </div>
@@ -245,13 +241,25 @@
                     Subir
                   </button>
                 </div>
+
+                <input type="hidden" name="agrupacionSeleccionada" id="agrupacionSeleccionada" />
               </form>
             </div>
           </div>
           <hr />
           <div class="row pt-30px pb-30px" id="SPManualContenedor">
             <div class="col-md-12">
-              <h6 class="text-dark fw-600 mb-10px">Carga Manual</h6>
+              <div class="row">
+                <div class="col-md-6">
+                  <h6 class="text-dark fw-600 mb-0">Carga Manual</h6>
+                </div>
+                <div class="col-md-6 text-end mb-20px">
+                  <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow" type="button" id="confirmarButton" disabled>
+                    Confirmar <i class="bi bi-check-circle-fill text-white"></i>
+                  </button>
+                </div>
+              </div>
+
               <table class="table table-bordered">
                 <thead>
                   <tr>
@@ -421,31 +429,36 @@
     const agregarFila = document.getElementById("agregar-fila");
     const eliminarFila = document.getElementById("eliminar-fila");
     const selectElement = document.getElementById("chooseSPMethod");
+    const confirmarButton = document.getElementById("confirmarButton")
 
     selectElement.addEventListener("change", function() {
       const selectedValue = selectElement.value;
       if (selectedValue === "botonSeleccionarImportar") {
         uploadFile.disabled = false;
         buttonUploadFile.disabled = false;
-
+        
         uploadContainer.style = "background: rgba(158, 242, 85, 0.3); border: 2px solid #146C43;"
         SPManualContenedor.style = "background: transparent; border: 2px solid none;"
-
+        
         inputGroup.forEach((input) => {
           input.disabled = true;
         });
+
+        confirmarButton.disabled = true
         agregarFila.disabled = true;
         eliminarFila.disabled = true;
       } else if (selectedValue === "botonSeleccionarCarga") {
         uploadFile.disabled = true;
         buttonUploadFile.disabled = true;
-
+        
         SPManualContenedor.style = "background: rgba(255, 248, 143, 0.3); border: 2px solid #FFC824;"
         uploadContainer.style = "background: transparent; border: 2px solid none;"
-
+        
         inputGroup.forEach((input) => {
           input.disabled = false;
         });
+        
+        confirmarButton.disabled = false
         agregarFila.disabled = false;
         eliminarFila.disabled = false;
       } 
@@ -482,6 +495,31 @@
           tablaBody.removeChild(filas[filas.length - 1]);
         }
       });
+  });
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const agrupacion = document.getElementById("agrupacionVentasAdicionales")
+    const clientCell = document.querySelectorAll(".client-cell")
+    const verPedido = document.getElementById("verPedido")
+    verPedido.addEventListener("click", () => {
+      clientCell.forEach(cell => {
+        if(cell.textContent == ""){
+          cell.textContent = agrupacion.value
+
+        }
+      })
+    })
+
+    const selectAgrupacion = document.getElementById('agrupacionVentasAdicionales');
+    const inputHidden = document.getElementById('agrupacionSeleccionada');
+
+    selectAgrupacion.addEventListener('change', function() {
+      inputHidden.value = this.value; // Sincroniza el valor seleccionado
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      inputHidden.value = selectAgrupacion.value; // Sincroniza el valor al cargar la página
+    });
   });
 </script>
 

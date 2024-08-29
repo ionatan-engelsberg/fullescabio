@@ -112,13 +112,16 @@ router.get('/', (req, res) => {
 router.get('/ventas-adicionales', async (req, res) => {
     const agrupacion = await obtenerClienteAgupacion(`EXEC may_client_agru`)
     res.render('ventasAdicionales', { 
+        agrupacionSeleccionada: "",
         agrupacion,
         data: [],
         dinamicoBTN: false,
         importadorBTN: false,
         verPedidoButton: false,
         chooseImportMethod: false,
-        chooseSPMethod: false
+        chooseSPMethod: false,
+        fechas: false,
+        selectAgrupacion: false
     })
 })
 
@@ -126,24 +129,28 @@ router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req
     if (!req.file) {
         return res.status(400).send('No file uploaded.');
     }
-
+    
+    const { agrupacionSeleccionada } = req.body
     const { filename } = req.file
     const agrupacion = await obtenerClienteAgupacion(`EXEC may_client_agru`)
 
     await parsedWorkbook(filename, true)
     .then((data) => {
-        console.log(data)
         res.render("ventasAdicionales", { 
+            agrupacionSeleccionada,
             agrupacion,
             data,
             verPedidoButton: true,
             chooseImportMethod: true,
-            chooseSPMethod: true
+            chooseSPMethod: true,
+            fechas: true,
+            selectAgrupacion: true
         })
     })
     .catch(error => {
         console.error('Error executing function:', error);
         res.render("ventasAdicionales", { 
+            agrupacionSeleccionada,
             agrupacion,
             error
         })
