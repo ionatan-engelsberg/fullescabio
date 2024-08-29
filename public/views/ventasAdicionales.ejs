@@ -71,43 +71,23 @@
         <div class="row mb-3">
           <div class="col-md-4">
             <div class="" data-toggle="buttons">
-              <label class="btn btn-primary">
-                <input type="radio" name="options" id="option1"
-                autocomplete="off" <%= checkedOption === 'option1' ? 'checked' :
-                '' %> /> SP (dinamico)
-              </label>
-              <label class="btn btn-primary">
-                <input type="radio" name="options" id="option2"
-                autocomplete="off" <%= checkedOption === 'option2' ? 'checked' :
-                '' %> /> Importador (directo)
-              </label>
+              <select class="form-select" name="" id="chooseImportMethod">
+                <option value="SPUpload" id="SPUpload" <%= dinamicoBTN ? 'selected' : '' %>>Dinamico</option>
+                <option value="directUpload" id="directUpload"<%= importadorBTN ? 'selected' : '' %>>Importar Directo</option>
+              </select>
             </div>
           </div>
 
           <div class="col-md-4 text-center">
             <div id="SPDinamicoElegirMetodo">
-              <label class="btn btn-success">
-                <input
-                  type="radio"
-                  name="subOptions"
-                  autocomplete="off"
-                  id="botonSeleccionarImportar"
-                />
-                Importar Excel
-              </label>
-              <label class="btn btn-warning">
-                <input
-                  type="radio"
-                  name="subOptions"
-                  autocomplete="off"
-                  id="botonSeleccionarCarga"
-                />
-                Carga Manual
-              </label>
+              <select class="form-select" name="" id="chooseSPMethod">
+                <option value="botonSeleccionarImportar" id="botonSeleccionarImportar">Importar Excel</option>
+                <option value="botonSeleccionarCarga" id="botonSeleccionarCarga">Carga Manual</option>
+              </select>
             </div>
           </div>
 
-          <div class="col-md-4 text-end" id="botonesSpDinamico">
+          <div class="col-md-4 text-end" id="">
             <button
               class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow"
               type="button"
@@ -121,7 +101,7 @@
               id="verPedido"
               data-toggle="modal"
               data-target="#verPedidoModal"
-              <%= verPedidoButton ? '' :
+              <%= verPedidoButtonSP ? '' :
                 'disabled' %> />
               Ver Pedido <i class="bi bi-arrows-angle-expand text-white"></i>
             </button>
@@ -173,71 +153,7 @@
             </button>
           </div>
 
-          <div class="col-md-4 text-end" id="botonesImportadorDirecto">
-            <button
-              class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow"
-              type="button"
-            >
-              Confirmar <i class="bi bi-check-circle-fill text-white"></i>
-            </button>
-
-            <button
-              class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow"
-              type="button"
-              id="verPedido"
-              data-toggle="modal"
-              data-target="#verPedidoModal"
-              disabled
-            >
-              Ver Pedido <i class="bi bi-arrows-angle-expand text-white"></i>
-            </button>
-
-            <div
-              class="modal fade"
-              id="verPedidoModal"
-              tabindex="-1"
-              role="dialog"
-              aria-labelledby="verPedidoModal"
-              aria-hidden="true"
-              data-target=".bd-example-modal-lg"
-            >
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">
-                      Ver Pedido
-                    </h5>
-                    <button
-                      type="button"
-                      class="close"
-                      data-dismiss="modal"
-                      aria-label="Close"
-                      style="
-                        background: none;
-                        border: none;
-                        font-size: 40px;
-                        color: red;
-                      "
-                    >
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-
-                  <div class="modal-body text-start" id="infoPedido"></div>
-                  <div class="modal-footer"></div>
-                </div>
-              </div>
-            </div>
-
-            <button
-              class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow"
-              type="button"
-              id="finaliarPedido"
-              disabled
-            >
-              Finalizar<i class="bi bi-send-fill text-white"></i>
-            </button>
-          </div>
+          
         </div>
 
         <div id="spDinamicoSection">
@@ -447,59 +363,40 @@
       "importadorDirectoSection"
     );
 
-    const botonesSpDinamico = document.getElementById("botonesSpDinamico");
-    const botonesImportadorDirecto = document.getElementById(
-      "botonesImportadorDirecto"
-    );
-
     const SPDinamicoElegirMetodo = document.getElementById(
       "SPDinamicoElegirMetodo"
     );
 
-    const option1 = document.getElementById("option1");
-    const option2 = document.getElementById("option2");
+    console.log(SPDinamicoElegirMetodo)
 
-    function toggleSections() {
-      if (option1.checked) {
+    const selectElement = document.getElementById("chooseImportMethod");
+    selectElement.addEventListener("change", function() {
+      const selectedValue = selectElement.value;
+      if (selectedValue === "SPUpload") {
         spDinamicoSection.style.display = "block";
         importadorDirectoSection.style.display = "none";
-        botonesSpDinamico.style.display = "block";
-        botonesImportadorDirecto.style.display = "none";
         SPDinamicoElegirMetodo.style.display = "block";
-      } else if (option2.checked) {
+      } else if (selectedValue === "directUpload") {
         spDinamicoSection.style.display = "none";
         importadorDirectoSection.style.display = "block";
-        botonesSpDinamico.style.display = "none";
-        botonesImportadorDirecto.style.display = "block";
         SPDinamicoElegirMetodo.style.display = "none";
-      }
-    }
-
-    option1.addEventListener("change", toggleSections);
-    option2.addEventListener("change", toggleSections);
-
-    toggleSections();
+      } 
+    });
   });
 
   document.addEventListener("DOMContentLoaded", (event) => {
-    const botonSeleccionarImportar = document.getElementById(
-      "botonSeleccionarImportar"
-    );
-    const botonSeleccionarCarga = document.getElementById(
-      "botonSeleccionarCarga"
-    );
-
     const uploadContainer = document.getElementById("SPUploadExcelContainer")
     const buttonUploadFile = document.getElementById("inputGroupFileAddon04");
     const uploadFile = document.getElementById("inputGroupFile04");
     const cargaManual = document.getElementById("tabla-body");
     const inputGroup = cargaManual.querySelectorAll("input");
-
     const agregarFila = document.getElementById("agregar-fila");
     const eliminarFila = document.getElementById("eliminar-fila");
+    const selectElement = document.getElementById("chooseSPMethod");
 
-    function toggleSections() {
-      if (botonSeleccionarImportar.checked) {
+    selectElement.addEventListener("change", function() {
+      const selectedValue = selectElement.value;
+      if (selectedValue === "botonSeleccionarImportar") {
         uploadFile.disabled = false;
         buttonUploadFile.disabled = false;
 
@@ -511,7 +408,7 @@
         });
         agregarFila.disabled = true;
         eliminarFila.disabled = true;
-      } else if (botonSeleccionarCarga.checked) {
+      } else if (selectedValue === "botonSeleccionarCarga") {
         uploadFile.disabled = true;
         buttonUploadFile.disabled = true;
 
@@ -523,13 +420,8 @@
         });
         agregarFila.disabled = false;
         eliminarFila.disabled = false;
-      }
-    }
-
-    botonSeleccionarImportar.addEventListener("change", toggleSections);
-    botonSeleccionarCarga.addEventListener("change", toggleSections);
-
-    toggleSections();
+      } 
+    });
   });
 
   document.addEventListener("DOMContentLoaded", (event) => {

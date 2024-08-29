@@ -112,9 +112,11 @@ router.get('/', (req, res) => {
 router.get('/ventas-adicionales', async (req, res) => {
     const agrupacion = await obtenerClienteAgupacion(`EXEC may_client_agru`)
     res.render('ventasAdicionales', { 
-        checkedOption: "option1",
         agrupacion,
-        verPedidoButton: false
+        dinamicoBTN: false,
+        importadorBTN: false,
+        verPedidoButtonSP: false,
+        verPedidoButtonImportadorDirecto: false
     })
 })
 
@@ -127,7 +129,8 @@ router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req
     await parsedWorkbook(filename, true)
     .then((data) => {
         res.render("ventasAdicionales", { 
-            checkedOption: "option1",
+            verPedidoButtonImportadorDirecto: false,
+            verPedidoButtonSP: true,
             agrupacion: data,
             verPedidoButton: true
         })
