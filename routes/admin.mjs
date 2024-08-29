@@ -121,7 +121,9 @@ router.get('/ventas-adicionales', async (req, res) => {
         chooseImportMethod: false,
         chooseSPMethod: false,
         fechas: false,
-        selectAgrupacion: false
+        selectAgrupacion: false,
+        SPUpload: true,
+        directUpload: false
     })
 })
 
@@ -144,7 +146,9 @@ router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req
             chooseImportMethod: true,
             chooseSPMethod: true,
             fechas: true,
-            selectAgrupacion: true
+            selectAgrupacion: true,
+            SPUpload: true,
+            directUpload: false
         })
     })
     .catch(error => {
@@ -163,16 +167,20 @@ router.post("/ventas-adicionales/direct-upload", uploadExcel.single("file"), asy
     }
 
     const { filename } = req.file
-    const agrupacion = await obtenerClienteAgupacion(`EXEC may_client_agru`)
 
-    await parsedWorkbook(filename, false)
+    await parsedWorkbook(filename, true)
     .then((data) => {
+        console.log(data)
         res.render("ventasAdicionales", { 
-            agrupacion,
+            agrupacion: [],
             data, 
             verPedidoButton: true,
             chooseImportMethod: true,
-            chooseSPMethod: true
+            chooseSPMethod: true,
+            fechas: true,
+            selectAgrupacion: true,
+            SPUpload: false,
+            directUpload: true
         })
     })
     .catch(error => {

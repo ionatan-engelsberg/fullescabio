@@ -72,8 +72,8 @@
           <div class="col-md-4">
             <div class="" data-toggle="buttons">
               <select class="form-select" name="" id="chooseImportMethod"  <%= chooseImportMethod ? 'disabled' : '' %> >
-                <option value="SPUpload" id="SPUpload">Dinamico</option>
-                <option value="directUpload" id="directUpload">Importar Directo</option>
+                <option value="SPUpload" id="SPUpload" <%= SPUpload ? 'selected' : '' %> >Dinamico</option>
+                <option value="directUpload" id="directUpload" <%= directUpload ? 'selected' : '' %> >Importar Directo</option>
               </select>
             </div>
           </div>
@@ -407,6 +407,12 @@
     );
 
     const selectElement = document.getElementById("chooseImportMethod");
+    if(selectElement.value == "directUpload"){
+      spDinamicoSection.style.display = "none";
+      importadorDirectoSection.style.display = "block";
+      SPDinamicoElegirMetodo.style.display = "none";
+    }
+    
     selectElement.addEventListener("change", function() {
       const selectedValue = selectElement.value;
       if (selectedValue === "SPUpload") {
