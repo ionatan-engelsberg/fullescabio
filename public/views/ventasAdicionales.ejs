@@ -131,7 +131,7 @@
                     </button>
                   </div>
 
-                  <div class="modal-body text-start" id="infoPedido">
+                  <div class="modal-body text-start" id="infoPedido" style="height: 700px; overflow: scroll;">
                     <table class="table table-bordered">
                       <thead>
                         <tr>
@@ -181,9 +181,9 @@
           </div>
         </div>
 
-        <div class="row mb-3">
+        <div class="row">
           <% if (error != "") { %>
-            <div class="alert alert-danger" role="alert">
+            <div class="col-md-12 alert alert-danger" role="alert">
               <%= error  %>
             </div>
           <% } %>
@@ -248,6 +248,7 @@
                     class="btn btn-base-color btn-hover-animation btn-round-edge btn-box-shadow"
                     type="submit"
                     id="inputGroupFileAddon04"
+                    style="width: 170px;"
                     disabled
                   >
                     Subir
@@ -384,6 +385,7 @@
                     class="btn btn-base-color btn-hover-animation btn-round-edge btn-box-shadow"
                     type="submit"
                     id="inputGroupFileAddon04"
+                    style="width: 170px;"
                   >
                     Subir
                   </button>
@@ -456,7 +458,7 @@
         uploadFile.disabled = false;
         buttonUploadFile.disabled = false;
         
-        uploadContainer.style = "background: rgba(158, 242, 85, 0.3); border: 2px solid #146C43;"
+        uploadContainer.style = "background: rgba(158, 242, 85, 0.3); border: 2px solid #146C43; border-radius: 10px"
         SPManualContenedor.style = "background: transparent; border: 2px solid none;"
         
         inputGroup.forEach((input) => {
@@ -470,7 +472,7 @@
         uploadFile.disabled = true;
         buttonUploadFile.disabled = true;
         
-        SPManualContenedor.style = "background: rgba(255, 248, 143, 0.3); border: 2px solid #FFC824;"
+        SPManualContenedor.style = "background: rgba(255, 248, 143, 0.3); border: 2px solid #FFC824; border-radius: 10px"
         uploadContainer.style = "background: transparent; border: 2px solid none;"
         
         inputGroup.forEach((input) => {

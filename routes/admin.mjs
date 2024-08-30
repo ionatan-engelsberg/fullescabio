@@ -172,7 +172,6 @@ router.post("/ventas-adicionales/direct-upload", uploadExcel.single("file"), asy
 
     await parsedWorkbook(filename, false)
     .then((data) => {
-        console.log(data)
         res.render("ventasAdicionales", { 
             agrupacion: [],
             data, 
