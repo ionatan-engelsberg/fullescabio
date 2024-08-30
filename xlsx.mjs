@@ -1,8 +1,23 @@
 import sql from 'mssql';
 import xlsx from 'xlsx';
 import path from 'path';
+import fs from 'fs';
 const __dirname = path.resolve();
 
+const uploadsSource = `${__dirname}/uploads`;
+
+const emptyUploadsDirectory = () => {
+  fs.readdir(uploadsSource, (err, files) => {
+    // TODO: Better handling
+    if (err) return console.log('ERROR WHILE EMPTYING UPLOADS DIRECTORY: ', err)
+
+    files.forEach((file) => {
+      fs.unlink(`${uploadsSource}/${file}`, (error) => {
+        if (err) return console.log('ERROR WHILE DELETING FILE: ', err)
+      })
+    })
+  });
+};
 
 // COPIADA DE admin.mjs
 const getClientById = async (clientId) => {
@@ -124,8 +139,10 @@ export const parsedWorkbook = async (fileName, sp) => {
   const workbook = xlsx.readFile(filePath);
   try {
     const items = await validateWorkbook(workbook, sp);
+    emptyUploadsDirectory();
     return items
   } catch (error) {
+    emptyUploadsDirectory();
     const rowError = error.cause
     if (typeof rowError == 'number') {
       throw new Error(`ERROR at row ${rowError}: ${error}`)
