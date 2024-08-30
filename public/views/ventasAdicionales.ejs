@@ -68,6 +68,13 @@
 
     <section>
       <div class="container adminContainer" style="max-width: 100% !important">
+        <div class="row">
+          <div class="col-md-4">
+            <label for="" class="text-dark fw-600 fs-24">Metodo</label>
+          </div>
+          <div class="col-md-4"></div>
+          <div class="col-md-4"></div>
+        </div>
         <div class="row mb-3">
           <div class="col-md-4">
             <div class="" data-toggle="buttons">
@@ -88,9 +95,9 @@
             </div>
           </div>
 
-          <div class="col-md-4 text-end" id="">
+          <div class="col-md-4 text-end d-flex justify-content-between" id="">
             <button
-              class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow"
+              class="w-65 btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow"
               type="button"
               id="verPedido"
               data-toggle="modal"
@@ -174,6 +181,7 @@
               class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow"
               type="button"
               id="finaliarPedido"
+              style="width: 170px;"
               disabled
             >
               Finalizar<i class="bi bi-send-fill text-white"></i>
@@ -407,8 +415,22 @@
 </html>
 
 <script>
+  
   sessionStorage.setItem("ventas-adicionales-data", JSON.stringify(null))
   let ventasAdicionalesStorage = JSON.parse(sessionStorage.getItem('ventas-adicionales-data'));
+
+  document.addEventListener("DOMContentLoaded", (event) => {
+    const verPedidoButton = <%= verPedidoButton %>;
+    if(verPedidoButton) {
+      Swal.fire({
+        position: "top-center",
+        icon: "success",
+        title: "Datos Cargados",
+        showConfirmButton: false,
+        timer: 2000
+      });
+    }
+  })
 
   document.addEventListener("DOMContentLoaded", (event) => {
     const spDinamicoSection = document.getElementById("spDinamicoSection");
@@ -458,7 +480,7 @@
         uploadFile.disabled = false;
         buttonUploadFile.disabled = false;
         
-        uploadContainer.style = "background: rgba(158, 242, 85, 0.3); border: 2px solid #146C43; border-radius: 10px"
+        uploadContainer.style = "background: rgba(158, 242, 85, 0.2); border: 2px solid #146C43; border-radius: 5px"
         SPManualContenedor.style = "background: transparent; border: 2px solid none;"
         
         inputGroup.forEach((input) => {
@@ -472,7 +494,7 @@
         uploadFile.disabled = true;
         buttonUploadFile.disabled = true;
         
-        SPManualContenedor.style = "background: rgba(255, 248, 143, 0.3); border: 2px solid #FFC824; border-radius: 10px"
+        SPManualContenedor.style = "background: rgba(255, 248, 143, 0.3); border: 2px solid #FFC824; border-radius: 5px"
         uploadContainer.style = "background: transparent; border: 2px solid none;"
         
         inputGroup.forEach((input) => {
@@ -593,7 +615,6 @@
       clientCell.forEach(cell => {
         if(cell.textContent == ""){
           cell.textContent = agrupacion.value
-
         }
       })
     })
@@ -602,11 +623,11 @@
     const inputHidden = document.getElementById('agrupacionSeleccionada');
 
     selectAgrupacion.addEventListener('change', function() {
-      inputHidden.value = this.value; // Sincroniza el valor seleccionado
+      inputHidden.value = this.value; 
     });
 
     document.addEventListener('DOMContentLoaded', function() {
-      inputHidden.value = selectAgrupacion.value; // Sincroniza el valor al cargar la página
+      inputHidden.value = selectAgrupacion.value; 
     });
   });
 </script>
