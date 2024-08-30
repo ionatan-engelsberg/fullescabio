@@ -49,6 +49,7 @@
             <div class="header-icon">
               <form action="/logout?_method=DELETE" method="POST">
                 <button
+                  style="width: 170px;"
                   class="btn btn-medium btn-base-color btn-hover-animation btn-round-edge btn-box-shadow"
                   type="submit"
                 >
@@ -182,7 +183,8 @@
               type="button"
               id="finaliarPedido"
               style="width: 170px;"
-              disabled
+              <%= verPedidoButton ? '' :
+                'disabled' %>
             >
               Finalizar<i class="bi bi-send-fill text-white"></i>
             </button>
