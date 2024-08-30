@@ -181,7 +181,7 @@
             <button
               class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow"
               type="button"
-              id="finaliarPedido"
+              id="finalizarPedido"
               style="width: 170px;"
               <%= verPedidoButton ? '' :
                 'disabled' %>
@@ -423,6 +423,7 @@
 
   document.addEventListener("DOMContentLoaded", (event) => {
     const verPedidoButton = <%= verPedidoButton %>;
+    const finalizarPedidoButton = document.getElementById("finalizarPedido")
     if(verPedidoButton) {
       Swal.fire({
         position: "center",
@@ -438,6 +439,10 @@
 
       sessionStorage.setItem("ventas-adicionales-data", JSON.stringify(dataObj));
       ventasAdicionalesStorage = JSON.parse(sessionStorage.getItem('ventas-adicionales-data'));
+
+      finalizarPedidoButton.addEventListener("click", () => {
+        console.log(ventasAdicionalesStorage)
+      })
     }
   })
   
@@ -539,6 +544,7 @@
   document.addEventListener("DOMContentLoaded", (event) => {
     const tbody = document.getElementById('verDetallesPedido');
     const confirmarButton = document.getElementById("confirmarButton")
+    const finalizarPedido = document.getElementById("finalizarPedido")
 
     confirmarButton.addEventListener("click", () => {
       const container = document.getElementById("tabla-body");
@@ -599,9 +605,14 @@
         input.classList.toggle("input-disabled")
       })
 
+      document.getElementById("finalizarPedido").disabled = !document.getElementById("finalizarPedido").disabled
       document.getElementById("agregar-fila").disabled = !document.getElementById("agregar-fila").disabled
       document.getElementById("eliminar-fila").disabled = !document.getElementById("eliminar-fila").disabled
       document.getElementById("verPedido").disabled = !document.getElementById("verPedido").disabled
+    })
+
+    finalizarPedido.addEventListener("click", () => {
+      console.log(ventasAdicionalesStorage)
     })
 
     document
