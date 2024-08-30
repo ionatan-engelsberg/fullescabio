@@ -207,7 +207,7 @@
               <input
                 type="date"
                 class="form-control"
-                name="nombrePedidoUnico"
+                name="fechaDesde"
                 <%= fechas ? 'disabled' : '' %>
               />
             </div>
@@ -216,7 +216,7 @@
               <input
                 type="date"
                 class="form-control"
-                name="nombrePedidoUnico"
+                name="fechaHasta"
                 <%= fechas ? 'disabled' : '' %>
               />
             </div>
@@ -425,15 +425,41 @@
     const verPedidoButton = <%= verPedidoButton %>;
     if(verPedidoButton) {
       Swal.fire({
-        position: "top-center",
+        position: "center",
         icon: "success",
         title: "Datos Cargados",
         showConfirmButton: false,
         timer: 2000
       });
+      
+      let dataObj = {
+        data: <%- JSON.stringify(data) %>
+      }
+
+      sessionStorage.setItem("ventas-adicionales-data", JSON.stringify(dataObj));
+      ventasAdicionalesStorage = JSON.parse(sessionStorage.getItem('ventas-adicionales-data'));
     }
   })
+  
+  document.addEventListener("DOMContentLoaded", (event) => {
+    const fechaDesdeInput = document.querySelector('input[name="fechaDesde"]');
+    const fechaHastaInput = document.querySelector('input[name="fechaHasta"]');
 
+    fechaDesdeInput.addEventListener('change', () => {
+      sessionStorage.setItem('fechaDesde', fechaDesdeInput.value);
+    });
+
+    fechaHastaInput.addEventListener('change', () => {
+      sessionStorage.setItem('fechaHasta', fechaHastaInput.value);
+    });
+
+    const fechaDesde = sessionStorage.getItem('fechaDesde');
+    const fechaHasta = sessionStorage.getItem('fechaHasta');
+
+    if (fechaDesde) fechaDesdeInput.value = fechaDesde;
+    if (fechaHasta) fechaHastaInput.value = fechaHasta;
+  })
+  
   document.addEventListener("DOMContentLoaded", (event) => {
     const spDinamicoSection = document.getElementById("spDinamicoSection");
     const importadorDirectoSection = document.getElementById(
