@@ -191,7 +191,7 @@ router.post("/ventas-adicionales/direct-upload", uploadExcel.single("file"), asy
             data: [],
             agrupacion: [],
             error,
-            verPedidoButton: true,
+            verPedidoButton: false,
             chooseImportMethod: true,
             chooseSPMethod: true,
             fechas: true,

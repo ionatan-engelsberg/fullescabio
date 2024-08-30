@@ -319,6 +319,7 @@
                         type="number"
                         class="form-control"
                         placeholder="Cantidad"
+                        min="0"
                       />
                     </td>
                     <td>
@@ -327,6 +328,7 @@
                         type="number"
                         class="form-control"
                         placeholder="Precio"
+                        min="0"
                       />
                     </td>
                     <td>
@@ -351,6 +353,7 @@
                         type="number"
                         class="form-control"
                         placeholder="Descuento"
+                        min="0"
                       />
                     </td>
                   </tr>
@@ -417,7 +420,8 @@
 </html>
 
 <script>
-  
+  //todo: SOLUCIONAR BUG: Importar Directo, se carga 2 veces al clickear finalizar
+
   sessionStorage.setItem("ventas-adicionales-data", JSON.stringify(null))
   let ventasAdicionalesStorage = JSON.parse(sessionStorage.getItem('ventas-adicionales-data'));
 
@@ -625,11 +629,11 @@
         nuevaFila.innerHTML = `
           <td><input type="text" class="form-control" placeholder="SKU"></td>
           <td><input type="text" class="form-control" placeholder="Descripción"></td>
-          <td><input type="number" class="form-control" placeholder="Cantidad"></td>
-          <td><input type="number" class="form-control" placeholder="Precio"></td>
+          <td><input type="number" min="0" class="form-control" placeholder="Cantidad"></td>
+          <td><input type="number" min="0" class="form-control" placeholder="Precio"></td>
           <td><input type="text" class="form-control" placeholder="Cliente"></td>
           <td><input type="text" class="form-control" placeholder="S/C"></td>
-          <td><input type="number" class="form-control" placeholder="Descuento"></td>
+          <td><input type="number" min="0" class="form-control" placeholder="Descuento"></td>
       `;
 
         tablaBody.appendChild(nuevaFila);
