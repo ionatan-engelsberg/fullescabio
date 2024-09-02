@@ -91,7 +91,7 @@ const obtenerListaVendedoresPedidoUnico = async (query) => {
     }
 }
 
-const obtenerClienteAgupacion = async (query) => {
+const obtenerClienteAgrupacion = async (query) => {
     try {
         const request = await new sql.Request().query(query)
         return request.recordset.map((row) => {
@@ -105,9 +105,14 @@ const obtenerClienteAgupacion = async (query) => {
 }
 
 const updatePedido = async (objeto) => {
-    const { id, razon, nombreFantasia, lista, listaCodigo, vendedor, fecha, tipo, partidas } = objeto
-    const total = 0
-    console.log(objeto)
+    const { id, razon, nombreFantasia, lista, listaCodigo, vendedor, fecha, tipo, partidas: filas } = objeto;
+    const total = 0;
+    console.log("BODY: ", objeto);
+    filas.forEach((fila) => {
+        console.log("DATA: ", fila.data)
+        console.log("ARTICULOS: ", fila.articulos)
+    })
+
     const QUERY_ALTA = `
         EXEC pediweb_pedi_cabe_alta 
         @tipo varchar(3)=${tipo},
@@ -127,10 +132,32 @@ const updatePedido = async (objeto) => {
         @codi_lugar varchar(20)=null
         @num_web varchar(20)=null,
     `
-
     try {
-        const request = await new sql.Request().query(QUERY_ALTA)
-        return request
+        // const transaction = new sql.Transaction()
+        // transaction.begin(async (err) => {
+        // })
+        // TRANSACTION ROLLBACK for all queries
+        const requestQueryAlta = await new sql.Request().query(QUERY_ALTA);
+        console.log('RESPONSE QUERY ALTA: ', requestQueryAlta);
+        
+        for (const fila of filas) {
+            const { data, articulos: { codigo: codigoArticulo, cantidad, precioTotal } } = fila
+            const queryFila = `
+            EXEC pediweb_pedi_items_alta
+            @tipo varchar(3)=${tipo},
+            @num_web varchar(20)=null,
+            @renglon varchar(20)=null,
+            @articulo varchar(30)=${codigoArticulo},
+            @cant varchar(20)=${parseInt(cantidad)},
+            @precio varchar(20)=${Number(precioTotal)},
+            @porcen_descuen_item varchar(20)=null
+        `
+            const requestFila = await new sql.Request().query(queryFila)
+            console.log('RESPONSE REQUEST FILA: ', requestFila);
+        }
+
+
+        return { msg: 'OK' }
     } catch (error) {
         console.log('ERROR: ', error);
         return [];
@@ -141,10 +168,9 @@ const updatePedido = async (objeto) => {
 
 router.post("/pedido-unico/update", async (req, res) => {
     const { body } = req
-    body.partidas.forEach(element => {
-        console.log(element.articulos)
-    });
-    console.log(body)
+    const result = await updatePedido(body);
+    return res.send(result);
+
 })
 
 //!!!!!
@@ -155,7 +181,7 @@ router.get('/', (req, res) => {
 
 //! Ventas Adicionales
 router.get('/ventas-adicionales', async (req, res) => {
-    const agrupacion = await obtenerClienteAgupacion(`EXEC may_client_agru`)
+    const agrupacion = await obtenerClienteAgrupacion(`EXEC may_client_agru`)
     res.render('ventasAdicionales', {
         agrupacionSeleccionada: "",
         agrupacion,
@@ -180,7 +206,7 @@ router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req
 
     const { agrupacionSeleccionada } = req.body
     const { filename } = req.file
-    const agrupacion = await obtenerClienteAgupacion(`EXEC may_client_agru`)
+    const agrupacion = await obtenerClienteAgrupacion(`EXEC may_client_agru`)
 
     await parsedWorkbook(filename, true)
         .then((data) => {
