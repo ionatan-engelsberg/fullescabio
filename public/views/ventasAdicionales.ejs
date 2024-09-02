@@ -426,7 +426,8 @@
   let ventasAdicionalesStorage = JSON.parse(sessionStorage.getItem('ventas-adicionales-data'));
 
   document.addEventListener("DOMContentLoaded", (event) => {
-    const verPedidoButton = <%= verPedidoButton %>;
+    
+    const verPedidoButton = <%= verPedidoButton %>  // eslint-disable-line
     const finalizarPedidoButton = document.getElementById("finalizarPedido")
     if(verPedidoButton) {
       Swal.fire({
@@ -438,7 +439,7 @@
       });
       
       let dataObj = {
-        data: <%- JSON.stringify(data) %>
+        data: <%- JSON.stringify(data) %>  // eslint-disable-line
       }
 
       sessionStorage.setItem("ventas-adicionales-data", JSON.stringify(dataObj));

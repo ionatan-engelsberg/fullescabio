@@ -69,7 +69,7 @@ const obtenerPartidasPedidoUnico = async (query) => {
     try {
         const request = await new sql.Request().query(query)
         return request.recordset.map((row) => {
-            const { NUM: numero, CANTI: cantidad, COD_DEPO: codigoDeposito, COSTO_UNI: costoUnitario, UBICACION_PARTIDA: ubicacion } = row
+            const { COD_PARTIDA: numero, CANT_PEND: cantidad, COD_DEPO: codigoDeposito, COSTO_UNI: costoUnitario, UBICACION_PARTIDA: ubicacion } = row
             return { numero, cantidad, codigoDeposito, costoUnitario, ubicacion }
         })
     } catch (error) {
