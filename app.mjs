@@ -13,6 +13,7 @@ import bcrypt from 'bcrypt';
 import passport from 'passport';
 import initializePassport from './passport-config.mjs';
 import sql from 'mssql';
+import fs from 'fs';
 
 const app = express();
 const __dirname = path.resolve();
@@ -77,6 +78,9 @@ const config = {
 
 const start = async () => {
     try {
+        if (!fs.existsSync('uploads')) {
+            fs.mkdirSync('uploads');
+        }
         await sql.connect(config);
         app.listen(8080, () => {
             console.log('Server on Port 8080')
