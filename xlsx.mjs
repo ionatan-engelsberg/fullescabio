@@ -9,7 +9,7 @@ const uploadsSource = `${__dirname}/uploads`;
 const emptyUploadsDirectory = () => {
   if(!fs.existsSync(uploadsSource)){
     return
-  }
+  } 
   fs.readdir(uploadsSource, (err, files) => {
     // TODO: Better handling
     if (err) return console.log('ERROR WHILE EMPTYING UPLOADS DIRECTORY: ', err)

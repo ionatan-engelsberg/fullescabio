@@ -313,7 +313,7 @@
 
                                     <!-- <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow mr-10px" type="button" id="guardarPedido" disabled>Guardar<i class="bi bi-floppy2-fill text-white"></i></button> -->
 
-                                    <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="finaliarPedido" disabled>Finalizar<i class="bi bi-send-fill text-white"></i></button>
+                                    <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="finalizarPedido" disabled>Finalizar<i class="bi bi-send-fill text-white"></i></button>
                                 </div>                          
                             </div>
                             <div class="row mt-50px">
@@ -724,7 +724,14 @@
                         const grouped = [];
     
                         for (let i = 0; i < elements.length; i += 5) {
-                            grouped.push(elements.slice(i, i + 5));
+                            const group = {
+                                codigo: elements[i] || null,
+                                nombre: elements[i + 1] || null,
+                                cantidad: elements[i + 2] || null,
+                                costoTotal: elements[i + 3] || null,
+                                precioTotal: elements[i + 4] || null,
+                            };
+                            grouped.push(group);
                         }
     
                         return grouped;
@@ -735,8 +742,6 @@
                     for (let i = 0; i < retrievedData.partidas.length; i++) {
                         retrievedData.partidas[i].articulos = resultInputValues[i]
                     }
-
-                    console.log(retrievedData)
                 });
             });
 
@@ -746,8 +751,8 @@
 
                 verPedidoBTN.addEventListener("click", () => {
                     retrievedData.partidas.map(partida => {
-                        partida.articulos[5] = formatNumber(partida.articulos[4]) - formatNumber(partida.articulos[3])
-                        partida.articulos[5] = formatPrice(Number(partida.articulos[5]))
+                        partida.articulos.margen = formatNumber(partida.articulos.precioTotal) - formatNumber(partida.articulos.costoTotal)
+                        partida.articulos.margen = formatPrice(Number(partida.articulos.margen))
                         partida.data.map(props => {
                             props.costoUnitario = formatearCostoUnico(props.costoUnitario)
                         })
@@ -796,8 +801,8 @@
                         </thead>
                         <tbody>
                             <tr>
-                                ${partida.articulos.map((articulo, index) => `
-                                    <td>${[3, 4, 5].includes(index) ? '$ ' + articulo : articulo}</td>
+                                ${Object.entries(partida.articulos).map(([key, articulo]) => `
+                                    <td>${['costoTotal', 'precioTotal', 'margen'].includes(key) ? '$ ' + articulo : articulo}</td>
                                 `).join('')}
                             </tr>
                         </tbody>
@@ -845,7 +850,7 @@
                 let confirmarClienteBTN = document.querySelector("#confirmarCliente") 
                 let verPedidoBTN = document.querySelector("#verPedido")
                 let guardarPedidoBTN = document.querySelector("#guardarPedido")
-                let finalizarPedidoBTN = document.querySelector("#finaliarPedido")
+                let finalizarPedidoBTN = document.querySelector("#finalizarPedido")
                 let verPartidasBTN = document.querySelector(".verPartidas")
                 
                 verPartidasBTN.addEventListener("click", () => {
@@ -856,6 +861,7 @@
                     verPedidoBTN.disabled = !verPedidoBTN.disabled;
                     finalizarPedidoBTN.disabled = !finalizarPedidoBTN.disabled;
                     guardarPedidoBTN.disabled = !guardarPedidoBTN.disabled
+                    console.log(retrievedData)
                 })
 
                 document.getElementById('agregarFila').addEventListener('click', function() {
@@ -1245,6 +1251,29 @@
                 entera = entera.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
                 return decimal ? `${entera},${decimal}` : entera;
             }
+
+            document.addEventListener("DOMContentLoaded", () => {
+                const finalizarPedido = document.getElementById("finalizarPedido")
+                finalizarPedido.addEventListener("click", (e) => {
+                    console.log(retrievedData)
+                    fetch("/admin/pedido-unico/update", {
+                        body: JSON.stringify(retrievedData),
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    })
+                    .then(response => response.json())
+                    .then((data) => {
+                        console.log(data)
+                        return data
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                        return err
+                    })
+                })
+            })
             
         </script>
 

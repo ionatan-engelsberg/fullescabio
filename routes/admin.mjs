@@ -24,46 +24,46 @@ const obtenerClientesPedidoUnico = async (query) => {
         console.log('ERROR: ', error);
         return [];
     }
-} 
+}
 
 const obtenerTipoPedidoUnico = async (query) => {
     try {
         const request = await new sql.Request().query(query)
         return request.recordset.map((row) => {
-            const {COD_COMP: codigo, DESCRIP: nombre} = row
+            const { COD_COMP: codigo, DESCRIP: nombre } = row
             return { codigo, nombre }
         })
     } catch (error) {
         console.log('ERROR: ', error);
         return [];
     }
-} 
+}
 
 const obtenerListaPedidoUnico = async (query) => {
     try {
         const request = await new sql.Request().query(query)
         return request.recordset.map((row) => {
-            const {LISTA_DESCRIP: lista} = row
+            const { LISTA_DESCRIP: lista } = row
             return { lista }
         })
     } catch (error) {
         console.log('ERROR: ', error);
         return [];
     }
-} 
+}
 
 const obtenerArticulosPedidoUnico = async (query) => {
     try {
         const request = await new sql.Request().query(query)
         return request.recordset.map((row) => {
-            const {COD_ARTICULO: codigo, DESCRIP_ARTI: nombre, PRECIO_VTA: precio} = row
-            return {codigo, nombre, precio}
+            const { COD_ARTICULO: codigo, DESCRIP_ARTI: nombre, PRECIO_VTA: precio } = row
+            return { codigo, nombre, precio }
         })
     } catch (error) {
         console.log('ERROR: ', error);
         return [];
     }
-} 
+}
 
 const obtenerPartidasPedidoUnico = async (query) => {
     try {
@@ -76,33 +76,78 @@ const obtenerPartidasPedidoUnico = async (query) => {
         console.log('ERROR: ', error);
         return [];
     }
-} 
+}
 
 const obtenerListaVendedoresPedidoUnico = async (query) => {
     try {
         const request = await new sql.Request().query(query)
         return request.recordset.map((row) => {
-            const {CODI_VENDE: codigo, NOMBRE: nombre} = row
-            return {codigo, nombre}
-        })
-    } catch (error) {
-        console.log('ERROR: ', error);
-        return [];
-    }
-} 
-
-const obtenerClienteAgupacion = async (query) => {
-    try {
-        const request = await new sql.Request().query(query)
-        return request.recordset.map((row) => {
-            const { AGRU_3: codigo, DESCRIP_AGRU: nombre } = row
-            return {codigo, nombre}
+            const { CODI_VENDE: codigo, NOMBRE: nombre } = row
+            return { codigo, nombre }
         })
     } catch (error) {
         console.log('ERROR: ', error);
         return [];
     }
 }
+
+const obtenerClienteAgupacion = async (query) => {
+    try {
+        const request = await new sql.Request().query(query)
+        return request.recordset.map((row) => {
+            const { AGRU_3: codigo, DESCRIP_AGRU: nombre } = row
+            return { codigo, nombre }
+        })
+    } catch (error) {
+        console.log('ERROR: ', error);
+        return [];
+    }
+}
+
+const updatePedido = async (objeto) => {
+    const { id, razon, nombreFantasia, lista, listaCodigo, vendedor, fecha, tipo, partidas } = objeto
+    const total = 0
+    console.log(objeto)
+    const QUERY_ALTA = `
+        EXEC pediweb_pedi_cabe_alta 
+        @tipo varchar(3)=${tipo},
+        @num_cliente varchar(20)=${id},
+        @usuario varchar(30)="a", //?
+        @num_factu varchar(20)=null,
+        @fecha varchar(20)=${fecha},
+        @total varchar(20)=${total},
+        @codi_vende varchar(5)=${vendedor},
+        @mone varchar(3)=null,
+        @mone_coti varchar(20)=null,
+        @lista_codi varchar(5)=${listaCodigo},
+        @condi_venta varchar(5)=null,
+        @obser varchar(255)=null,
+        @porcen_descuen varchar(20)=null,
+        @cant_max_items_web varchar(20)=null,
+        @codi_lugar varchar(20)=null
+        @num_web varchar(20)=null,
+    `
+
+    try {
+        const request = await new sql.Request().query(QUERY_ALTA)
+        return request
+    } catch (error) {
+        console.log('ERROR: ', error);
+        return [];
+    }
+}
+
+//!!!!!
+
+router.post("/pedido-unico/update", async (req, res) => {
+    const { body } = req
+    body.partidas.forEach(element => {
+        console.log(element.articulos)
+    });
+    console.log(body)
+})
+
+//!!!!!
 
 router.get('/', (req, res) => {
     res.render('admin')
@@ -111,7 +156,7 @@ router.get('/', (req, res) => {
 //! Ventas Adicionales
 router.get('/ventas-adicionales', async (req, res) => {
     const agrupacion = await obtenerClienteAgupacion(`EXEC may_client_agru`)
-    res.render('ventasAdicionales', { 
+    res.render('ventasAdicionales', {
         agrupacionSeleccionada: "",
         agrupacion,
         data: [],
@@ -132,35 +177,35 @@ router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req
     if (!req.file) {
         return res.status(400).send('No file uploaded.');
     }
-    
+
     const { agrupacionSeleccionada } = req.body
     const { filename } = req.file
     const agrupacion = await obtenerClienteAgupacion(`EXEC may_client_agru`)
 
     await parsedWorkbook(filename, true)
-    .then((data) => {
-        res.render("ventasAdicionales", { 
-            agrupacionSeleccionada,
-            agrupacion,
-            data,
-            verPedidoButton: true,
-            chooseImportMethod: true,
-            chooseSPMethod: true,
-            fechas: true,
-            selectAgrupacion: true,
-            SPUpload: true,
-            directUpload: false,
-            error: ""
+        .then((data) => {
+            res.render("ventasAdicionales", {
+                agrupacionSeleccionada,
+                agrupacion,
+                data,
+                verPedidoButton: true,
+                chooseImportMethod: true,
+                chooseSPMethod: true,
+                fechas: true,
+                selectAgrupacion: true,
+                SPUpload: true,
+                directUpload: false,
+                error: ""
+            })
         })
-    })
-    .catch(error => {
-        console.error('Error executing function:', error);
-        res.render("ventasAdicionales", { 
-            agrupacionSeleccionada,
-            agrupacion,
-            error
-        })
-    });
+        .catch(error => {
+            console.error('Error executing function:', error);
+            res.render("ventasAdicionales", {
+                agrupacionSeleccionada,
+                agrupacion,
+                error
+            })
+        });
 })
 
 router.post("/ventas-adicionales/direct-upload", uploadExcel.single("file"), async (req, res) => {
@@ -171,35 +216,35 @@ router.post("/ventas-adicionales/direct-upload", uploadExcel.single("file"), asy
     const { filename } = req.file
 
     await parsedWorkbook(filename, false)
-    .then((data) => {
-        res.render("ventasAdicionales", { 
-            agrupacion: [],
-            data, 
-            verPedidoButton: true,
-            chooseImportMethod: true,
-            chooseSPMethod: true,
-            fechas: true,
-            selectAgrupacion: true,
-            SPUpload: false,
-            directUpload: true,
-            error: ""
+        .then((data) => {
+            res.render("ventasAdicionales", {
+                agrupacion: [],
+                data,
+                verPedidoButton: true,
+                chooseImportMethod: true,
+                chooseSPMethod: true,
+                fechas: true,
+                selectAgrupacion: true,
+                SPUpload: false,
+                directUpload: true,
+                error: ""
+            })
         })
-    })
-    .catch(error => {
-        console.log(error)
-        res.render("ventasAdicionales", { 
-            data: [],
-            agrupacion: [],
-            error,
-            verPedidoButton: false,
-            chooseImportMethod: true,
-            chooseSPMethod: true,
-            fechas: true,
-            selectAgrupacion: true,
-            SPUpload: false,
-            directUpload: true,
-        })
-    });
+        .catch(error => {
+            console.log(error)
+            res.render("ventasAdicionales", {
+                data: [],
+                agrupacion: [],
+                error,
+                verPedidoButton: false,
+                chooseImportMethod: true,
+                chooseSPMethod: true,
+                fechas: true,
+                selectAgrupacion: true,
+                SPUpload: false,
+                directUpload: true,
+            })
+        });
 })
 
 //! Pedido Unico
@@ -293,9 +338,9 @@ router.post("/pedido-unico/obtener-articulos", async (req, res) => {
     const listaCodigo = req.body.listaCodigo
 
     //! Consulta a DB
-    const resultadosCodigo = await obtenerArticulosPedidoUnico(`EXEC may_articulos @cod_art = '${codigoPedidoUnico}', @lista_cod = '${listaCodigo}'`) 
+    const resultadosCodigo = await obtenerArticulosPedidoUnico(`EXEC may_articulos @cod_art = '${codigoPedidoUnico}', @lista_cod = '${listaCodigo}'`)
     const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${codigoPedidoUnico}', @cod_depo = "DEP"`)
-    
+
     res.json({
         resultadosCodigo,
         resultadosPartidas
@@ -393,9 +438,9 @@ router.post("/pedido-mayorista/obtener-articulos", async (req, res) => {
     const listaCodigo = req.body.listaCodigo
 
     //! Consulta a DB
-    const resultadosCodigo = await obtenerArticulosPedidoUnico(`EXEC may_articulos @cod_art = '${codigoPedidoUnico}', @lista_cod = '${listaCodigo}'`) 
+    const resultadosCodigo = await obtenerArticulosPedidoUnico(`EXEC may_articulos @cod_art = '${codigoPedidoUnico}', @lista_cod = '${listaCodigo}'`)
     const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${codigoPedidoUnico}', @cod_depo = "DEP"`)
-    
+
     res.json({
         resultadosCodigo,
         resultadosPartidas
