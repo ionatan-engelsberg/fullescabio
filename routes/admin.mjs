@@ -170,16 +170,22 @@ const updatePedido = async (objeto) => {
     }
 }
 
-//!!!!!
-
 router.post("/pedido-unico/update", async (req, res) => {
-    const { body } = req
-    const result = await updatePedido(body);
-    return res.send(result);
+    try {
+        const { body } = req;
+        const result = await updatePedido(body);
+        console.log(1)
+        return res.status(200).send(result);
+    } catch (error) {
+        console.log(2)
+        console.error("Error al actualizar el pedido:", error);
 
-})
-
-//!!!!!
+        return res.status(500).send({
+            message: "Ocurrió un error al actualizar el pedido.",
+            error: error.message
+        });
+    }
+});
 
 router.get('/', (req, res) => {
     res.render('admin')
