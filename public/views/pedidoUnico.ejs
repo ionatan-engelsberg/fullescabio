@@ -522,7 +522,7 @@
                 <!-- Botón para agregar otra fila -->
                 <div class="row text-center">
                     <div class="col-12">
-                        <button id="agregarFila" type="button" class="btn btn-secondary mt-30px" disabled>Agregar fila</button>
+                        <button id="agregarFila" type="button" class="btn btn-gray-color btn-medium btn-hover-animation btn-round-edge btn-box-shadow mt-30px" disabled>Agregar fila</button>
                     </div>
                 </div>
             </div>
@@ -629,6 +629,7 @@
                 const resultItems = document.querySelectorAll('.result-item');
                 const partidas = document.querySelectorAll('.partida');
                 const mostrarSeleccionCliente = document.getElementById("mostrarSeleccionCliente")
+                const inputPedidoUnico = document.getElementById("codigoPedidoUnico")
                 let selectedResult = null;
                 let partidasSeleccionadas = [];
 
@@ -659,6 +660,7 @@
                         mostrarSeleccionCliente.innerHTML = `
                             Cliente Seleccionado: <b style="border-bottom: 2px solid black;">${retrievedData.id} - ${retrievedData.razon}</b>
                         `
+                        inputPedidoUnico.style = "border: 3px solid #146C43"
                     }
                 });
 
@@ -769,24 +771,24 @@
                     const htmlContent = `
                     <div class="container">
             <div class="row">
-                <div class="col-md-4">
-                    <p><strong>Razón:</strong> ${retrievedData.razon}</p>
+                <div class="col-md-4 text-dark fs-22">
+                    <p><strong>Razón:</strong> <br> ${retrievedData.razon}</p>
                 </div>
-                <div class="col-md-4">
-                    <p><strong>Nombre Fantasía:</strong> ${retrievedData.nombreFantasia}</p>
+                <div class="col-md-4 text-dark fs-22">
+                    <p><strong>Nombre Fantasía:</strong> <br> ${retrievedData.nombreFantasia}</p>
                 </div>
-                <div class="col-md-4">
-                    <p><strong>Lista:</strong> ${retrievedData.lista} (${retrievedData.listaCodigo})</p>
+                <div class="col-md-4 text-dark fs-22">
+                    <p><strong>Lista:</strong> <br> ${retrievedData.lista} (${retrievedData.listaCodigo})</p>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-4 text-dark fs-22">
                     <p><strong>Vendedor:</strong> ${retrievedData.vendedor}</p>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 text-dark fs-22">
                     <p><strong>Fecha:</strong> ${retrievedData.fecha}</p>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 text-dark fs-22">
                     <p><strong>Tipo:</strong> ${retrievedData.tipo}</p>
                 </div>
             </div>
@@ -819,7 +821,7 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Numero</th>
+                                <th>Código</th>
                                 <th>Stock</th>
                                 <th>Deposito</th>
                                 <th>Costo Unitario</th>
@@ -970,6 +972,8 @@
                         verPartidas.addEventListener("click", () => {
                             cantidadModal = cantidadModalElement.textContent
                         })
+
+                        inputCodigoPedidoUnico.style = "border: none"
 
                         let inputCantidadPedidoUnico = fila.querySelector("#cantidadPedidoUnico")
                         inputCantidadPedidoUnico.style = "border: 1px solid red"
@@ -1215,7 +1219,7 @@
                 for(let i = 0; i < selectedPartidas.length; i++){
                     let array = Array.from(selectedPartidas[i].querySelectorAll(".col-md-2")).slice(0, 5);
                     let dataPartidas = {
-                        numero: Number(array[0].textContent),
+                        numero: array[0].textContent,
                         stock: Number(array[1].textContent),
                         deposito: array[2].textContent,
                         costoUnitario: Number(array[3].textContent),
@@ -1324,6 +1328,14 @@
             }
             .btn-blue-color:hover {
                 background-color: #0a58ca;
+                color: white;
+            }
+            .btn-gray-color {
+                background-color: #3f3f3f;
+                color: white;
+            }
+            .btn-gray-color:hover {
+                background-color: #3f3f3f;
                 color: white;
             }
         </style>
