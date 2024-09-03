@@ -82,7 +82,7 @@
                                             <div class="modal-body row">
                                                 <!--! No borrar. Sin esto se rompe-->
                                                 <div class="col-md-12" id="" style="display: none;">
-                                                    <label for="" class="fw-600 fs-20">ID</label>
+                                                    <label for="" class="fw-600 fs-24">ID</label>
                                                     
                                                     <div class="input-group mb-3">
                                                         <form action="/admin/pedido-unico/buscar-por-id" method="POST" class="d-flex w-100">
@@ -97,7 +97,7 @@
                                                 </div>
 
                                                 <div class="col-md-12" id="idContainer">
-                                                    <label for="" class="fw-600 fs-20">ID</label>
+                                                    <label for="" class="fw-600 fs-24">ID</label>
                                                     
                                                     <div class="input-group mb-3">
                                                         <form action="/admin/pedido-unico/buscar-por-id" method="POST" class="d-flex w-100">
@@ -155,7 +155,7 @@
                                                 </div>
 
                                                 <div class="col-md-12" id="nombreFantasiaContainer">
-                                                    <label for="" class="fw-600 fs-20">Nombre Fantasia</label>
+                                                    <label for="" class="fw-600 fs-24">Nombre Fantasia</label>
 
                                                     <div class="input-group mb-3">
                                                         <form action="/admin/pedido-unico/buscar-por-nombre" method="POST" class="d-flex w-100">
@@ -212,7 +212,7 @@
                                                 </div>
 
                                                 <div class="col-md-12" id="razonContainer">
-                                                    <label for="" class="fw-600 fs-20">Razon</label>
+                                                    <label for="" class="fw-600 fs-24">Razon</label>
 
                                                     <div class="input-group mb-3">
                                                         <form action="/admin/pedido-unico/buscar-por-razon" method="POST" class="d-flex w-100">
@@ -227,7 +227,7 @@
                                                         </form>
                                                     </div>
 
-                                                    <div id="razonResultadosPedidoUnico" class="h-500px resultadosCliente">
+                                                    <div id="razonResultadosPedidoUnico" class="h-300px resultadosCliente">
                                                         <% if (resultadosRazon && resultadosRazon.length > 0) { %>
                                                             <p>Resultados de la busqueda: <b><%= razonPedidoUnico %></b></p>
                                                                 <div class="row">
@@ -280,9 +280,12 @@
                                         </div>
                                     </div>
 
-                                    <input type="date" class="form-control d-inline" name="fechaPedidoUnico" id="fechaPedidoUnico" placeholder="aa" style="width: 49%;">
+                                    <input type="date" class="form-control d-inline" name="fechaPedidoUnico" id="fechaPedidoUnico" placeholder="aa" style="width: 49%;" value="<%= new Date().toISOString().split('T')[0] %>">
                                 </div>       
-                                <div class="col-md-8 text-end">
+                                <div class="col-md-4 fs-26 text-dark"  id="mostrarSeleccionCliente">
+
+                                </div>
+                                <div class="col-md-4 text-end">
                                     <button class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="confirmarCliente" disabled>Confirmar <i class="bi bi-check-circle-fill text-white"></i></button>
 
                                     <button class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="verPedido" data-toggle="modal" data-target="#verPedidoModal" disabled>Ver Pedido <i class="bi bi-arrows-angle-expand text-white"></i></button>
@@ -316,9 +319,10 @@
                                     <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="finalizarPedido" disabled>Finalizar<i class="bi bi-send-fill text-white"></i></button>
                                 </div>                          
                             </div>
+                          
                             <div class="row mt-50px">
                                 <div class="col-md-4">
-                                    <label for="" class="text-dark fw-600 fs-20">Lista</label>
+                                    <label for="" class="text-dark fw-600 fs-24">Lista</label>
                                     <select class="form-select" name="tipoPedidoUnico" id="listaPedidoUnico">
                                         <% if (resultadosRazon && resultadosRazon.length > 0) { %>
                                         <% if (typeof lista !== 'undefined' && lista.length > 0) { %>
@@ -357,7 +361,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="" class="text-dark fw-600 fs-20">Vendedor</label>
+                                    <label for="" class="text-dark fw-600 fs-24">Vendedor</label>
                                     <select class="form-select" name="vendedorPedidoUnico" id="vendedorPedidoUnico">
                                         <% if (resultadosRazon && resultadosRazon.length > 0) { %>
                                         <% if (typeof listaVendedor !== 'undefined' && listaVendedor.length > 0) { %>
@@ -396,7 +400,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="" class="text-dark fw-600 fs-20">Tipo</label>
+                                    <label for="" class="text-dark fw-600 fs-24">Tipo</label>
                                     <select class="form-select" name="tipoPedidoUnico" id="tipoPedidoUnico">
                                         <% if (typeof tiposPedidoUnico !== 'undefined' && tiposPedidoUnico.length > 0) { %>
                                             <% tiposPedidoUnico.forEach(tipo => { %>
@@ -415,22 +419,22 @@
                 
                 <div class="row mt-50px">
                     <div class="col-md-2">
-                        <p class="text-dark mb-0 fw-600">Código</p>
+                        <p class="text-dark mb-0 fw-600 fs-20">Código</p>
                     </div>
                     <div class="col-md-2">
-                        <p class="text-dark mb-0 fw-600">Nombre</p>
+                        <p class="text-dark mb-0 fw-600 fs-20">Nombre</p>
                     </div>
                     <div class="col-md-2">
-                        <p class="text-dark mb-0 fw-600">Cantidad</p>
+                        <p class="text-dark mb-0 fw-600 fs-20">Cantidad. <span id="cantidadLabel" style="color: #157347;"></span></p>
                     </div>
                     <div class="col-md-2">
-                        <p class="text-dark mb-0 fw-600">Costo Total</p>
+                        <p class="text-dark mb-0 fw-600 fs-20">Costo Total</p>
                     </div>
                     <div class="col-md-2">
-                        <p class="text-dark mb-0 fw-600">Precio Total</p>
+                        <p class="text-dark mb-0 fw-600 fs-20">Precio Total</p>
                     </div>
                     <div class="col-md-2 text-center">
-                        <p class="text-dark mb-5px fw-600">Opciones</p>
+                        <p class="text-dark mb-5px fw-600 fs-20">Opciones</p>
                     </div>
                 </div>
                 <div id="formularioArticulos">
@@ -450,7 +454,7 @@
                             <input type="text" class="form-control nombreArticuloPedidoUnico" name="nombreArticuloPedidoUnico" id="nombreArticuloPedidoUnico" placeholder="Nombre">
                         </div>
                         <div class="col-md-2">
-                            <input type="number" class="form-control cantidadPedidoUnico" name="cantidadPedidoUnico" id="cantidadPedidoUnico" placeholder="Cantidad">
+                            <input type="number" min="0" class="form-control cantidadPedidoUnico" name="cantidadPedidoUnico" id="cantidadPedidoUnico" placeholder="Cantidad">
                         </div>
                         <div class="col-md-2">
                             <div class="input-group">
@@ -469,7 +473,7 @@
                             </div>
                         </div>
                         <div class="col-md-2 d-flex flex-wrap justify-content-between">
-                            <button type="button" class="btn btn-primary w-50 verPartidas" data-toggle="modal" data-target="#verPartidasPedidoUnico" disabled>Partida</button>
+                            <button type="button" class="btn btn-box-shadow btn-hover-animation btn-blue-color w-50 verPartidas btn-round-edge" data-toggle="modal" data-target="#verPartidasPedidoUnico" disabled>Partida</button>
                             <button type="button" class="btn btn-danger w-45 eliminarFila"><i class="bi bi-trash3-fill text-white"></i></button>
                         </div>
 
@@ -491,7 +495,7 @@
 
                                 <div class="modal-body row">
                                     <div class="col-md-2"><b>Numero</b></div>
-                                    <div class="col-md-2"><b>Cantidad</b></div>
+                                    <div class="col-md-2"><b>Disponibles</b></div>
                                     <div class="col-md-2"><b>Deposito</b></div>
                                     <div class="col-md-2"><b>Costo Unitario</b></div>
                                     <div class="col-md-2"><b>Ubicación</b></div>
@@ -624,6 +628,7 @@
                 const nombreArticuloPedidoUnico = document.getElementById("nombreArticuloPedidoUnico")
                 const resultItems = document.querySelectorAll('.result-item');
                 const partidas = document.querySelectorAll('.partida');
+                const mostrarSeleccionCliente = document.getElementById("mostrarSeleccionCliente")
                 let selectedResult = null;
                 let partidasSeleccionadas = [];
 
@@ -651,6 +656,9 @@
                     if (selectedResult) {
                         listaPorDefecto.textContent = selectedResult.lista
                         vendedorPorDefecto.textContent = selectedResult.vendedor
+                        mostrarSeleccionCliente.innerHTML = `
+                            Cliente Seleccionado: <b style="border-bottom: 2px solid black;">${retrievedData.id} - ${retrievedData.razon}</b>
+                        `
                     }
                 });
 
@@ -936,12 +944,12 @@
                     if(!hayDuplicados){
                         nombreArticuloPedidoUnico.value = "Cargando..."
                         fetch(`/admin/pedido-unico/obtener-articulos`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(data)
-                    })
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(data)
+                        })
                         .then(response => response.json())
                         .then(result => {
                         let partidasContainer = uniqueID != null 
@@ -952,7 +960,7 @@
 
                         nombreArticuloPedidoUnico.value = result.resultadosCodigo[0].nombre;
 
-                        let precioArticuloPedidoUnico = result.resultadosCodigo[0].precio;                 
+                        let precioArticuloPedidoUnico = result.resultadosCodigo[0].precio;      
 
                         let cantidadAFavor = fila.querySelector("#cantidadAFavorModal")
                         let cantidadModal
@@ -991,16 +999,19 @@
                             modalFooter.appendChild(rowConfirmarBtn)
                         } 
                         
-                        let costoPartidas = []
+                        let cantidadLabel = document.getElementById("cantidadLabel")       
+                        let cantidadTotalItems = []
                         if(result.resultadosPartidas.length == 0){
                             costoPartidas.push(0)
                         } else {
                             result.resultadosPartidas.map(item => {
-                                const { costoUnitario } = item
-                                costoPartidas.push(item.costoUnitario)
+                                const { cantidad } = item
+                                cantidadTotalItems.push(item.cantidad)
                             })
                         }
-                        let costoMenor = Math.min(...costoPartidas)
+                        let sumaCantidadTotalItems = cantidadTotalItems.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+                        cantidadLabel.innerHTML = `Disponibles: ${sumaCantidadTotalItems}`
+
                         let costoPedidoUnico = fila.querySelector('input[name="costoPedidoUnico"]')
                         
                         const partidaDivs = result.resultadosPartidas.map(item => {
@@ -1306,6 +1317,14 @@
             .resultadosCliente {
                 overflow-y: scroll;
                 overflow-x: hidden;
+            }
+            .btn-blue-color {
+                background-color: #0a58ca;
+                color: white;
+            }
+            .btn-blue-color:hover {
+                background-color: #0a58ca;
+                color: white;
             }
         </style>
     </body>
