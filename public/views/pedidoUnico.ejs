@@ -282,10 +282,8 @@
 
                                     <input type="date" class="form-control d-inline" name="fechaPedidoUnico" id="fechaPedidoUnico" placeholder="aa" style="width: 49%;" value="<%= new Date().toISOString().split('T')[0] %>">
                                 </div>       
-                                <div class="col-md-4 fs-26 text-dark"  id="mostrarSeleccionCliente">
-
-                                </div>
-                                <div class="col-md-4 text-end">
+                                
+                                <div class="col-md-8 text-end">
                                     <button class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="confirmarCliente" disabled>Confirmar <i class="bi bi-check-circle-fill text-white"></i></button>
 
                                     <button class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="verPedido" data-toggle="modal" data-target="#verPedidoModal" disabled>Ver Pedido <i class="bi bi-arrows-angle-expand text-white"></i></button>
@@ -318,7 +316,7 @@
 
                                     <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="finalizarPedido" disabled data-toggle="modal" data-target="#finalizarPedidoModal">Finalizar<i class="bi bi-send-fill text-white"></i></button>
 
-                                    <div class="modal fade" id="finalizarPedidoModal" tabindex="-1" role="dialog" aria-labelledby="finalizarPedidoModal" aria-hidden="true" data-target=".bd-example-modal-lg">
+                                    <!-- <div class="modal fade" id="finalizarPedidoModal" tabindex="-1" role="dialog" aria-labelledby="finalizarPedidoModal" aria-hidden="true" data-target=".bd-example-modal-lg">
                                         <div class="modal-dialog" role="document">
                                           <div class="modal-content">
                                             <div class="modal-header">
@@ -340,8 +338,12 @@
                                             </div>
                                           </div>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>                          
+                            </div>
+                            
+                            <div class="row mt-50px">
+                                <div class="col-md-12 fs-26 text-dark"  id="mostrarSeleccionCliente"></div>
                             </div>
                           
                             <div class="row mt-50px">
@@ -1293,8 +1295,19 @@
 
             document.addEventListener("DOMContentLoaded", () => {
                 const finalizarPedido = document.getElementById("finalizarPedido")
+                
                 finalizarPedido.addEventListener("click", (e) => {
-                    console.log(retrievedData)
+                    Swal.fire({
+                        title: "Procesando...",
+                        text: "Por favor, espera mientras se completa la operación.",
+                        icon: "info",
+                        allowOutsideClick: false, // Evita que el usuario cierre el modal
+                        showConfirmButton: false, // No muestra el botón de confirmación
+                        didOpen: () => {
+                            Swal.showLoading(); // Muestra la animación de carga
+                        }
+                    });
+
                     fetch("/admin/pedido-unico/update", {
                         body: JSON.stringify(retrievedData),
                         method: "POST",
@@ -1304,11 +1317,22 @@
                     })
                     .then(response => response.json())
                     .then((data) => {
-                        console.log(data)
+                        Swal.fire({
+                            title: "Operación Exitosa",
+                            text: "Los datos han sido actualizados correctamente.",
+                            icon: "success",
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
                         return data
                     })
                     .catch((err) => {
-                        console.log(err)
+                        Swal.fire({
+                            title: "Error",
+                            text: "Ocurrió un error al actualizar los datos.",
+                            icon: "error",
+                            confirmButtonText: "Aceptar"
+                        });
                         return err
                     })
                 })
