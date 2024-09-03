@@ -133,33 +133,39 @@ const updatePedido = async (objeto) => {
         @num_web varchar(20)=null,
     `
     try {
-        // const transaction = new sql.Transaction()
-        // transaction.begin(async (err) => {
-        // })
-        // TRANSACTION ROLLBACK for all queries
-        const requestQueryAlta = await new sql.Request().query(QUERY_ALTA);
-        console.log('RESPONSE QUERY ALTA: ', requestQueryAlta);
+        const transaction = new sql.Transaction()
+        await transaction.begin()
         
-        for (const fila of filas) {
-            const { data, articulos: { codigo: codigoArticulo, cantidad, precioTotal } } = fila
-            const queryFila = `
-            EXEC pediweb_pedi_items_alta
-            @tipo varchar(3)=${tipo},
-            @num_web varchar(20)=null,
-            @renglon varchar(20)=null,
-            @articulo varchar(30)=${codigoArticulo},
-            @cant varchar(20)=${parseInt(cantidad)},
-            @precio varchar(20)=${Number(precioTotal)},
-            @porcen_descuen_item varchar(20)=null
-        `
-            const requestFila = await new sql.Request().query(queryFila)
-            console.log('RESPONSE REQUEST FILA: ', requestFila);
+        try {
+            const request = new sql.Request(transaction)
+            const requestQueryAlta = await request.query(QUERY_ALTA);
+            console.log('RESPONSE QUERY ALTA: ', requestQueryAlta);
+
+            for (const fila of filas) {
+                const { data, articulos: { codigo: codigoArticulo, cantidad, precioTotal } } = fila
+                const queryFila = `
+                EXEC pediweb_pedi_items_alta
+                @tipo varchar(3)=${tipo},
+                @num_web varchar(20)=null,
+                @renglon varchar(20)=null,
+                @articulo varchar(30)=${codigoArticulo},
+                @cant varchar(20)=${parseInt(cantidad)},
+                @precio varchar(20)=${Number(precioTotal)},
+                @porcen_descuen_item varchar(20)=null
+            `
+                const requestFila = await new request.query(queryFila)
+                console.log('RESPONSE REQUEST FILA: ', requestFila);
+            }
+    
+            await transaction.commit();
+            
+            return { msg: 'OK' }
+        } catch (error) {
+            await transaction.rollback();            
+            throw error;
         }
-
-
-        return { msg: 'OK' }
     } catch (error) {
-        console.log('ERROR: ', error);
+        console.log('ERROR: ', error);        
         return [];
     }
 }
