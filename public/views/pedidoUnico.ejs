@@ -316,7 +316,31 @@
 
                                     <!-- <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow mr-10px" type="button" id="guardarPedido" disabled>Guardar<i class="bi bi-floppy2-fill text-white"></i></button> -->
 
-                                    <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="finalizarPedido" disabled>Finalizar<i class="bi bi-send-fill text-white"></i></button>
+                                    <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="finalizarPedido" disabled data-toggle="modal" data-target="#finalizarPedidoModal">Finalizar<i class="bi bi-send-fill text-white"></i></button>
+
+                                    <div class="modal fade" id="finalizarPedidoModal" tabindex="-1" role="dialog" aria-labelledby="finalizarPedidoModal" aria-hidden="true" data-target=".bd-example-modal-lg">
+                                        <div class="modal-dialog" role="document">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h5 class="modal-title" id="exampleModalLabel">Finalizar Pedido</h5>
+                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="
+                                              background: none;
+                                              border: none;
+                                              font-size: 40px;
+                                              color: red">
+                                                <span aria-hidden="true">&times;</span>
+                                              </button>
+                                            </div>
+                            
+                                            <div class="modal-body text-start" id="finalizarPedidoContenido">
+                                                <div class="loader"></div>
+                                            </div>
+                                            <div class="modal-footer">
+                                             
+                                            </div>
+                                          </div>
+                                        </div>
+                                    </div>
                                 </div>                          
                             </div>
                           
@@ -1338,6 +1362,21 @@
                 background-color: #3f3f3f;
                 color: white;
             }
+
+            /* HTML: <div class="loader"></div> */
+.loader {
+  height: 10px;
+  width: 100%;
+  --c:no-repeat linear-gradient(#6100ee 0 0);
+  background: var(--c),var(--c),#d7b8fc;
+  background-size: 60% 100%;
+  animation: l16 3s infinite;
+}
+@keyframes l16 {
+  0%   {background-position:-150% 0,-150% 0}
+  66%  {background-position: 250% 0,-150% 0}
+  100% {background-position: 250% 0, 250% 0}
+}
         </style>
     </body>
 </html>
