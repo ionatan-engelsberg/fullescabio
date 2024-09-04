@@ -3,7 +3,7 @@ import path from 'path';
 
 const storageExcel = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/') // Carpeta donde se guardarán los archivos
+        cb(null, 'uploads/')
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname)
@@ -11,8 +11,16 @@ const storageExcel = multer.diskStorage({
     }
 });
 
+const fileFilter = (req, file, cb) => {
+    const fileExtension = path.extname(file.originalname).toLowerCase(); 
+    if (fileExtension === '.xlsx') {
+        cb(null, true); 
+    } 
+};
+
 const uploadExcel = multer({
-    storage: storageExcel
+    storage: storageExcel,
+    fileFilter
 })
 
 export default uploadExcel

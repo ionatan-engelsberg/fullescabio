@@ -252,7 +252,9 @@
                     aria-describedby="inputGroupFileAddon04"
                     aria-label="Upload"
                     name="file"
+                    id="inputFileSPUpload"
                     disabled
+                    accept=".xlsx"
                   />
                   <button
                     class="btn btn-base-color btn-hover-animation btn-round-edge btn-box-shadow"
@@ -260,6 +262,7 @@
                     id="inputGroupFileAddon04"
                     style="width: 170px;"
                     disabled
+                    id="buttonFileSPUpload"
                   >
                     Subir
                   </button>
@@ -393,12 +396,15 @@
                     aria-describedby="inputGroupFileAddon04"
                     aria-label="Upload"
                     name="file"
+                    accept=".xlsx"
+                    id="inputFileDirectUpload"
                   />
                   <button
                     class="btn btn-base-color btn-hover-animation btn-round-edge btn-box-shadow"
                     type="submit"
                     id="inputGroupFileAddon04"
                     style="width: 170px;"
+                    id="buttonFileDirectUpload"
                   >
                     Subir
                   </button>
@@ -445,8 +451,53 @@
       sessionStorage.setItem("ventas-adicionales-data", JSON.stringify(dataObj));
       ventasAdicionalesStorage = JSON.parse(sessionStorage.getItem('ventas-adicionales-data'));
 
-      finalizarPedidoButton.addEventListener("click", () => {
-        console.log(ventasAdicionalesStorage)
+      finalizarPedidoButton.addEventListener("click", (e) => {
+          e.preventDefault()
+          Swal.fire({
+            title: "Procesando...",
+            text: "Por favor, espera mientras se completa la operación.",
+            icon: "info",
+            allowOutsideClick: false, 
+            showConfirmButton: false, 
+            didOpen: () => {
+                Swal.showLoading(); 
+            }
+          });
+
+          setTimeout(() => {
+              fetch("/admin/ventas-adicionales/update", {
+                  body: JSON.stringify(ventasAdicionalesStorage),
+                  method: "POST",
+                  headers: {
+                      "Content-Type": "application/json"
+                  }
+              })
+              .then(response => {
+                  if (!response.ok) {
+                      throw new Error("Error en la actualización: " + response.statusText);
+                  }
+                  return response.json();
+              })
+              .then((data) => {
+                Swal.fire({
+                      title: "Operación Exitosa",
+                      text: "Los datos han sido actualizados correctamente.",
+                      icon: "success",
+                      timer: 2000,
+                      showConfirmButton: false
+                  });
+                  return data;
+              })
+              .catch((err) => {
+                  Swal.fire({
+                      title: "Error",
+                      text: err.message,
+                      icon: "error",
+                      confirmButtonText: "Aceptar"
+                  });
+                  return err;
+              });
+          }, 1000);
       })
     }
   })
@@ -674,6 +725,45 @@
       inputHidden.value = selectAgrupacion.value; 
     });
   });
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const buttonDirectUpload = document.getElementById("buttonFileDirectUpload")
+    const inputDirectUpload = document.getElementById("inputFileDirectUpload")
+
+    buttonDirectUpload.addEventListener("click", (e) => {
+      e.preventDefault()
+      const file = inputDirectUpload.files[0];
+      const fileExtension = file.name.split('.').pop().toLowerCase();
+      if (fileExtension !== "xlsx") {
+        Swal.fire({
+          title: "Error",
+          text: "Archivo Invalido. Solo se permiten archivos Excel",
+          icon: "error",
+          confirmButtonText: "Aceptar"
+        });
+        return;
+      } 
+    })
+
+    const buttonSPpload = document.getElementById("buttonFileSPUpload")
+    const inputSPUpload = document.getElementById("inputFileSPUpload")
+
+    buttonSPpload.addEventListener("click", (e) => {
+      e.preventDefault()
+      const file = inputSPUpload.files[0];
+      const fileExtension = file.name.split('.').pop().toLowerCase();
+      if (fileExtension !== "xlsx") {
+        Swal.fire({
+          title: "Error",
+          text: "Archivo Invalido. Solo se permiten archivos Excel",
+          icon: "error",
+          confirmButtonText: "Aceptar"
+        });
+        return;
+      } 
+    })
+  })
+  
 </script>
 
 <style>

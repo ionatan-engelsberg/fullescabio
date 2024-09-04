@@ -152,13 +152,13 @@ const execUpdate = async (request, object) => {
         @precio varchar(20)=${Number(precioTotal)},
         @porcen_descuen_item varchar(20)=null
     `
-        const requestFila = await new request.query(queryFila)
+        const requestFila = await request.query(queryFila)
         console.log('RESPONSE REQUEST FILA: ', requestFila);
     }
 }
 
 // TODO
-const execTransferencia = async (transaction, object) => {}
+const execTransferencia = async (request, object) => {}
 
 const finalizarPedidoUnico = async (objeto) => {
     try {
@@ -210,13 +210,15 @@ const execVentasAdicionales = async (request, fila) => {
     // const comprobante = 1;
 
     const query = `
-    use factu_full_central_desa_nacho
     exec [may_Proveedores_articulos_incidencia]
     @Cod_articulo = ${sku},
     @cantidad = ${cantidad},
-    @comprobante = ${comprobante}
+    @comprobante = ${comprobante},
+    @fecha_desde = null,
+    @fecha_hasta = null
     `
-    await new request.query(query)
+    const result = await request.query(query)
+    return result
 };
 
 const finalizarVentasAdicionales = async (filas) => {
@@ -233,7 +235,8 @@ const finalizarVentasAdicionales = async (filas) => {
             await transaction.commit();
             return { msg: 'OK' }
         } catch (error) {
-            await transaction.rollback();            
+            console.log(error)  
+            await transaction.rollback();          
             throw error;
         }
     } catch (error) {
@@ -241,6 +244,8 @@ const finalizarVentasAdicionales = async (filas) => {
         throw error;  
     }
 }
+
+
 
 router.post("/pedido-unico/update", async (req, res) => {
     try {
@@ -269,6 +274,18 @@ router.get('/', (req, res) => {
 })
 
 //! Ventas Adicionales
+router.post("/ventas-adicionales/update", async (req, res) => {
+    try {
+        const { body } = req;
+        console.log(body.data)
+        const result = await finalizarVentasAdicionales(body.data);
+        return res.status(200).send(result);
+    } catch (error) {
+        console.error("Error al actualizar el pedido:", error);
+        return res.status(500).send(error);
+    }
+})
+
 router.get('/ventas-adicionales', async (req, res) => {
     const agrupacion = await obtenerClienteAgrupacion(`EXEC may_client_agru`)
     res.render('ventasAdicionales', {
