@@ -177,7 +177,7 @@ router.post("/pedido-unico/update", async (req, res) => {
         return res.status(200).send(result);
     } catch (error) {
         console.error("Error al actualizar el pedido:", error);
-        return res.status(500).send(error);
+        return res.status(500).send(err);
     }
 });
 
