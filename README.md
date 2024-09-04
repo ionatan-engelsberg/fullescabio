@@ -80,3 +80,5 @@ clientes,sku,des,cantidad,precio. (sp dinamico)
 Si cliente esta vacio => se autocompleta con agrupacion clientes seleccionada (sp dinamico). Este no puede ser null. Esto aplica a manual y a excel.
 pasar form manual a sp dinamico
 NO pueden mandar formulario y excel a la vez. Es uno o el otro
+
+--- --- ---- 

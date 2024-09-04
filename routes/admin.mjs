@@ -106,7 +106,7 @@ const obtenerClienteAgrupacion = async (query) => {
 
 const execQueryAlta = async (request, object) => {
     const { id, lista, listaCodigo, vendedor, fecha, tipo, partidas: filas } = object;
-    const total = 0; // TODO: la suma de los precios totales de cada una de las filas
+    const total = 2; // TODO: la suma de los precios totales de cada una de las filas
 
     filas.forEach((fila) => {
         console.log("DATA: ", fila.data)
@@ -115,23 +115,24 @@ const execQueryAlta = async (request, object) => {
 
     const QUERY_ALTA = `
         EXEC pediweb_pedi_cabe_alta 
-        @tipo varchar(3)=${tipo},
-        @num_cliente varchar(20)=${id},
-        @usuario varchar(30)="a", //?
-        @num_factu varchar(20)=null,
-        @fecha varchar(20)=${fecha},
-        @total varchar(20)=${total},
-        @codi_vende varchar(5)=${vendedor},
-        @mone varchar(3)=null,
-        @mone_coti varchar(20)=null,
-        @lista_codi varchar(5)=${listaCodigo},
-        @condi_venta varchar(5)=null,
-        @obser varchar(255)=null,
-        @porcen_descuen varchar(20)=null,
-        @cant_max_items_web varchar(20)=null,
-        @codi_lugar varchar(20)=null
-        @num_web varchar(20)=null,
+        @tipo = '${tipo}',
+        @num_cliente = ${id},
+        @usuario = 'c1', 
+        @num_factu = null,
+        @fecha = '${fecha}',
+        @total = '${total}',
+        @codi_vende = '1',
+        @mone = 'PES',
+        @mone_coti = null,
+        @lista_codi = '${listaCodigo}',
+        @condi_venta = '1',
+        @obser = null,
+        @porcen_descuen = null,
+        @cant_max_items_web = 1,
+        @codi_lugar = null,
+        @num_web = 10933
     `
+    console.log(QUERY_ALTA)
 
     const requestQueryAlta = await request.query(QUERY_ALTA);
     console.log('RESPONSE QUERY ALTA: ', requestQueryAlta);
@@ -140,20 +141,27 @@ const execQueryAlta = async (request, object) => {
 const execUpdate = async (request, object) => {
     const { id, lista, listaCodigo, vendedor, fecha, tipo, partidas: filas } = object;
 
-    for (const fila of filas) {
-        const { data, articulos: { codigo: codigoArticulo, cantidad, precioTotal } } = fila
-        const queryFila = `
-        EXEC pediweb_pedi_items_alta
-        @tipo varchar(3)=${tipo},
-        @num_web varchar(20)=null,
-        @renglon varchar(20)=null,
-        @articulo varchar(30)=${codigoArticulo},
-        @cant varchar(20)=${parseInt(cantidad)},
-        @precio varchar(20)=${Number(precioTotal)},
-        @porcen_descuen_item varchar(20)=null
-    `
-        const requestFila = await request.query(queryFila)
-        console.log('RESPONSE REQUEST FILA: ', requestFila);
+    try {
+        for (const fila of filas) {
+            const { data, articulos: { codigo: codigoArticulo, cantidad, precioTotal } } = fila
+            const queryFila = `
+            EXEC pediweb_pedi_items_alta
+            @tipo = '${tipo}',
+            @num_web = '10933',
+            @renglon = '1',
+            @articulo = 'c9',
+            @cant = '${cantidad}',
+            @precio = '100',
+            @porcen_descuen_item = null,
+            @depo_reser = 'DEP'
+        `
+            console.log(queryFila)
+            const requestFila = await request.query(queryFila)
+            console.log('RESPONSE REQUEST FILA: ', requestFila);
+        }
+    } catch (error) {
+        console.log(error)
+        throw error
     }
 }
 
@@ -245,8 +253,6 @@ const finalizarVentasAdicionales = async (filas) => {
     }
 }
 
-
-
 router.post("/pedido-unico/update", async (req, res) => {
     try {
         const { body } = req;
@@ -254,7 +260,7 @@ router.post("/pedido-unico/update", async (req, res) => {
         return res.status(200).send(result);
     } catch (error) {
         console.error("Error al actualizar el pedido:", error);
-        return res.status(500).send(err);
+        return res.status(500).send(error);
     }
 });
 

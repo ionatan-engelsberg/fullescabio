@@ -1295,8 +1295,11 @@
 
             document.addEventListener("DOMContentLoaded", () => {
                 const finalizarPedido = document.getElementById("finalizarPedido")
-                
+                let precioTotal = 0
                 finalizarPedido.addEventListener("click", (e) => {
+                    retrievedData.partidas.forEach(partida => {
+                        console.log(partida.articulos.precioTotal)
+                    })
                     e.preventDefault()
                     Swal.fire({
                         title: "Procesando...",
