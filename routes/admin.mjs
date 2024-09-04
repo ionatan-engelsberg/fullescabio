@@ -13,6 +13,13 @@ const router = express.Router()
 const __dirname = path.resolve();
 router.use(checkAuthenticated)
 
+function convertirStringANumero(str) {
+    let sanitizedStr = str.replace(/\./g, '');
+    sanitizedStr = sanitizedStr.replace(',', '.');
+    const numero = parseFloat(sanitizedStr);
+    return numero;
+}
+
 const obtenerClientesPedidoUnico = async (query) => {
     try {
         const request = await new sql.Request().query(query)
@@ -104,9 +111,10 @@ const obtenerClienteAgrupacion = async (query) => {
     }
 }
 
+const numWeb = 10336
+
 const execQueryAlta = async (request, object) => {
-    const { id, lista, listaCodigo, vendedor, fecha, tipo, partidas: filas } = object;
-    const total = 2; // TODO: la suma de los precios totales de cada una de las filas
+    const { id, lista, listaCodigo, vendedor, fecha, tipo, montoPrecioTotal , montoItemsTotal ,partidas: filas } = object;
 
     filas.forEach((fila) => {
         console.log("DATA: ", fila.data)
@@ -117,20 +125,20 @@ const execQueryAlta = async (request, object) => {
         EXEC pediweb_pedi_cabe_alta 
         @tipo = '${tipo}',
         @num_cliente = ${id},
-        @usuario = 'c1', 
-        @num_factu = null,
         @fecha = '${fecha}',
-        @total = '${total}',
-        @codi_vende = '1',
-        @mone = 'PES',
-        @mone_coti = null,
+        @total = '${montoPrecioTotal}',
         @lista_codi = '${listaCodigo}',
+        @cant_max_items_web = ${montoItemsTotal},
+        @num_web = ${numWeb},
+        @codi_vende = '${vendedor}',
+        @obser = 'LAUTI ESTAS LEYENDO ESTO?',
+        @usuario = 'c1', 
         @condi_venta = '1',
-        @obser = null,
+        @mone = 'PES', 
+        @mone_coti = null,
+        @num_factu = null,
         @porcen_descuen = null,
-        @cant_max_items_web = 1,
         @codi_lugar = null,
-        @num_web = 10933
     `
     console.log(QUERY_ALTA)
 
@@ -139,6 +147,7 @@ const execQueryAlta = async (request, object) => {
 }
 
 const execUpdate = async (request, object) => {
+    //! @renglon y @num_web se asignan automaticamente en la db
     const { id, lista, listaCodigo, vendedor, fecha, tipo, partidas: filas } = object;
 
     try {
@@ -147,11 +156,11 @@ const execUpdate = async (request, object) => {
             const queryFila = `
             EXEC pediweb_pedi_items_alta
             @tipo = '${tipo}',
-            @num_web = '10933',
-            @renglon = '1',
-            @articulo = 'c9',
+            @articulo = '${codigoArticulo}',
+            @precio = '${convertirStringANumero(precioTotal)}',
             @cant = '${cantidad}',
-            @precio = '100',
+            @num_web = '${numWeb}',
+            @renglon = '1',
             @porcen_descuen_item = null,
             @depo_reser = 'DEP'
         `
