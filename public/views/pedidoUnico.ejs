@@ -1309,33 +1309,40 @@
                         }
                     });
 
-                    fetch("/admin/pedido-unico/update", {
-                        body: JSON.stringify(retrievedData),
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        }
-                    })
-                    .then(response => response.json())
-                    .then((data) => {
-                        Swal.fire({
-                            title: "Operación Exitosa",
-                            text: "Los datos han sido actualizados correctamente.",
-                            icon: "success",
-                            timer: 2000,
-                            showConfirmButton: false
+                    setTimeout(() => {
+                        fetch("/admin/pedido-unico/update", {
+                            body: JSON.stringify(retrievedData),
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            }
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error("Error en la actualización: " + response.statusText);
+                            }
+                            return response.json();
+                        })
+                        .then((data) => {
+                         Swal.fire({
+                                title: "Operación Exitosa",
+                                text: "Los datos han sido actualizados correctamente.",
+                                icon: "success",
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                            return data;
+                        })
+                        .catch((err) => {
+                            Swal.fire({
+                                itle: "Error",
+                                text: err.message,
+                                icon: "error",
+                                confirmButtonText: "Aceptar"
+                            });
+                            return err;
                         });
-                        return data
-                    })
-                    .catch((err) => {
-                        Swal.fire({
-                            title: "Error",
-                            text: err.message,
-                            icon: "error",
-                            confirmButtonText: "Aceptar"
-                        });
-                        return err
-                    })
+                    }, 1000);
                 })
             })
             

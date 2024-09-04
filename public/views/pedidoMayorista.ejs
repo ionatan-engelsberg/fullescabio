@@ -47,6 +47,7 @@
             </nav>
         </header>
 
+        
         <section>
             <div class="container adminContainer" style="max-width: 100% !important; background: rgba(0,0,0,0.05);">
                 <div class="row">
@@ -82,7 +83,7 @@
                                             <div class="modal-body row">
                                                 <!--! No borrar. Sin esto se rompe-->
                                                 <div class="col-md-12" id="" style="display: none;">
-                                                    <label for="" class="fw-600 fs-20">ID</label>
+                                                    <label for="" class="fw-600 fs-24">ID</label>
                                                     
                                                     <div class="input-group mb-3">
                                                         <form action="/admin/pedido-unico/buscar-por-id" method="POST" class="d-flex w-100">
@@ -97,7 +98,7 @@
                                                 </div>
 
                                                 <div class="col-md-12" id="idContainer">
-                                                    <label for="" class="fw-600 fs-20">ID</label>
+                                                    <label for="" class="fw-600 fs-24">ID</label>
                                                     
                                                     <div class="input-group mb-3">
                                                         <form action="/admin/pedido-unico/buscar-por-id" method="POST" class="d-flex w-100">
@@ -155,7 +156,7 @@
                                                 </div>
 
                                                 <div class="col-md-12" id="nombreFantasiaContainer">
-                                                    <label for="" class="fw-600 fs-20">Nombre Fantasia</label>
+                                                    <label for="" class="fw-600 fs-24">Nombre Fantasia</label>
 
                                                     <div class="input-group mb-3">
                                                         <form action="/admin/pedido-unico/buscar-por-nombre" method="POST" class="d-flex w-100">
@@ -212,7 +213,7 @@
                                                 </div>
 
                                                 <div class="col-md-12" id="razonContainer">
-                                                    <label for="" class="fw-600 fs-20">Razon</label>
+                                                    <label for="" class="fw-600 fs-24">Razon</label>
 
                                                     <div class="input-group mb-3">
                                                         <form action="/admin/pedido-unico/buscar-por-razon" method="POST" class="d-flex w-100">
@@ -227,7 +228,7 @@
                                                         </form>
                                                     </div>
 
-                                                    <div id="razonResultadosPedidoUnico" class="h-500px resultadosCliente">
+                                                    <div id="razonResultadosPedidoUnico" class="h-300px resultadosCliente">
                                                         <% if (resultadosRazon && resultadosRazon.length > 0) { %>
                                                             <p>Resultados de la busqueda: <b><%= razonPedidoUnico %></b></p>
                                                                 <div class="row">
@@ -280,12 +281,14 @@
                                         </div>
                                     </div>
 
-                                    <input type="date" class="form-control d-inline" name="fechaPedidoUnico" id="fechaPedidoUnico" placeholder="aa" style="width: 49%;">
+                                    <input type="date" class="form-control d-inline" name="fechaPedidoUnico" id="fechaPedidoUnico" placeholder="aa" style="width: 49%;" value="<%= new Date().toISOString().split('T')[0] %>">
                                 </div>       
+                                
                                 <div class="col-md-8 text-end">
                                     <button class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="confirmarCliente" disabled>Confirmar <i class="bi bi-check-circle-fill text-white"></i></button>
 
                                     <button class="mr-10px btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="verPedido" data-toggle="modal" data-target="#verPedidoModal" disabled>Ver Pedido <i class="bi bi-arrows-angle-expand text-white"></i></button>
+                                    
                                     <div class="modal fade" id="verPedidoModal" tabindex="-1" role="dialog" aria-labelledby="verPedidoModal" aria-hidden="true" data-target=".bd-example-modal-lg">
                                         <div class="modal-dialog" role="document">
                                           <div class="modal-content">
@@ -312,12 +315,41 @@
 
                                     <!-- <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow mr-10px" type="button" id="guardarPedido" disabled>Guardar<i class="bi bi-floppy2-fill text-white"></i></button> -->
 
-                                    <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="finaliarPedido" disabled>Finalizar<i class="bi bi-send-fill text-white"></i></button>
+                                    <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="finalizarPedido" disabled data-toggle="modal" data-target="#finalizarPedidoModal">Finalizar<i class="bi bi-send-fill text-white"></i></button>
+
+                                    <!-- <div class="modal fade" id="finalizarPedidoModal" tabindex="-1" role="dialog" aria-labelledby="finalizarPedidoModal" aria-hidden="true" data-target=".bd-example-modal-lg">
+                                        <div class="modal-dialog" role="document">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h5 class="modal-title" id="exampleModalLabel">Finalizar Pedido</h5>
+                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="
+                                              background: none;
+                                              border: none;
+                                              font-size: 40px;
+                                              color: red">
+                                                <span aria-hidden="true">&times;</span>
+                                              </button>
+                                            </div>
+                            
+                                            <div class="modal-body text-start" id="finalizarPedidoContenido">
+                                                <div class="loader"></div>
+                                            </div>
+                                            <div class="modal-footer">
+                                             
+                                            </div>
+                                          </div>
+                                        </div>
+                                    </div> -->
                                 </div>                          
                             </div>
+                            
+                            <div class="row mt-50px">
+                                <div class="col-md-12 fs-26 text-dark"  id="mostrarSeleccionCliente"></div>
+                            </div>
+                          
                             <div class="row mt-50px">
                                 <div class="col-md-4">
-                                    <label for="" class="text-dark fw-600 fs-20">Lista</label>
+                                    <label for="" class="text-dark fw-600 fs-24">Lista</label>
                                     <select class="form-select" name="tipoPedidoUnico" id="listaPedidoUnico">
                                         <% if (resultadosRazon && resultadosRazon.length > 0) { %>
                                         <% if (typeof lista !== 'undefined' && lista.length > 0) { %>
@@ -356,7 +388,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="" class="text-dark fw-600 fs-20">Vendedor</label>
+                                    <label for="" class="text-dark fw-600 fs-24">Vendedor</label>
                                     <select class="form-select" name="vendedorPedidoUnico" id="vendedorPedidoUnico">
                                         <% if (resultadosRazon && resultadosRazon.length > 0) { %>
                                         <% if (typeof listaVendedor !== 'undefined' && listaVendedor.length > 0) { %>
@@ -395,7 +427,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="" class="text-dark fw-600 fs-20">Tipo</label>
+                                    <label for="" class="text-dark fw-600 fs-24">Tipo</label>
                                     <select class="form-select" name="tipoPedidoUnico" id="tipoPedidoUnico">
                                         <% if (typeof tiposPedidoUnico !== 'undefined' && tiposPedidoUnico.length > 0) { %>
                                             <% tiposPedidoUnico.forEach(tipo => { %>
@@ -414,22 +446,22 @@
                 
                 <div class="row mt-50px">
                     <div class="col-md-2">
-                        <p class="text-dark mb-0 fw-600">Código</p>
+                        <p class="text-dark mb-0 fw-600 fs-20">Código</p>
                     </div>
                     <div class="col-md-2">
-                        <p class="text-dark mb-0 fw-600">Nombre</p>
+                        <p class="text-dark mb-0 fw-600 fs-20">Nombre</p>
                     </div>
                     <div class="col-md-2">
-                        <p class="text-dark mb-0 fw-600">Cantidad</p>
+                        <p class="text-dark mb-0 fw-600 fs-20">Cantidad. <span id="cantidadLabel" style="color: #157347;"></span></p>
                     </div>
                     <div class="col-md-2">
-                        <p class="text-dark mb-0 fw-600">Costo Total</p>
+                        <p class="text-dark mb-0 fw-600 fs-20">Costo Total</p>
                     </div>
                     <div class="col-md-2">
-                        <p class="text-dark mb-0 fw-600">Precio Total</p>
+                        <p class="text-dark mb-0 fw-600 fs-20">Precio Total</p>
                     </div>
                     <div class="col-md-2 text-center">
-                        <p class="text-dark mb-5px fw-600">Opciones</p>
+                        <p class="text-dark mb-5px fw-600 fs-20">Opciones</p>
                     </div>
                 </div>
                 <div id="formularioArticulos">
@@ -449,7 +481,7 @@
                             <input type="text" class="form-control nombreArticuloPedidoUnico" name="nombreArticuloPedidoUnico" id="nombreArticuloPedidoUnico" placeholder="Nombre">
                         </div>
                         <div class="col-md-2">
-                            <input type="number" class="form-control cantidadPedidoUnico" name="cantidadPedidoUnico" id="cantidadPedidoUnico" placeholder="Cantidad">
+                            <input type="number" min="0" class="form-control cantidadPedidoUnico" name="cantidadPedidoUnico" id="cantidadPedidoUnico" placeholder="Cantidad">
                         </div>
                         <div class="col-md-2">
                             <div class="input-group">
@@ -468,7 +500,7 @@
                             </div>
                         </div>
                         <div class="col-md-2 d-flex flex-wrap justify-content-between">
-                            <button type="button" class="btn btn-primary w-50 verPartidas" data-toggle="modal" data-target="#verPartidasPedidoUnico" disabled>Partida</button>
+                            <button type="button" class="btn btn-box-shadow btn-hover-animation btn-blue-color w-50 verPartidas btn-round-edge" data-toggle="modal" data-target="#verPartidasPedidoUnico" disabled>Partida</button>
                             <button type="button" class="btn btn-danger w-45 eliminarFila"><i class="bi bi-trash3-fill text-white"></i></button>
                         </div>
 
@@ -490,7 +522,7 @@
 
                                 <div class="modal-body row">
                                     <div class="col-md-2"><b>Numero</b></div>
-                                    <div class="col-md-2"><b>Cantidad</b></div>
+                                    <div class="col-md-2"><b>Disponibles</b></div>
                                     <div class="col-md-2"><b>Deposito</b></div>
                                     <div class="col-md-2"><b>Costo Unitario</b></div>
                                     <div class="col-md-2"><b>Ubicación</b></div>
@@ -517,7 +549,7 @@
                 <!-- Botón para agregar otra fila -->
                 <div class="row text-center">
                     <div class="col-12">
-                        <button id="agregarFila" type="button" class="btn btn-secondary mt-30px" disabled>Agregar fila</button>
+                        <button id="agregarFila" type="button" class="btn btn-gray-color btn-medium btn-hover-animation btn-round-edge btn-box-shadow mt-30px" disabled>Agregar fila</button>
                     </div>
                 </div>
             </div>
@@ -533,15 +565,10 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         <script>
-            //todo: pulir styles partida
-            //todo: filtros de busqueda de clientes
-            //todo: revisar desabilitaciones de inputs acorde al flujo de la apliacion
-            //todo: agregar 1 fila a la vez
-
             sessionStorage.setItem("session-data", JSON.stringify(null))
             let retrievedData = JSON.parse(sessionStorage.getItem('session-data'));
-            let usedIDs = new Set();
 
+            let usedIDs = new Set();
             function randomID() {
                 let id;
                 do {
@@ -628,6 +655,8 @@
                 const nombreArticuloPedidoUnico = document.getElementById("nombreArticuloPedidoUnico")
                 const resultItems = document.querySelectorAll('.result-item');
                 const partidas = document.querySelectorAll('.partida');
+                const mostrarSeleccionCliente = document.getElementById("mostrarSeleccionCliente")
+                const inputPedidoUnico = document.getElementById("codigoPedidoUnico")
                 let selectedResult = null;
                 let partidasSeleccionadas = [];
 
@@ -655,6 +684,10 @@
                     if (selectedResult) {
                         listaPorDefecto.textContent = selectedResult.lista
                         vendedorPorDefecto.textContent = selectedResult.vendedor
+                        mostrarSeleccionCliente.innerHTML = `
+                            Cliente Seleccionado: <b style="border-bottom: 2px solid black;">${retrievedData.id} - ${retrievedData.razon}</b>
+                        `
+                        inputPedidoUnico.style = "border: 3px solid #146C43"
                     }
                 });
 
@@ -728,7 +761,14 @@
                         const grouped = [];
     
                         for (let i = 0; i < elements.length; i += 5) {
-                            grouped.push(elements.slice(i, i + 5));
+                            const group = {
+                                codigo: elements[i] || null,
+                                nombre: elements[i + 1] || null,
+                                cantidad: elements[i + 2] || null,
+                                costoTotal: elements[i + 3] || null,
+                                precioTotal: elements[i + 4] || null,
+                            };
+                            grouped.push(group);
                         }
     
                         return grouped;
@@ -739,8 +779,6 @@
                     for (let i = 0; i < retrievedData.partidas.length; i++) {
                         retrievedData.partidas[i].articulos = resultInputValues[i]
                     }
-
-                    console.log(retrievedData)
                 });
             });
 
@@ -750,8 +788,8 @@
 
                 verPedidoBTN.addEventListener("click", () => {
                     retrievedData.partidas.map(partida => {
-                        partida.articulos[5] = formatNumber(partida.articulos[4]) - formatNumber(partida.articulos[3])
-                        partida.articulos[5] = formatPrice(Number(partida.articulos[5]))
+                        partida.articulos.margen = formatNumber(partida.articulos.precioTotal) - formatNumber(partida.articulos.costoTotal)
+                        partida.articulos.margen = formatPrice(Number(partida.articulos.margen))
                         partida.data.map(props => {
                             props.costoUnitario = formatearCostoUnico(props.costoUnitario)
                         })
@@ -760,24 +798,24 @@
                     const htmlContent = `
                     <div class="container">
             <div class="row">
-                <div class="col-md-4">
-                    <p><strong>Razón:</strong> ${retrievedData.razon}</p>
+                <div class="col-md-4 text-dark fs-22">
+                    <p><strong>Razón:</strong> <br> ${retrievedData.razon}</p>
                 </div>
-                <div class="col-md-4">
-                    <p><strong>Nombre Fantasía:</strong> ${retrievedData.nombreFantasia}</p>
+                <div class="col-md-4 text-dark fs-22">
+                    <p><strong>Nombre Fantasía:</strong> <br> ${retrievedData.nombreFantasia}</p>
                 </div>
-                <div class="col-md-4">
-                    <p><strong>Lista:</strong> ${retrievedData.lista} (${retrievedData.listaCodigo})</p>
+                <div class="col-md-4 text-dark fs-22">
+                    <p><strong>Lista:</strong> <br> ${retrievedData.lista} (${retrievedData.listaCodigo})</p>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-4 text-dark fs-22">
                     <p><strong>Vendedor:</strong> ${retrievedData.vendedor}</p>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 text-dark fs-22">
                     <p><strong>Fecha:</strong> ${retrievedData.fecha}</p>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 text-dark fs-22">
                     <p><strong>Tipo:</strong> ${retrievedData.tipo}</p>
                 </div>
             </div>
@@ -800,8 +838,8 @@
                         </thead>
                         <tbody>
                             <tr>
-                                ${partida.articulos.map((articulo, index) => `
-                                    <td>${[3, 4, 5].includes(index) ? '$ ' + articulo : articulo}</td>
+                                ${Object.entries(partida.articulos).map(([key, articulo]) => `
+                                    <td>${['costoTotal', 'precioTotal', 'margen'].includes(key) ? '$ ' + articulo : articulo}</td>
                                 `).join('')}
                             </tr>
                         </tbody>
@@ -810,7 +848,7 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Numero</th>
+                                <th>Código</th>
                                 <th>Stock</th>
                                 <th>Deposito</th>
                                 <th>Costo Unitario</th>
@@ -849,7 +887,7 @@
                 let confirmarClienteBTN = document.querySelector("#confirmarCliente") 
                 let verPedidoBTN = document.querySelector("#verPedido")
                 let guardarPedidoBTN = document.querySelector("#guardarPedido")
-                let finalizarPedidoBTN = document.querySelector("#finaliarPedido")
+                let finalizarPedidoBTN = document.querySelector("#finalizarPedido")
                 let verPartidasBTN = document.querySelector(".verPartidas")
                 
                 verPartidasBTN.addEventListener("click", () => {
@@ -860,6 +898,7 @@
                     verPedidoBTN.disabled = !verPedidoBTN.disabled;
                     finalizarPedidoBTN.disabled = !finalizarPedidoBTN.disabled;
                     guardarPedidoBTN.disabled = !guardarPedidoBTN.disabled
+                    console.log(retrievedData)
                 })
 
                 document.getElementById('agregarFila').addEventListener('click', function() {
@@ -912,30 +951,45 @@
                     let inputCodigoPedidoUnico = fila.querySelector('input[name="codigoPedidoUnico"]');
                     let codigo = inputCodigoPedidoUnico.value;
 
+                    let nombreArticuloPedidoUnico = fila.querySelector('input[name="nombreArticuloPedidoUnico"]');
+
                     const data = { 
                         codigoPedidoUnico: codigo,
                         listaCodigo: retrievedData.listaCodigo
                     };
 
-                    fetch(`/admin/pedido-unico/obtener-articulos`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(data)
-                    })
-                    .then(response => response.json())
-                    .then(result => {
+                    let allInputCodigo = formularioArticulos.querySelectorAll('input[name="codigoPedidoUnico"]') 
+                    let hayDuplicados = false;
+                    const codigosVistos = new Set();
+                    allInputCodigo.forEach(input => {
+                        const valor = input.value;
+                        if (codigosVistos.has(valor)) {
+                            hayDuplicados = true; 
+                        } else {
+                            codigosVistos.add(valor);
+                        }
+                    });
+                    
+                    if(!hayDuplicados){
+                        nombreArticuloPedidoUnico.value = "Cargando..."
+                        fetch(`/admin/pedido-mayorista/obtener-articulos`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(data)
+                        })
+                        .then(response => response.json())
+                        .then(result => {
                         let partidasContainer = uniqueID != null 
                         ? fila.querySelector(`#verPartidasPedidoUnico-${uniqueID} #partidasResultadosPedidoUnico`) 
                         : fila.querySelector('#verPartidasPedidoUnico #partidasResultadosPedidoUnico');
 
                         partidasContainer.innerHTML = '';
 
-                        let nombreArticuloPedidoUnico = fila.querySelector('input[name="nombreArticuloPedidoUnico"]');
                         nombreArticuloPedidoUnico.value = result.resultadosCodigo[0].nombre;
 
-                        let precioArticuloPedidoUnico = result.resultadosCodigo[0].precio;                 
+                        let precioArticuloPedidoUnico = result.resultadosCodigo[0].precio;      
 
                         let cantidadAFavor = fila.querySelector("#cantidadAFavorModal")
                         let cantidadModal
@@ -945,6 +999,8 @@
                         verPartidas.addEventListener("click", () => {
                             cantidadModal = cantidadModalElement.textContent
                         })
+
+                        inputCodigoPedidoUnico.style = "border: none"
 
                         let inputCantidadPedidoUnico = fila.querySelector("#cantidadPedidoUnico")
                         inputCantidadPedidoUnico.style = "border: 1px solid red"
@@ -974,16 +1030,19 @@
                             modalFooter.appendChild(rowConfirmarBtn)
                         } 
                         
-                        let costoPartidas = []
+                        let cantidadLabel = document.getElementById("cantidadLabel")       
+                        let cantidadTotalItems = []
                         if(result.resultadosPartidas.length == 0){
                             costoPartidas.push(0)
                         } else {
                             result.resultadosPartidas.map(item => {
-                                const { costoUnitario } = item
-                                costoPartidas.push(item.costoUnitario)
+                                const { cantidad } = item
+                                cantidadTotalItems.push(item.cantidad)
                             })
                         }
-                        let costoMenor = Math.min(...costoPartidas)
+                        let sumaCantidadTotalItems = cantidadTotalItems.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+                        cantidadLabel.innerHTML = `Disponibles: ${sumaCantidadTotalItems}`
+
                         let costoPedidoUnico = fila.querySelector('input[name="costoPedidoUnico"]')
                         
                         const partidaDivs = result.resultadosPartidas.map(item => {
@@ -1165,12 +1224,18 @@
                         })                 
                         return result;
                     })
-                    .catch(error => {
-                        console.log(error);
-                        let nombreArticuloPedidoUnico = fila.querySelector('input[name="nombreArticuloPedidoUnico"]');
-                        nombreArticuloPedidoUnico.value = "No hay resultados";
-                        return error;
-                    });
+                        .catch(error => {
+                            console.log(error);
+                            let nombreArticuloPedidoUnico = fila.querySelector('input[name="nombreArticuloPedidoUnico"]');
+                            nombreArticuloPedidoUnico.value = "No hay resultados";
+                            return error;
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Codigo ya utilizado",
+                        });
+                    }
                 }});
             });
 
@@ -1181,7 +1246,7 @@
                 for(let i = 0; i < selectedPartidas.length; i++){
                     let array = Array.from(selectedPartidas[i].querySelectorAll(".col-md-2")).slice(0, 5);
                     let dataPartidas = {
-                        numero: Number(array[0].textContent),
+                        numero: array[0].textContent,
                         stock: Number(array[1].textContent),
                         deposito: array[2].textContent,
                         costoUnitario: Number(array[3].textContent),
@@ -1228,6 +1293,52 @@
                 entera = entera.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
                 return decimal ? `${entera},${decimal}` : entera;
             }
+
+            document.addEventListener("DOMContentLoaded", () => {
+                const finalizarPedido = document.getElementById("finalizarPedido")
+                
+                finalizarPedido.addEventListener("click", (e) => {
+                    e.preventDefault()
+                    Swal.fire({
+                        title: "Procesando...",
+                        text: "Por favor, espera mientras se completa la operación.",
+                        icon: "info",
+                        allowOutsideClick: false, 
+                        showConfirmButton: false, 
+                        didOpen: () => {
+                            Swal.showLoading(); 
+                        }
+                    });
+
+                    fetch("/admin/pedido-unico/update", {
+                        body: JSON.stringify(retrievedData),
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    })
+                    .then(response => response.json())
+                    .then((data) => {
+                        Swal.fire({
+                            title: "Operación Exitosa",
+                            text: "Los datos han sido actualizados correctamente.",
+                            icon: "success",
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        return data
+                    })
+                    .catch((err) => {
+                        Swal.fire({
+                            title: "Error",
+                            text: err.message,
+                            icon: "error",
+                            confirmButtonText: "Aceptar"
+                        });
+                        return err
+                    })
+                })
+            })
             
         </script>
 
@@ -1261,6 +1372,37 @@
                 overflow-y: scroll;
                 overflow-x: hidden;
             }
+            .btn-blue-color {
+                background-color: #0a58ca;
+                color: white;
+            }
+            .btn-blue-color:hover {
+                background-color: #0a58ca;
+                color: white;
+            }
+            .btn-gray-color {
+                background-color: #3f3f3f;
+                color: white;
+            }
+            .btn-gray-color:hover {
+                background-color: #3f3f3f;
+                color: white;
+            }
+
+            /* HTML: <div class="loader"></div> */
+.loader {
+  height: 10px;
+  width: 100%;
+  --c:no-repeat linear-gradient(#6100ee 0 0);
+  background: var(--c),var(--c),#d7b8fc;
+  background-size: 60% 100%;
+  animation: l16 3s infinite;
+}
+@keyframes l16 {
+  0%   {background-position:-150% 0,-150% 0}
+  66%  {background-position: 250% 0,-150% 0}
+  100% {background-position: 250% 0, 250% 0}
+}
         </style>
     </body>
 </html>

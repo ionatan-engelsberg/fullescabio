@@ -177,7 +177,7 @@ router.post("/pedido-unico/update", async (req, res) => {
         return res.status(200).send(result);
     } catch (error) {
         console.error("Error al actualizar el pedido:", error);
-        throw error; 
+        return res.status(500).send(error);
     }
 });
 
@@ -393,85 +393,13 @@ router.get('/pedido-mayorista', async (req, res) => {
     })
 })
 
-router.post('/pedido-mayorista/buscar-por-id', async (req, res) => {
-    const idPedidoUnico = req.body.idPedidoUnico;
-
-    //! Consulta a DB
-    const resultadosID = await obtenerClientesPedidoUnico(`EXEC may_client_busq @num = '${idPedidoUnico}'`)
-    const tiposPedidoUnico = await obtenerTipoPedidoUnico(`EXEC may_comp_pedidos`)
-    const lista = await obtenerListaPedidoUnico(`EXEC may_lista_precios`)
-    const listaVendedor = await obtenerListaVendedoresPedidoUnico(`EXEC may_lista_vendedores`)
-
-    res.render("pedidoMayorista", {
-        lista,
-        listaVendedor,
-        tiposPedidoUnico,
-        idPedidoUnico,
-        resultadosID,
-        selectedOption: 1,
-        showModal: true,
-        resultadosRazon: false,
-        resultadosNombre: false,
-        nombrePedidoUnico: false,
-        razonPedidoUnico: false
-    });
-});
-
-router.post('/pedido-mayorista/buscar-por-razon', async (req, res) => {
-    const razonPedidoUnico = req.body.razonPedidoUnico;
-
-    //! Consulta a DB
-    const resultadosRazon = await obtenerClientesPedidoUnico(`EXEC may_client_busq_razon @razon = '${razonPedidoUnico}'`)
-    const tiposPedidoUnico = await obtenerTipoPedidoUnico(`EXEC may_comp_pedidos`)
-    const lista = await obtenerListaPedidoUnico(`EXEC may_lista_precios`)
-    const listaVendedor = await obtenerListaVendedoresPedidoUnico(`EXEC may_lista_vendedores`)
-
-    res.render("pedidoMayorista", {
-        lista,
-        listaVendedor,
-        tiposPedidoUnico,
-        razonPedidoUnico,
-        resultadosRazon,
-        selectedOption: 2,
-        showModal: true,
-        resultadosID: false,
-        resultadosNombre: false,
-        idPedidoUnico: false,
-        nombrePedidoUnico: false
-    });
-});
-
-router.post('/pedido-mayorista/buscar-por-nombre', async (req, res) => {
-    const nombrePedidoUnico = req.body.nombrePedidoUnico;
-
-    //! Consulta a DB
-    const resultadosNombre = await obtenerClientesPedidoUnico(`EXEC may_client_busq_nomb @nom = '${nombrePedidoUnico}'`)
-    const tiposPedidoUnico = await obtenerTipoPedidoUnico(`EXEC may_comp_pedidos`)
-    const lista = await obtenerListaPedidoUnico(`EXEC may_lista_precios`)
-    const listaVendedor = await obtenerListaVendedoresPedidoUnico(`EXEC may_lista_vendedores`)
-
-    res.render("pedidoMayorista", {
-        lista,
-        listaVendedor,
-        tiposPedidoUnico,
-        nombrePedidoUnico,
-        resultadosNombre,
-        selectedOption: 3,
-        showModal: true,
-        resultadosID: false,
-        resultadosRazon: false,
-        idPedidoUnico: false,
-        razonPedidoUnico: false
-    });
-});
-
 router.post("/pedido-mayorista/obtener-articulos", async (req, res) => {
     const codigoPedidoUnico = req.body.codigoPedidoUnico;
     const listaCodigo = req.body.listaCodigo
 
     //! Consulta a DB
     const resultadosCodigo = await obtenerArticulosPedidoUnico(`EXEC may_articulos @cod_art = '${codigoPedidoUnico}', @lista_cod = '${listaCodigo}'`)
-    const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${codigoPedidoUnico}', @cod_depo = "DEP"`)
+    const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${codigoPedidoUnico}', @cod_depo = "MAY"`)
 
     res.json({
         resultadosCodigo,
