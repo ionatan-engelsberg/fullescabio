@@ -104,10 +104,10 @@ const obtenerClienteAgrupacion = async (query) => {
     }
 }
 
-const updatePedido = async (objeto) => {
-    const { id, razon, nombreFantasia, lista, listaCodigo, vendedor, fecha, tipo, partidas: filas } = objeto;
-    const total = 0;
-    console.log("BODY: ", objeto);
+const execQueryAlta = async (request, object) => {
+    const { id, lista, listaCodigo, vendedor, fecha, tipo, partidas: filas } = object;
+    const total = 0; // TODO: la suma de los precios totales de cada una de las filas
+
     filas.forEach((fila) => {
         console.log("DATA: ", fila.data)
         console.log("ARTICULOS: ", fila.articulos)
@@ -132,33 +132,67 @@ const updatePedido = async (objeto) => {
         @codi_lugar varchar(20)=null
         @num_web varchar(20)=null,
     `
+
+    const requestQueryAlta = await request.query(QUERY_ALTA);
+    console.log('RESPONSE QUERY ALTA: ', requestQueryAlta);
+}
+
+const execUpdate = async (request, object) => {
+    const { id, lista, listaCodigo, vendedor, fecha, tipo, partidas: filas } = object;
+
+    for (const fila of filas) {
+        const { data, articulos: { codigo: codigoArticulo, cantidad, precioTotal } } = fila
+        const queryFila = `
+        EXEC pediweb_pedi_items_alta
+        @tipo varchar(3)=${tipo},
+        @num_web varchar(20)=null,
+        @renglon varchar(20)=null,
+        @articulo varchar(30)=${codigoArticulo},
+        @cant varchar(20)=${parseInt(cantidad)},
+        @precio varchar(20)=${Number(precioTotal)},
+        @porcen_descuen_item varchar(20)=null
+    `
+        const requestFila = await new request.query(queryFila)
+        console.log('RESPONSE REQUEST FILA: ', requestFila);
+    }
+}
+
+// TODO
+const execTransferencia = async (transaction, object) => {}
+
+const finalizarPedidoUnico = async (objeto) => {
     try {
         const transaction = new sql.Transaction()
         await transaction.begin()
+        const request = new sql.Request(transaction)
         
         try {
-            const request = new sql.Request(transaction)
-            const requestQueryAlta = await request.query(QUERY_ALTA);
-            console.log('RESPONSE QUERY ALTA: ', requestQueryAlta);
-
-            for (const fila of filas) {
-                const { data, articulos: { codigo: codigoArticulo, cantidad, precioTotal } } = fila
-                const queryFila = `
-                EXEC pediweb_pedi_items_alta
-                @tipo varchar(3)=${tipo},
-                @num_web varchar(20)=null,
-                @renglon varchar(20)=null,
-                @articulo varchar(30)=${codigoArticulo},
-                @cant varchar(20)=${parseInt(cantidad)},
-                @precio varchar(20)=${Number(precioTotal)},
-                @porcen_descuen_item varchar(20)=null
-            `
-                const requestFila = await new request.query(queryFila)
-                console.log('RESPONSE REQUEST FILA: ', requestFila);
-            }
+            await execQueryAlta(request, objeto);
+            await execTransferencia(request, objeto);
+            await execUpdate(request, objeto)
     
             await transaction.commit();
-            
+            return { msg: 'OK' }
+        } catch (error) {
+            await transaction.rollback();            
+            throw error;
+        }
+    } catch (error) {
+        console.log('ERROR: ', error);      
+        throw error;  
+    }
+}
+
+const finalizarPedidoMayorista = async (objeto) => {
+    try {
+        const transaction = new sql.Transaction()
+        await transaction.begin()
+
+        try {
+            await execQueryAlta(transaction, objeto);
+            await execUpdate(transaction, objeto)
+    
+            await transaction.commit();
             return { msg: 'OK' }
         } catch (error) {
             await transaction.rollback();            
@@ -173,7 +207,18 @@ const updatePedido = async (objeto) => {
 router.post("/pedido-unico/update", async (req, res) => {
     try {
         const { body } = req;
-        const result = await updatePedido(body);
+        const result = await finalizarPedidoUnico(body);
+        return res.status(200).send(result);
+    } catch (error) {
+        console.error("Error al actualizar el pedido:", error);
+        return res.status(500).send(err);
+    }
+});
+
+router.post("/pedido-mayorista/update", async (req, res) => {
+    try {
+        const { body } = req;
+        const result = await finalizarPedidoMayorista(body);
         return res.status(200).send(result);
     } catch (error) {
         console.error("Error al actualizar el pedido:", error);
