@@ -165,8 +165,8 @@ const updatePedido = async (objeto) => {
             throw error;
         }
     } catch (error) {
-        console.log('ERROR: ', error);        
-        return [];
+        console.log('ERROR: ', error);      
+        throw error;  
     }
 }
 
@@ -174,16 +174,10 @@ router.post("/pedido-unico/update", async (req, res) => {
     try {
         const { body } = req;
         const result = await updatePedido(body);
-        console.log(1)
         return res.status(200).send(result);
     } catch (error) {
-        console.log(2)
         console.error("Error al actualizar el pedido:", error);
-
-        return res.status(500).send({
-            message: "Ocurrió un error al actualizar el pedido.",
-            error: error.message
-        });
+        throw error; 
     }
 });
 
