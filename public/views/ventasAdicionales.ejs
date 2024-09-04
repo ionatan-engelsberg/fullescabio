@@ -248,7 +248,6 @@
                   <input
                     type="file"
                     class="form-control file-input"
-                    id="inputGroupFile04"
                     aria-describedby="inputGroupFileAddon04"
                     aria-label="Upload"
                     name="file"
@@ -259,7 +258,6 @@
                   <button
                     class="btn btn-base-color btn-hover-animation btn-round-edge btn-box-shadow"
                     type="submit"
-                    id="inputGroupFileAddon04"
                     style="width: 170px;"
                     disabled
                     id="buttonFileSPUpload"
@@ -392,7 +390,6 @@
                   <input
                     type="file"
                     class="form-control file-input"
-                    id="inputGroupFile04"
                     aria-describedby="inputGroupFileAddon04"
                     aria-label="Upload"
                     name="file"
@@ -402,7 +399,6 @@
                   <button
                     class="btn btn-base-color btn-hover-animation btn-round-edge btn-box-shadow"
                     type="submit"
-                    id="inputGroupFileAddon04"
                     style="width: 170px;"
                     id="buttonFileDirectUpload"
                   >
@@ -554,8 +550,8 @@
 
   document.addEventListener("DOMContentLoaded", (event) => {
     const uploadContainer = document.getElementById("SPUploadExcelContainer")
-    const buttonUploadFile = document.getElementById("inputGroupFileAddon04");
-    const uploadFile = document.getElementById("inputGroupFile04");
+    const buttonUploadFile = document.getElementById("buttonFileSPUpload");
+    const uploadFile = document.getElementById("inputFileSPUpload");
     const cargaManual = document.getElementById("tabla-body");
     const inputGroup = cargaManual.querySelectorAll("input");
     const agregarFila = document.getElementById("agregar-fila");
@@ -729,39 +725,33 @@
   document.addEventListener("DOMContentLoaded", function() {
     const buttonDirectUpload = document.getElementById("buttonFileDirectUpload")
     const inputDirectUpload = document.getElementById("inputFileDirectUpload")
-
-    buttonDirectUpload.addEventListener("click", (e) => {
-      e.preventDefault()
-      const file = inputDirectUpload.files[0];
-      const fileExtension = file.name.split('.').pop().toLowerCase();
-      if (fileExtension !== "xlsx") {
-        Swal.fire({
-          title: "Error",
-          text: "Archivo Invalido. Solo se permiten archivos Excel",
-          icon: "error",
-          confirmButtonText: "Aceptar"
-        });
-        return;
-      } 
-    })
-
     const buttonSPpload = document.getElementById("buttonFileSPUpload")
     const inputSPUpload = document.getElementById("inputFileSPUpload")
 
-    buttonSPpload.addEventListener("click", (e) => {
-      e.preventDefault()
-      const file = inputSPUpload.files[0];
-      const fileExtension = file.name.split('.').pop().toLowerCase();
-      if (fileExtension !== "xlsx") {
+    buttonDirectUpload.addEventListener("click", (e) => {
+      if (inputDirectUpload.files.length === 0) {
+        e.preventDefault()
         Swal.fire({
           title: "Error",
-          text: "Archivo Invalido. Solo se permiten archivos Excel",
+          text: "Inserte un archivo",
           icon: "error",
           confirmButtonText: "Aceptar"
         });
         return;
-      } 
+      }
     })
+
+    buttonSPpload.addEventListener("click", (e) => {
+      if (inputSPUpload.files.length === 0) {
+        e.preventDefault()
+        Swal.fire({
+          title: "Error",
+          text: "Inserte un archivo",
+          icon: "error",
+          confirmButtonText: "Aceptar"
+        });
+        return;
+      }})
   })
   
 </script>

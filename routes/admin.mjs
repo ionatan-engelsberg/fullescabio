@@ -277,7 +277,6 @@ router.get('/', (req, res) => {
 router.post("/ventas-adicionales/update", async (req, res) => {
     try {
         const { body } = req;
-        console.log(body.data)
         const result = await finalizarVentasAdicionales(body.data);
         return res.status(200).send(result);
     } catch (error) {
