@@ -204,6 +204,44 @@ const finalizarPedidoMayorista = async (objeto) => {
     }
 }
 
+const execVentasAdicionales = async (request, fila) => {
+    const {sku, cantidad} = fila
+    const comprobante = 20240829;
+    // const comprobante = 1;
+
+    const query = `
+    use factu_full_central_desa_nacho
+    exec [may_Proveedores_articulos_incidencia]
+    @Cod_articulo = ${sku},
+    @cantidad = ${cantidad},
+    @comprobante = ${comprobante}
+    `
+    await new request.query(query)
+};
+
+const finalizarVentasAdicionales = async (filas) => {
+    try {
+        const transaction = new sql.Transaction()
+        await transaction.begin()
+        const request = new sql.Request(transaction)
+
+        try {
+            for (const fila of filas) {
+                await execVentasAdicionales(request, fila);
+            }
+    
+            await transaction.commit();
+            return { msg: 'OK' }
+        } catch (error) {
+            await transaction.rollback();            
+            throw error;
+        }
+    } catch (error) {
+        console.log('ERROR: ', error);      
+        throw error;  
+    }
+}
+
 router.post("/pedido-unico/update", async (req, res) => {
     try {
         const { body } = req;
