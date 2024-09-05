@@ -204,10 +204,11 @@ const finalizarPedidoMayorista = async (objeto) => {
     try {
         const transaction = new sql.Transaction()
         await transaction.begin()
+        const request = new sql.Request(transaction)
 
         try {
-            await execQueryAlta(transaction, objeto);
-            await execUpdate(transaction, objeto, 'MAY')
+            await execQueryAlta(request, objeto);
+            await execUpdate(request, objeto, 'MAY')
     
             await transaction.commit();
             return { msg: 'OK' }

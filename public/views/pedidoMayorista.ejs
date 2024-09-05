@@ -1331,6 +1331,7 @@
                         }
                     });
 
+                    setTimeout(() => {
                     fetch("/admin/pedido-mayorista/update", {
                         body: JSON.stringify(retrievedData),
                         method: "POST",
@@ -1358,6 +1359,7 @@
                         });
                         return err
                     })
+                    }, 1000)
                 })
             })
             
