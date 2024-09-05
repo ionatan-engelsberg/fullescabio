@@ -1294,11 +1294,32 @@
                 return decimal ? `${entera},${decimal}` : entera;
             }
 
+            function convertirStringANumero(str) {
+                let sanitizedStr = str.replace(/\./g, '');
+                sanitizedStr = sanitizedStr.replace(',', '.');
+                const numero = parseFloat(sanitizedStr);
+                return numero;
+            }
+
             document.addEventListener("DOMContentLoaded", () => {
                 const finalizarPedido = document.getElementById("finalizarPedido")
                 
                 finalizarPedido.addEventListener("click", (e) => {
                     e.preventDefault()
+
+                    let totalSum = retrievedData.partidas.reduce((accumulator, partida) => {
+                        const precioTotalNumerico = convertirStringANumero(partida.articulos.precioTotal);
+                        return accumulator + precioTotalNumerico;
+                    }, 0); 
+
+                    let totalItems = retrievedData.partidas.reduce((accumulator, partida) => {
+                        const precioTotalNumerico = Number(partida.articulos.cantidad);
+                        return accumulator + precioTotalNumerico;
+                    }, 0); 
+
+                    retrievedData.montoPrecioTotal = totalSum
+                    retrievedData.montoItemsTotal = totalItems
+                    
                     Swal.fire({
                         title: "Procesando...",
                         text: "Por favor, espera mientras se completa la operación.",
