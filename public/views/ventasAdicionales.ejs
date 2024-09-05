@@ -448,6 +448,7 @@
       ventasAdicionalesStorage = JSON.parse(sessionStorage.getItem('ventas-adicionales-data'));
 
       finalizarPedidoButton.addEventListener("click", (e) => {
+        console.log(ventasAdicionalesStorage)
           e.preventDefault()
           Swal.fire({
             title: "Procesando...",
@@ -662,8 +663,60 @@
       document.getElementById("eliminar-fila").disabled = !document.getElementById("eliminar-fila").disabled
       document.getElementById("verPedido").disabled = !document.getElementById("verPedido").disabled
 
-      finalizarPedido.addEventListener("click", () => {
+      let dataObj = {
+        data: ventasAdicionalesStorage  
+      }
+
+      sessionStorage.setItem("ventas-adicionales-data", JSON.stringify(dataObj));
+      ventasAdicionalesStorage = JSON.parse(sessionStorage.getItem('ventas-adicionales-data'));
+
+      finalizarPedido.addEventListener("click", (e) => {
         console.log(ventasAdicionalesStorage)
+        e.preventDefault()
+        Swal.fire({
+          title: "Procesando...",
+          text: "Por favor, espera mientras se completa la operación.",
+          icon: "info",
+          allowOutsideClick: false, 
+          showConfirmButton: false, 
+          didOpen: () => {
+              Swal.showLoading(); 
+          }
+        });
+        setTimeout(() => {
+          fetch("/admin/ventas-adicionales/update", {
+            body: JSON.stringify(ventasAdicionalesStorage),
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            }
+          })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error("Error en la actualización: " + response.statusText);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            Swal.fire({
+              title: "Operación Exitosa",
+              text: "Los datos han sido actualizados correctamente.",
+              icon: "success",
+              timer: 2000,
+              showConfirmButton: false
+            });
+            return data;
+          })
+          .catch((err) => {
+            Swal.fire({
+              title: "Error",
+              text: err.message,
+              icon: "error",
+              confirmButtonText: "Aceptar"
+            });
+            return err;
+          });
+        }, 1000);
       })
     })
 
