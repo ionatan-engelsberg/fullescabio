@@ -147,8 +147,9 @@ const execQueryAlta = async (request, object) => {
 }
 
 const execUpdate = async (request, object, depo) => {
-    //! @renglon y @num_web se asignan automaticamente en la db
+    //! @num_web se asignan automaticamente en la db
     const { id, lista, listaCodigo, vendedor, fecha, tipo, partidas: filas } = object;
+    let renglon = 1;
 
     try {
         for (const fila of filas) {
@@ -160,13 +161,15 @@ const execUpdate = async (request, object, depo) => {
             @precio = '${convertirStringANumero(precioTotal)}',
             @cant = '${cantidad}',
             @num_web = '${numWeb}',
-            @renglon = '1',
+            @renglon = '${renglon}',
             @porcen_descuen_item = null,
             @depo_reser = '${depo}'
         `
             console.log(queryFila)
             const requestFila = await request.query(queryFila)
             console.log('RESPONSE REQUEST FILA: ', requestFila);
+
+            renglon++;
         }
     } catch (error) {
         console.log(error)
