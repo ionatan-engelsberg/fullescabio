@@ -111,7 +111,7 @@ const obtenerClienteAgrupacion = async (query) => {
     }
 }
 
-const numWeb = 10336
+const numWeb = 10337
 
 const execQueryAlta = async (request, object) => {
     const { id, lista, listaCodigo, vendedor, fecha, tipo, montoPrecioTotal , montoItemsTotal ,partidas: filas } = object;
@@ -124,12 +124,12 @@ const execQueryAlta = async (request, object) => {
     const QUERY_ALTA = `
         EXEC pediweb_pedi_cabe_alta 
         @tipo = '${tipo}',
-        @num_cliente = ${id},
+        @num_cliente = '${id}',
         @fecha = '${fecha}',
         @total = '${montoPrecioTotal}',
         @lista_codi = '${listaCodigo}',
-        @cant_max_items_web = ${montoItemsTotal},
-        @num_web = ${numWeb},
+        @cant_max_items_web = '${montoItemsTotal}',
+        @num_web = '${numWeb}',
         @codi_vende = '${vendedor}',
         @obser = 'LAUTI ESTAS LEYENDO ESTO?',
         @usuario = 'c1', 
@@ -138,7 +138,7 @@ const execQueryAlta = async (request, object) => {
         @mone_coti = null,
         @num_factu = null,
         @porcen_descuen = null,
-        @codi_lugar = null,
+        @codi_lugar = null
     `
     console.log(QUERY_ALTA)
 
@@ -146,7 +146,7 @@ const execQueryAlta = async (request, object) => {
     console.log('RESPONSE QUERY ALTA: ', requestQueryAlta);
 }
 
-const execUpdate = async (request, object) => {
+const execUpdate = async (request, object, depo) => {
     //! @renglon y @num_web se asignan automaticamente en la db
     const { id, lista, listaCodigo, vendedor, fecha, tipo, partidas: filas } = object;
 
@@ -162,7 +162,7 @@ const execUpdate = async (request, object) => {
             @num_web = '${numWeb}',
             @renglon = '1',
             @porcen_descuen_item = null,
-            @depo_reser = 'DEP'
+            @depo_reser = '${depo}'
         `
             console.log(queryFila)
             const requestFila = await request.query(queryFila)
@@ -186,7 +186,7 @@ const finalizarPedidoUnico = async (objeto) => {
         try {
             await execQueryAlta(request, objeto);
             await execTransferencia(request, objeto);
-            await execUpdate(request, objeto)
+            await execUpdate(request, objeto, 'DEP')
     
             await transaction.commit();
             return { msg: 'OK' }
@@ -207,7 +207,7 @@ const finalizarPedidoMayorista = async (objeto) => {
 
         try {
             await execQueryAlta(transaction, objeto);
-            await execUpdate(transaction, objeto)
+            await execUpdate(transaction, objeto, 'MAY')
     
             await transaction.commit();
             return { msg: 'OK' }
@@ -280,7 +280,7 @@ router.post("/pedido-mayorista/update", async (req, res) => {
         return res.status(200).send(result);
     } catch (error) {
         console.error("Error al actualizar el pedido:", error);
-        return res.status(500).send(err);
+        return res.status(500).send(error);
     }
 });
 
@@ -501,24 +501,96 @@ router.get('/pedido-mayorista', async (req, res) => {
         resultadosNombre: false,
         resultadosID: false,
         resultadosRazon: false,
-        nombrePedidoUnico: false,
-        idPedidoUnico: false,
-        razonPedidoUnico: false
+        nombrePedidoMayorista: false,
+        idPedidoMayorista: false,
+        razonPedidoMayorista: false
     })
 })
 
 router.post("/pedido-mayorista/obtener-articulos", async (req, res) => {
-    const codigoPedidoUnico = req.body.codigoPedidoUnico;
+    const codigoPedidoMayorista = req.body.codigoPedidoMayorista;
     const listaCodigo = req.body.listaCodigo
 
     //! Consulta a DB
-    const resultadosCodigo = await obtenerArticulosPedidoUnico(`EXEC may_articulos @cod_art = '${codigoPedidoUnico}', @lista_cod = '${listaCodigo}'`)
-    const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${codigoPedidoUnico}', @cod_depo = "MAY"`)
+    const resultadosCodigo = await obtenerArticulosPedidoUnico(`EXEC may_articulos @cod_art = '${codigoPedidoMayorista}', @lista_cod = '${listaCodigo}'`)
+    const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${codigoPedidoMayorista}', @cod_depo = "MAY"`)
 
     res.json({
         resultadosCodigo,
         resultadosPartidas
     })
 })
+
+router.post('/pedido-mayorista/buscar-por-id', async (req, res) => {
+    const idPedidoMayorista = req.body.idPedidoMayorista;
+
+    //! Consulta a DB
+    const resultadosID = await obtenerClientesPedidoUnico(`EXEC may_client_busq @num = '${idPedidoMayorista}'`)
+    const tiposPedidoMayorista = await obtenerTipoPedidoUnico(`EXEC may_comp_pedidos`)
+    const lista = await obtenerListaPedidoUnico(`EXEC may_lista_precios`)
+    const listaVendedor = await obtenerListaVendedoresPedidoUnico(`EXEC may_lista_vendedores`)
+
+    res.render("pedidoMayorista", {
+        lista,
+        listaVendedor,
+        tiposPedidoMayorista,
+        idPedidoMayorista,
+        resultadosID,
+        selectedOption: 1,
+        showModal: true,
+        resultadosRazon: false,
+        resultadosNombre: false,
+        nombrePedidoMayorista: false,
+        razonPedidoMayorista: false
+    });
+});
+
+router.post('/pedido-mayorista/buscar-por-razon', async (req, res) => {
+    const razonPedidoMayorista = req.body.razonPedidoMayorista;
+
+    //! Consulta a DB
+    const resultadosRazon = await obtenerClientesPedidoUnico(`EXEC may_client_busq_razon @razon = '${razonPedidoMayorista}'`)
+    const tiposPedidoMayorista = await obtenerTipoPedidoUnico(`EXEC may_comp_pedidos`)
+    const lista = await obtenerListaPedidoUnico(`EXEC may_lista_precios`)
+    const listaVendedor = await obtenerListaVendedoresPedidoUnico(`EXEC may_lista_vendedores`)
+
+    res.render("pedidoMayorista", {
+        lista,
+        listaVendedor,
+        tiposPedidoMayorista,
+        razonPedidoMayorista,
+        resultadosRazon,
+        selectedOption: 2,
+        showModal: true,
+        resultadosID: false,
+        resultadosNombre: false,
+        idPedidoMayorista: false,
+        nombrePedidoMayorista: false
+    });
+});
+
+router.post('/pedido-mayorista/buscar-por-nombre', async (req, res) => {
+    const nombrePedidoMayorista = req.body.nombrePedidoMayorista;
+
+    //! Consulta a DB
+    const resultadosNombre = await obtenerClientesPedidoUnico(`EXEC may_client_busq_nomb @nom = '${nombrePedidoMayorista}'`)
+    const tiposPedidoMayorista = await obtenerTipoPedidoUnico(`EXEC may_comp_pedidos`)
+    const lista = await obtenerListaPedidoUnico(`EXEC may_lista_precios`)
+    const listaVendedor = await obtenerListaVendedoresPedidoUnico(`EXEC may_lista_vendedores`)
+
+    res.render("pedidoMayorista", {
+        lista,
+        listaVendedor,
+        tiposPedidoMayorista,
+        nombrePedidoMayorista,
+        resultadosNombre,
+        selectedOption: 3,
+        showModal: true,
+        resultadosID: false,
+        resultadosRazon: false,
+        idPedidoMayorista: false,
+        razonPedidoMayorista: false
+    });
+});
 
 export default router

@@ -54,9 +54,9 @@
                         <div class="col-md-12 list-admin">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <button class="btn btn-medium btn-base-color btn-hover-animation btn-round-edge btn-box-shadow mr-10px" type="button" data-toggle="modal" data-target="#seleccionarClienteModalPedidoUnico" id="buscarCliente">Buscar Cliente<i class="bi bi-search text-white"></i></button>
+                                    <button class="btn btn-medium btn-base-color btn-hover-animation btn-round-edge btn-box-shadow mr-10px" type="button" data-toggle="modal" data-target="#seleccionarClienteModalPedidoMayorista" id="buscarCliente">Buscar Cliente<i class="bi bi-search text-white"></i></button>
 
-                                    <div class="modal fade" id="seleccionarClienteModalPedidoUnico" tabindex="-1" role="dialog" aria-labelledby="seleccionarClienteModalPedidoUnico" aria-hidden="true" data-target=".bd-example-modal-lg">
+                                    <div class="modal fade" id="seleccionarClienteModalPedidoMayorista" tabindex="-1" role="dialog" aria-labelledby="seleccionarClienteModalPedidoMayorista" aria-hidden="true" data-target=".bd-example-modal-lg">
                                         <div class="modal-dialog" role="document">
                                           <div class="modal-content">
                                             <div class="modal-header">
@@ -86,37 +86,37 @@
                                                     <label for="" class="fw-600 fs-24">ID</label>
                                                     
                                                     <div class="input-group mb-3">
-                                                        <form action="/admin/pedido-unico/buscar-por-id" method="POST" class="d-flex w-100">
-                                                            <input type="text" class="form-control w-90" placeholder="Buscar por ID"  aria-describedby="basic-addon2" name="idPedidoUnico">
+                                                        <form action="/admin/pedido-mayorista/buscar-por-id" method="POST" class="d-flex w-100">
+                                                            <input type="text" class="form-control w-90" placeholder="Buscar por ID"  aria-describedby="basic-addon2" name="idPedidoMayorista">
                                                             <div class="input-group-append">
                                                                 <button class="btn btn-success h-100" type="submit">Buscar</button>
                                                             </div>
                                                         </form>
                                                     </div>
 
-                                                    <div id="idResultadosPedidoUnico"></div>
+                                                    <div id="idResultadosPedidoMayorista"></div>
                                                 </div>
 
                                                 <div class="col-md-12" id="idContainer">
                                                     <label for="" class="fw-600 fs-24">ID</label>
                                                     
                                                     <div class="input-group mb-3">
-                                                        <form action="/admin/pedido-unico/buscar-por-id" method="POST" class="d-flex w-100">
+                                                        <form action="/admin/pedido-mayorista/buscar-por-id" method="POST" class="d-flex w-100">
                                                             <input type="text" class="form-control w-90" 
-                                                            placeholder="<%= idPedidoUnico ? idPedidoUnico : 'ID' %>"  
+                                                            placeholder="<%= idPedidoMayorista ? idPedidoMayorista : 'ID' %>"  
                                                             aria-describedby="basic-addon2" 
-                                                            name="idPedidoUnico"
-                                                            value="<%= idPedidoUnico ? idPedidoUnico : '' %>">
+                                                            name="idPedidoMayorista"
+                                                            value="<%= idPedidoMayorista ? idPedidoMayorista : '' %>">
                                                             <div class="input-group-append">
                                                                 <button class="btn btn-success h-100" type="submit">Buscar</button>
                                                             </div>
                                                         </form>
                                                     </div>
 
-                                                    <div id="idResultadosPedidoUnico">
+                                                    <div id="idResultadosPedidoMayorista">
                                                         <% if (resultadosID && resultadosID.length > 0) { %>
                                                             
-                                                            <p>Resultados de la busqueda: <b><%= idPedidoUnico %></b></p>
+                                                            <p>Resultados de la busqueda: <b><%= idPedidoMayorista %></b></p>
                                                             <div class="row">
                                                                 <div class="col-md-2">
                                                                     <span><b>ID</b></span>
@@ -159,21 +159,21 @@
                                                     <label for="" class="fw-600 fs-24">Nombre Fantasia</label>
 
                                                     <div class="input-group mb-3">
-                                                        <form action="/admin/pedido-unico/buscar-por-nombre" method="POST" class="d-flex w-100">
+                                                        <form action="/admin/pedido-mayorista/buscar-por-nombre" method="POST" class="d-flex w-100">
                                                             <input type="text" class="form-control w-90" 
-                                                            placeholder="<%= nombrePedidoUnico ? nombrePedidoUnico : 'Buscar por Nombre Fantasia' %>"  
+                                                            placeholder="<%= nombrePedidoMayorista ? nombrePedidoMayorista : 'Buscar por Nombre Fantasia' %>"  
                                                             aria-describedby="basic-addon2" 
-                                                            name="nombrePedidoUnico"
-                                                            value="<%= nombrePedidoUnico ? nombrePedidoUnico : '' %>">
+                                                            name="nombrePedidoMayorista"
+                                                            value="<%= nombrePedidoMayorista ? nombrePedidoMayorista : '' %>">
                                                             <div class="input-group-append">
                                                                 <button class="btn btn-success h-100" type="submit">Buscar</button>
                                                             </div>
                                                         </form>
                                                     </div>
 
-                                                    <div id="nombreResultadosPedidoUnico" class="h-300px resultadosCliente">
+                                                    <div id="nombreResultadosPedidoMayorista" class="h-300px resultadosCliente">
                                                         <% if (resultadosNombre && resultadosNombre.length > 0) { %>
-                                                            <p>Resultados de la busqueda: <b><%= nombrePedidoUnico %></b></p>
+                                                            <p>Resultados de la busqueda: <b><%= nombrePedidoMayorista %></b></p>
                                                             <div class="row">
                                                                 <div class="col-md-2">
                                                                     <span><b>ID</b></span>
@@ -216,21 +216,21 @@
                                                     <label for="" class="fw-600 fs-24">Razon</label>
 
                                                     <div class="input-group mb-3">
-                                                        <form action="/admin/pedido-unico/buscar-por-razon" method="POST" class="d-flex w-100">
+                                                        <form action="/admin/pedido-mayorista/buscar-por-razon" method="POST" class="d-flex w-100">
                                                             <input type="text" class="form-control w-90" 
-                                                            placeholder="<%= razonPedidoUnico ? razonPedidoUnico : 'Razon' %>"  
+                                                            placeholder="<%= razonPedidoMayorista ? razonPedidoMayorista : 'Razon' %>"  
                                                             aria-describedby="basic-addon2" 
-                                                            name="razonPedidoUnico"
-                                                            value="<%= razonPedidoUnico ? razonPedidoUnico : '' %>">
+                                                            name="razonPedidoMayorista"
+                                                            value="<%= razonPedidoMayorista ? razonPedidoMayorista : '' %>">
                                                             <div class="input-group-append">
                                                                 <button class="btn btn-success h-100" type="submit">Buscar</button>
                                                             </div>
                                                         </form>
                                                     </div>
 
-                                                    <div id="razonResultadosPedidoUnico" class="h-300px resultadosCliente">
+                                                    <div id="razonResultadosPedidoMayorista" class="h-300px resultadosCliente">
                                                         <% if (resultadosRazon && resultadosRazon.length > 0) { %>
-                                                            <p>Resultados de la busqueda: <b><%= razonPedidoUnico %></b></p>
+                                                            <p>Resultados de la busqueda: <b><%= razonPedidoMayorista %></b></p>
                                                                 <div class="row">
                                                                     <div class="col-md-2">
                                                                         <span><b>ID</b></span>
@@ -281,7 +281,7 @@
                                         </div>
                                     </div>
 
-                                    <input type="date" class="form-control d-inline" name="fechaPedidoUnico" id="fechaPedidoUnico" placeholder="aa" style="width: 49%;" value="<%= new Date().toISOString().split('T')[0] %>">
+                                    <input type="date" class="form-control d-inline" name="fechaPedidoMayorista" id="fechaPedidoMayorista" placeholder="aa" style="width: 49%;" value="<%= new Date().toISOString().split('T')[0] %>">
                                 </div>       
                                 
                                 <div class="col-md-8 text-end">
@@ -350,7 +350,7 @@
                             <div class="row mt-50px">
                                 <div class="col-md-4">
                                     <label for="" class="text-dark fw-600 fs-24">Lista</label>
-                                    <select class="form-select" name="tipoPedidoUnico" id="listaPedidoUnico">
+                                    <select class="form-select" name="tipoPedidoMayorista" id="listaPedidoMayorista">
                                         <% if (resultadosRazon && resultadosRazon.length > 0) { %>
                                         <% if (typeof lista !== 'undefined' && lista.length > 0) { %>
                                             <option id="listaPorDefecto"></option>
@@ -389,7 +389,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="" class="text-dark fw-600 fs-24">Vendedor</label>
-                                    <select class="form-select" name="vendedorPedidoUnico" id="vendedorPedidoUnico">
+                                    <select class="form-select" name="vendedorPedidoMayorista" id="vendedorPedidoMayorista">
                                         <% if (resultadosRazon && resultadosRazon.length > 0) { %>
                                         <% if (typeof listaVendedor !== 'undefined' && listaVendedor.length > 0) { %>
                                             <option id="vendedorPorDefecto"></option>
@@ -428,9 +428,9 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="" class="text-dark fw-600 fs-24">Tipo</label>
-                                    <select class="form-select" name="tipoPedidoUnico" id="tipoPedidoUnico">
-                                        <% if (typeof tiposPedidoUnico !== 'undefined' && tiposPedidoUnico.length > 0) { %>
-                                            <% tiposPedidoUnico.forEach(tipo => { %>
+                                    <select class="form-select" name="tipoPedidoMayorista" id="tipoPedidoMayorista">
+                                        <% if (typeof tiposPedidoMayorista !== 'undefined' && tiposPedidoMayorista.length > 0) { %>
+                                            <% tiposPedidoMayorista.forEach(tipo => { %>
                                                 <option value="<%= tipo.codigo %>"><%= tipo.nombre %></option>
                                             <% }); %>
                                         <% } else { %>
@@ -469,26 +469,26 @@
                     <div class="row mb-15px filaFormularioArticulo" id="filaFormularioArticulo">
                         <div class="col-md-2 d-flex">
                             <input type="text" 
-                                class=" w-90 codigoPedidoUnico form-control" 
+                                class=" w-90 codigoPedidoMayorista form-control" 
                                 aria-describedby="basic-addon2" 
-                                name="codigoPedidoUnico"
-                                id="codigoPedidoUnico" placeholder="Código">
+                                name="codigoPedidoMayorista"
+                                id="codigoPedidoMayorista" placeholder="Código">
                             <div class="input-group-append">
-                                <button class="btn btn-success h-100 buscarCodigoPedidoUnico" type="button" id="buscarCodigoPedidoUnico" disabled><i class="bi bi-search text-white m-0"></i></button>
+                                <button class="btn btn-success h-100 buscarCodigoPedidoMayorista" type="button" id="buscarCodigoPedidoMayorista" disabled><i class="bi bi-search text-white m-0"></i></button>
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <input type="text" class="form-control nombreArticuloPedidoUnico" name="nombreArticuloPedidoUnico" id="nombreArticuloPedidoUnico" placeholder="Nombre">
+                            <input type="text" class="form-control nombreArticuloPedidoMayorista" name="nombreArticuloPedidoMayorista" id="nombreArticuloPedidoMayorista" placeholder="Nombre">
                         </div>
                         <div class="col-md-2">
-                            <input type="number" min="0" class="form-control cantidadPedidoUnico" name="cantidadPedidoUnico" id="cantidadPedidoUnico" placeholder="Cantidad">
+                            <input type="number" min="0" class="form-control cantidadPedidoMayorista" name="cantidadPedidoMayorista" id="cantidadPedidoMayorista" placeholder="Cantidad">
                         </div>
                         <div class="col-md-2">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text h-100" id="basic-addon1">$</span>
                                 </div>
-                                <input type="text" class="form-control costoPedidoUnico" name="costoPedidoUnico" id="costoPedidoUnico" placeholder="Costo Total" readonly>
+                                <input type="text" class="form-control costoPedidoMayorista" name="costoPedidoMayorista" id="costoPedidoMayorista" placeholder="Costo Total" readonly>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -496,15 +496,15 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text h-100" id="basic-addon1">$</span>
                                 </div>
-                                <input type="text" class="form-control precioPedidoUnico" name="precioPedidoUnico" id="precioPedidoUnico" placeholder="Precio Total" readonly>
+                                <input type="text" class="form-control precioPedidoMayorista" name="precioPedidoMayorista" id="precioPedidoMayorista" placeholder="Precio Total" readonly>
                             </div>
                         </div>
                         <div class="col-md-2 d-flex flex-wrap justify-content-between">
-                            <button type="button" class="btn btn-box-shadow btn-hover-animation btn-blue-color w-50 verPartidas btn-round-edge" data-toggle="modal" data-target="#verPartidasPedidoUnico" disabled>Partida</button>
+                            <button type="button" class="btn btn-box-shadow btn-hover-animation btn-blue-color w-50 verPartidas btn-round-edge" data-toggle="modal" data-target="#verPartidasPedidoMayorista" disabled>Partida</button>
                             <button type="button" class="btn btn-danger w-45 eliminarFila"><i class="bi bi-trash3-fill text-white"></i></button>
                         </div>
 
-                        <div class="modal fade modalVerPartidas" id="verPartidasPedidoUnico" tabindex="-1" role="dialog" aria-labelledby="verPartidasPedidoUnico" aria-hidden="true" data-target=".bd-example-modal-lg">
+                        <div class="modal fade modalVerPartidas" id="verPartidasPedidoMayorista" tabindex="-1" role="dialog" aria-labelledby="verPartidasPedidoMayorista" aria-hidden="true" data-target=".bd-example-modal-lg">
                             <div class="modal-dialog" role="document">
                               <div class="modal-content">
                                 <div class="modal-header">
@@ -530,7 +530,7 @@
 
                                     <div class="col-md-12">
 
-                                        <div class="partidasResultadosPedidoUnico" id="partidasResultadosPedidoUnico" style="overflow: hidden; overflow-y: scroll; max-height: 425px; height: 100%;">
+                                        <div class="partidasResultadosPedidoMayorista" id="partidasResultadosPedidoMayorista" style="overflow: hidden; overflow-y: scroll; max-height: 425px; height: 100%;">
                                             
                                         </div>
                                         
@@ -616,7 +616,7 @@
 
             document.addEventListener('DOMContentLoaded', () => {
                 let showModal = document.getElementById('showModal').value;
-                let modal = new bootstrap.Modal(document.getElementById('seleccionarClienteModalPedidoUnico'));
+                let modal = new bootstrap.Modal(document.getElementById('seleccionarClienteModalPedidoMayorista'));
                 if (showModal === 'true') {
                     modal.show();
                 }
@@ -633,7 +633,7 @@
                     });
                 });
 
-                let buscarArticuloBTN = document.querySelector("#buscarCodigoPedidoUnico")
+                let buscarArticuloBTN = document.querySelector("#buscarCodigoPedidoMayorista")
                 confirmButton.addEventListener('click', () => {
                     if (selectedItemId) {
                         buscarArticuloBTN.disabled = false
@@ -645,18 +645,18 @@
             
             document.addEventListener('DOMContentLoaded', () => {
                 const confirmarClienteButton = document.getElementById('confirmarCliente');
-                const inputListaPedidoUnico = document.querySelector('#listaPedidoUnico');
+                const inputListaPedidoMayorista = document.querySelector('#listaPedidoMayorista');
                 const listaPorDefecto = document.querySelector('#listaPorDefecto');
                 const vendedorPorDefecto = document.querySelector('#vendedorPorDefecto');
-                const inputVendedorPedidoUnico = document.querySelector('#vendedorPedidoUnico');
-                const inputTipoPedidoUnico = document.querySelector('#tipoPedidoUnico');
-                const inputFechaPedidoUnico = document.querySelector('#fechaPedidoUnico');
-                const inputCodigoPedidoUnico = document.getElementById("codigoPedidoUnico")
-                const nombreArticuloPedidoUnico = document.getElementById("nombreArticuloPedidoUnico")
+                const inputVendedorPedidoMayorista = document.querySelector('#vendedorPedidoMayorista');
+                const inputTipoPedidoMayorista = document.querySelector('#tipoPedidoMayorista');
+                const inputFechaPedidoMayorista = document.querySelector('#fechaPedidoMayorista');
+                const inputCodigoPedidoMayorista = document.getElementById("codigoPedidoMayorista")
+                const nombreArticuloPedidoMayorista = document.getElementById("nombreArticuloPedidoMayorista")
                 const resultItems = document.querySelectorAll('.result-item');
                 const partidas = document.querySelectorAll('.partida');
                 const mostrarSeleccionCliente = document.getElementById("mostrarSeleccionCliente")
-                const inputPedidoUnico = document.getElementById("codigoPedidoUnico")
+                const inputPedidoMayorista = document.getElementById("codigoPedidoMayorista")
                 let selectedResult = null;
                 let partidasSeleccionadas = [];
 
@@ -687,7 +687,7 @@
                         mostrarSeleccionCliente.innerHTML = `
                             Cliente Seleccionado: <b style="border-bottom: 2px solid black;">${retrievedData.id} - ${retrievedData.razon}</b>
                         `
-                        inputPedidoUnico.style = "border: 3px solid #146C43"
+                        inputPedidoMayorista.style = "border: 3px solid #146C43"
                     }
                 });
 
@@ -705,22 +705,22 @@
                         confirmarClienteButton.innerHTML = 'Confirmar <i class="bi bi-check-circle-fill text-white"></i>';
                     }
 
-                    inputListaPedidoUnico.disabled = !inputListaPedidoUnico.disabled;
-                    inputListaPedidoUnico.classList.toggle('input-disabled'); 
+                    inputListaPedidoMayorista.disabled = !inputListaPedidoMayorista.disabled;
+                    inputListaPedidoMayorista.classList.toggle('input-disabled'); 
 
-                    inputVendedorPedidoUnico.disabled = !inputVendedorPedidoUnico.disabled;
-                    inputVendedorPedidoUnico.classList.toggle('input-disabled'); 
+                    inputVendedorPedidoMayorista.disabled = !inputVendedorPedidoMayorista.disabled;
+                    inputVendedorPedidoMayorista.classList.toggle('input-disabled'); 
                     
-                    inputTipoPedidoUnico.disabled = !inputTipoPedidoUnico.disabled;
-                    inputTipoPedidoUnico.classList.toggle('input-disabled');
+                    inputTipoPedidoMayorista.disabled = !inputTipoPedidoMayorista.disabled;
+                    inputTipoPedidoMayorista.classList.toggle('input-disabled');
 
-                    inputFechaPedidoUnico.disabled = !inputFechaPedidoUnico.disabled;
-                    inputFechaPedidoUnico.classList.toggle('input-disabled');
+                    inputFechaPedidoMayorista.disabled = !inputFechaPedidoMayorista.disabled;
+                    inputFechaPedidoMayorista.classList.toggle('input-disabled');
                     
-                    retrievedData.lista = inputListaPedidoUnico.value
-                    retrievedData.vendedor = inputVendedorPedidoUnico.value
-                    retrievedData.tipo = inputTipoPedidoUnico.value
-                    retrievedData.fecha = inputFechaPedidoUnico.value
+                    retrievedData.lista = inputListaPedidoMayorista.value
+                    retrievedData.vendedor = inputVendedorPedidoMayorista.value
+                    retrievedData.tipo = inputTipoPedidoMayorista.value
+                    retrievedData.fecha = inputFechaPedidoMayorista.value
 
                     let filas = document.querySelectorAll(".filaFormularioArticulo")
                     filas.forEach(fila => {
@@ -734,7 +734,7 @@
                     let agregarFilaBTN = document.querySelector("#agregarFila")
                     agregarFilaBTN.disabled = !agregarFilaBTN.disabled
 
-                    let botonesBuscar = document.querySelectorAll('.buscarCodigoPedidoUnico');
+                    let botonesBuscar = document.querySelectorAll('.buscarCodigoPedidoMayorista');
                     let verPartidas = document.querySelectorAll('.verPartidas');
                     let eliminarFila = document.querySelectorAll('.eliminarFila');
                     botonesBuscar.forEach(boton => {
@@ -748,11 +748,11 @@
                     });
 
                     let filteredInputs = Array.from(document.querySelectorAll('input')).filter(input =>
-                        input.classList.contains('codigoPedidoUnico') ||
-                        input.classList.contains('nombreArticuloPedidoUnico') ||
-                        input.classList.contains('cantidadPedidoUnico') ||
-                        input.classList.contains('costoPedidoUnico') ||
-                        input.classList.contains('precioPedidoUnico')
+                        input.classList.contains('codigoPedidoMayorista') ||
+                        input.classList.contains('nombreArticuloPedidoMayorista') ||
+                        input.classList.contains('cantidadPedidoMayorista') ||
+                        input.classList.contains('costoPedidoMayorista') ||
+                        input.classList.contains('precioPedidoMayorista')
                     ); 
 
                     let inputValues = filteredInputs.map(input => input.value);
@@ -875,11 +875,11 @@
             })
 
             document.addEventListener('DOMContentLoaded', () => {
-                const modal = document.getElementById('verPartidasPedidoUnico');
-                const nombreArticuloPedidoUnico = document.getElementById("nombreArticuloPedidoUnico")
+                const modal = document.getElementById('verPartidasPedidoMayorista');
+                const nombreArticuloPedidoMayorista = document.getElementById("nombreArticuloPedidoMayorista")
 
-                document.getElementById("cantidadPedidoUnico").addEventListener("input", () => {
-                    document.querySelector("#cantidadModal").textContent = document.getElementById("cantidadPedidoUnico").value;
+                document.getElementById("cantidadPedidoMayorista").addEventListener("input", () => {
+                    document.querySelector("#cantidadModal").textContent = document.getElementById("cantidadPedidoMayorista").value;
                     let btnVerPartidas = document.querySelector(".verPartidas")
                     btnVerPartidas.disabled = false
                 })
@@ -920,16 +920,16 @@
                     
                     nuevaFila.querySelectorAll('.verPartidas').forEach(button => {
                         button.id = uniqueID
-                        button.setAttribute('data-target', `#verPartidasPedidoUnico-${uniqueID}`);
+                        button.setAttribute('data-target', `#verPartidasPedidoMayorista-${uniqueID}`);
                     });
 
                     nuevaFila.querySelectorAll('.modalVerPartidas').forEach(modal => {
-                        modal.id = `verPartidasPedidoUnico-${uniqueID}`;
+                        modal.id = `verPartidasPedidoMayorista-${uniqueID}`;
                         modal.setAttribute('data-uniqueid', uniqueID);
                     });
 
                     let filteredInputs = Array.from(nuevaFila.querySelectorAll('input')).filter(input =>
-                        input.classList.contains('cantidadPedidoUnico') 
+                        input.classList.contains('cantidadPedidoMayorista') 
                     );      
                                         
                     let cantidadModal = nuevaFila.querySelector("#cantidadModal")
@@ -944,21 +944,21 @@
                 });
 
                 document.addEventListener('click', function(event) {
-                    if (event.target && event.target.id === 'buscarCodigoPedidoUnico') {
+                    if (event.target && event.target.id === 'buscarCodigoPedidoMayorista') {
                     const fila = event.target.closest('.row');
                     const uniqueID = fila.querySelector(".modalVerPartidas").getAttribute('data-uniqueid');
 
-                    let inputCodigoPedidoUnico = fila.querySelector('input[name="codigoPedidoUnico"]');
-                    let codigo = inputCodigoPedidoUnico.value;
+                    let inputCodigoPedidoMayorista = fila.querySelector('input[name="codigoPedidoMayorista"]');
+                    let codigo = inputCodigoPedidoMayorista.value;
 
-                    let nombreArticuloPedidoUnico = fila.querySelector('input[name="nombreArticuloPedidoUnico"]');
+                    let nombreArticuloPedidoMayorista = fila.querySelector('input[name="nombreArticuloPedidoMayorista"]');
 
                     const data = { 
-                        codigoPedidoUnico: codigo,
+                        codigoPedidoMayorista: codigo,
                         listaCodigo: retrievedData.listaCodigo
                     };
 
-                    let allInputCodigo = formularioArticulos.querySelectorAll('input[name="codigoPedidoUnico"]') 
+                    let allInputCodigo = formularioArticulos.querySelectorAll('input[name="codigoPedidoMayorista"]') 
                     let hayDuplicados = false;
                     const codigosVistos = new Set();
                     allInputCodigo.forEach(input => {
@@ -971,7 +971,7 @@
                     });
                     
                     if(!hayDuplicados){
-                        nombreArticuloPedidoUnico.value = "Cargando..."
+                        nombreArticuloPedidoMayorista.value = "Cargando..."
                         fetch(`/admin/pedido-mayorista/obtener-articulos`, {
                             method: 'POST',
                             headers: {
@@ -982,14 +982,14 @@
                         .then(response => response.json())
                         .then(result => {
                         let partidasContainer = uniqueID != null 
-                        ? fila.querySelector(`#verPartidasPedidoUnico-${uniqueID} #partidasResultadosPedidoUnico`) 
-                        : fila.querySelector('#verPartidasPedidoUnico #partidasResultadosPedidoUnico');
+                        ? fila.querySelector(`#verPartidasPedidoMayorista-${uniqueID} #partidasResultadosPedidoMayorista`) 
+                        : fila.querySelector('#verPartidasPedidoMayorista #partidasResultadosPedidoMayorista');
 
                         partidasContainer.innerHTML = '';
 
-                        nombreArticuloPedidoUnico.value = result.resultadosCodigo[0].nombre;
+                        nombreArticuloPedidoMayorista.value = result.resultadosCodigo[0].nombre;
 
-                        let precioArticuloPedidoUnico = result.resultadosCodigo[0].precio;      
+                        let precioArticuloPedidoMayorista = result.resultadosCodigo[0].precio;      
 
                         let cantidadAFavor = fila.querySelector("#cantidadAFavorModal")
                         let cantidadModal
@@ -1000,12 +1000,12 @@
                             cantidadModal = cantidadModalElement.textContent
                         })
 
-                        inputCodigoPedidoUnico.style = "border: none"
+                        inputCodigoPedidoMayorista.style = "border: none"
 
-                        let inputCantidadPedidoUnico = fila.querySelector("#cantidadPedidoUnico")
-                        inputCantidadPedidoUnico.style = "border: 1px solid red"
-                        inputCantidadPedidoUnico.addEventListener("input", () => {
-                            inputCantidadPedidoUnico.style = "border: 1px solid #e4e4e4"
+                        let inputCantidadPedidoMayorista = fila.querySelector("#cantidadPedidoMayorista")
+                        inputCantidadPedidoMayorista.style = "border: 1px solid red"
+                        inputCantidadPedidoMayorista.addEventListener("input", () => {
+                            inputCantidadPedidoMayorista.style = "border: 1px solid #e4e4e4"
                             verPartidas.disabled = false
                         })
 
@@ -1043,7 +1043,7 @@
                         let sumaCantidadTotalItems = cantidadTotalItems.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
                         cantidadLabel.innerHTML = `Disponibles: ${sumaCantidadTotalItems}`
 
-                        let costoPedidoUnico = fila.querySelector('input[name="costoPedidoUnico"]')
+                        let costoPedidoMayorista = fila.querySelector('input[name="costoPedidoMayorista"]')
                         
                         const partidaDivs = result.resultadosPartidas.map(item => {
                             const { numero , cantidad, codigoDeposito, costoUnitario, ubicacion } = item
@@ -1115,7 +1115,7 @@
 
                         verPartidas.addEventListener("click", () => {
                             let partidaRow 
-                            let cantidadInput = fila.querySelector("#cantidadPedidoUnico").value
+                            let cantidadInput = fila.querySelector("#cantidadPedidoMayorista").value
                             let cantidadActual = cantidadModalElement.textContent
                             let botonesCantidad = partidasContainer.querySelectorAll("input");
                             let confirmarBtn = modalFooter.querySelector(".confirmarSeleccionPartidas")
@@ -1175,9 +1175,9 @@
                         
                         let agregarFilaBTN = document.querySelector("#agregarFila")
                         modalFooter.querySelector(".confirmarSeleccionPartidas").addEventListener("click", function(){
-                            let costoTotalInput = fila.querySelector("#costoPedidoUnico")
-                            let precioTotalInput = fila.querySelector("#precioPedidoUnico")
-                            let cantidadInput = fila.querySelector("#cantidadPedidoUnico")
+                            let costoTotalInput = fila.querySelector("#costoPedidoMayorista")
+                            let precioTotalInput = fila.querySelector("#precioPedidoMayorista")
+                            let cantidadInput = fila.querySelector("#cantidadPedidoMayorista")
 
                             if(Number(cantidadModalElement.textContent) !== 0){
                                 Swal.fire({
@@ -1198,7 +1198,7 @@
                                     let costoTotal = 0
                                     let precioTotal = 0
                                     let cantidadTotal = 0
-                                    precioTotal = precioArticuloPedidoUnico
+                                    precioTotal = precioArticuloPedidoMayorista
 
                                     if(partida.id == id){
                                         partida.data.forEach(costo => {
@@ -1226,8 +1226,8 @@
                     })
                         .catch(error => {
                             console.log(error);
-                            let nombreArticuloPedidoUnico = fila.querySelector('input[name="nombreArticuloPedidoUnico"]');
-                            nombreArticuloPedidoUnico.value = "No hay resultados";
+                            let nombreArticuloPedidoMayorista = fila.querySelector('input[name="nombreArticuloPedidoMayorista"]');
+                            nombreArticuloPedidoMayorista.value = "No hay resultados";
                             return error;
                         });
                     } else {
