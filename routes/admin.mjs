@@ -235,7 +235,9 @@ const execVentasAdicionales = async (request, fila) => {
     @fecha_desde = null,
     @fecha_hasta = null
     `
+    console.log(query)
     const result = await request.query(query)
+    console.log(result)
     return result
 };
 
