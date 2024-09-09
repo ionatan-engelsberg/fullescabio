@@ -140,7 +140,6 @@ export const validateManualRows = async (rows, sp) => {
     const parsedItems = []
     let i = 0;
     for (const item of rows) {
-      console.log(item)
       i += 1;
       const parsedItem = await validateRow(item, i + 1, sp);
       parsedItems.push(parsedItem);
@@ -149,6 +148,7 @@ export const validateManualRows = async (rows, sp) => {
 
   } catch (error) {
    console.log(error) 
+   throw new Error(`${error}`)
   }
 }
 

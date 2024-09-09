@@ -336,16 +336,15 @@ router.get('/ventas-adicionales', async (req, res) => {
 
 router.post('/ventas-adicionales/validate-rows', async (req, res) => {
     const { agrupacionSeleccionada, data } = req.body
-    console.log(data)
-    console.log(agrupacionSeleccionada)
     const agrupacion = await obtenerClienteAgrupacion(`EXEC may_client_agru`)
 
-    try {
-        const parsedItems = await validateManualRows(data, false);
+    await validateManualRows(data, false)
+    .then((data) => {
+        console.log("Oks")
         res.render("ventasAdicionales", {
             agrupacionSeleccionada,
             agrupacion,
-            data: parsedItems,
+            data,
             verPedidoButton: true,
             chooseImportMethod: true,
             chooseSPMethod: true,
@@ -355,21 +354,11 @@ router.post('/ventas-adicionales/validate-rows', async (req, res) => {
             directUpload: true,
             error: ""
         })
-    } catch (error) {
-        console.error('Error executing function:', error);
-        res.render("ventasAdicionales", {
-            agrupacionSeleccionada,
-            agrupacion,
-            error,
-            verPedidoButton: true,
-            chooseImportMethod: true,
-            chooseSPMethod: true,
-            fechas: true,
-            selectAgrupacion: true,
-            SPUpload: false,
-            directUpload: true,
-        })
-    }
+    })
+    .catch((error) => {
+        console.error('Error ejecutando la función:', error);
+        res.status(500).json({ error: error.message }); 
+    });
 })
 
 router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req, res) => {

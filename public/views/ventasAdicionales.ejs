@@ -609,7 +609,6 @@
     const realizarBusquedaBTN = document.getElementById("validarDatosManual")
       realizarBusquedaBTN.addEventListener("click", (e) => {
       let agrupacionSeleccionada = document.getElementById("agrupacionSeleccionada")
-      console.log(agrupacionSeleccionada.value)
       let skuInputs = Array.from(container.querySelectorAll(".sku"))
       let cantidadInputs = Array.from(container.querySelectorAll(".cantidad"))
       let precioInputs = Array.from(container.querySelectorAll(".precio"))
@@ -654,12 +653,18 @@
             "Content-Type": "application/json"
           }
         })
+        // .then(response => {
+        //   console.log('RESPONSE: ', response);
+        //   if (!response.ok) {
+        //     throw new Error("Error en la actualización: " + response.statusText);
+        //   }
+        //   return response.json();
+        // })
         .then(response => {
           console.log('RESPONSE: ', response);
           if (!response.ok) {
-            throw new Error("Error en la actualización: " + response.statusText);
+            return response.json().then(err => { throw new Error(err.error); }); 
           }
-          // return response.json();
         })
         .then((data) => {
           Swal.fire({
