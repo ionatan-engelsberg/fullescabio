@@ -135,6 +135,22 @@ const validateWorkbook = async (file, sp) => {
   return parsedItems;
 }
 
+export const validateManualRows = async (rows, sp) => {
+  try {
+    const parsedItems = []
+    let i = 0;
+    for (const item of rows) {
+      console.log(item)
+      i += 1;
+      const parsedItem = await validateRow(item, i + 1, sp);
+      parsedItems.push(parsedItem);
+    }
+    return parsedItems;
+
+  } catch (error) {
+   console.log(error) 
+  }
+}
 
 export const parsedWorkbook = async (fileName, sp) => {
   const filePath = path.join(__dirname, 'uploads', fileName);

@@ -4,7 +4,7 @@ import uploadExcel from "../middlewares/multer.mjs"
 import path from 'path';
 
 import { checkAuthenticated } from '../middlewares/auth.mjs';
-import { parsedWorkbook } from "../xlsx.mjs";
+import { parsedWorkbook, validateManualRows } from "../xlsx.mjs";
 
 //! !!!!
 //todo: !!! MODULARIZAR !!!
@@ -125,7 +125,7 @@ const obtenerNumWeb = async (query) => {
 }
 
 const execQueryAlta = async (request, object, numWeb) => {
-    const { id, lista, listaCodigo, vendedor, fecha, tipo, montoPrecioTotal , montoItemsTotal, partidas: filas } = object;
+    const { id, lista, listaCodigo, vendedor, fecha, tipo, montoPrecioTotal, montoItemsTotal, partidas: filas } = object;
 
     filas.forEach((fila) => {
         console.log("DATA: ", fila.data)
@@ -188,28 +188,28 @@ const execUpdate = async (request, object, depo, numWeb) => {
 }
 
 // TODO
-const execTransferencia = async (request, object) => {}
+const execTransferencia = async (request, object) => { }
 
 const finalizarPedidoMayorista = async (objeto) => {
     try {
         const transaction = new sql.Transaction()
         await transaction.begin()
         const request = new sql.Request(transaction)
-        
+
         try {
             const numWeb = await obtenerNumWeb(`EXEC may_prox_comp @comp = ${objeto.tipo}`)
             await execQueryAlta(request, objeto, numWeb[0].num);
             await execUpdate(request, objeto, 'MAY', numWeb[0].num)
-            
+
             await transaction.commit();
             return { msg: 'OK' }
         } catch (error) {
-            await transaction.rollback();            
+            await transaction.rollback();
             throw error;
         }
     } catch (error) {
-        console.log('ERROR: ', error);      
-        throw error;  
+        console.log('ERROR: ', error);
+        throw error;
     }
 }
 
@@ -218,27 +218,27 @@ const finalizarPedidoUnico = async (objeto) => {
         const transaction = new sql.Transaction()
         await transaction.begin()
         const request = new sql.Request(transaction)
-        
+
         try {
             const numWeb = await obtenerNumWeb(`EXEC may_prox_comp @comp = ${objeto.tipo}`)
             await execQueryAlta(request, objeto, numWeb[0].num);
             await execTransferencia(request, objeto);
             await execUpdate(request, objeto, 'DEP', numWeb[0].num)
-    
+
             await transaction.commit();
             return { msg: 'OK' }
         } catch (error) {
-            await transaction.rollback();            
+            await transaction.rollback();
             throw error;
         }
     } catch (error) {
-        console.log('ERROR: ', error);      
-        throw error;  
+        console.log('ERROR: ', error);
+        throw error;
     }
 }
 
 const execVentasAdicionales = async (request, fila, fechaActual) => {
-    const {sku, cantidad} = fila
+    const { sku, cantidad } = fila
     const query = `
     exec [may_Proveedores_articulos_incidencia]
     @Cod_articulo = ${sku},
@@ -258,22 +258,22 @@ const finalizarVentasAdicionales = async (filas, fechaActual) => {
         const transaction = new sql.Transaction()
         await transaction.begin()
         const request = new sql.Request(transaction)
-        
+
         try {
             for (const fila of filas) {
                 await execVentasAdicionales(request, fila, fechaActual);
             }
-            
+
             await transaction.commit();
             return { msg: 'OK' }
         } catch (error) {
-            console.log(error)  
-            await transaction.rollback();          
+            console.log(error)
+            await transaction.rollback();
             throw error;
         }
     } catch (error) {
-        console.log('ERROR: ', error);      
-        throw error;  
+        console.log('ERROR: ', error);
+        throw error;
     }
 }
 
@@ -332,6 +332,47 @@ router.get('/ventas-adicionales', async (req, res) => {
         directUpload: false,
         error: ""
     })
+})
+
+router.post('/ventas-adicionales/validate-rows', async (req, res) => {
+    const { agrupacionSeleccionada, data } = req.body
+    console.log(data)
+    console.log(agrupacionSeleccionada)
+    const agrupacion = await obtenerClienteAgrupacion(`EXEC may_client_agru`)
+
+    await validateManualRows(data, false)
+    .then((data) => {
+        console.log("1")
+        res.render("ventasAdicionales", {
+            agrupacionSeleccionada,
+            agrupacion,
+            data,
+            verPedidoButton: true,
+            chooseImportMethod: true,
+            chooseSPMethod: true,
+            fechas: true,
+            selectAgrupacion: true,
+            SPUpload: false,
+            directUpload: true,
+            error: ""
+        })
+    })
+    .catch(error => {
+        console.log("2")
+        console.error('Error executing function:', error);
+        res.render("ventasAdicionales", {
+            agrupacionSeleccionada,
+            agrupacion,
+            error,
+            verPedidoButton: true,
+            chooseImportMethod: true,
+            chooseSPMethod: true,
+            fechas: true,
+            selectAgrupacion: true,
+            SPUpload: false,
+            directUpload: true,
+        })
+    });
 })
 
 router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req, res) => {

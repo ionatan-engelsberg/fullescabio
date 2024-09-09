@@ -278,8 +278,8 @@
                   <h6 class="text-dark fw-600 mb-0">Carga Manual</h6>
                 </div>
                 <div class="col-md-6 text-end mb-20px">
-                  <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow" type="button" id="buscarItemsManual" disabled>
-                    Realizar Busqueda <i class="bi bi-search text-white"></i>
+                  <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow" type="button" id="validarDatosManual" disabled>
+                    Validar Datos <i class="bi bi-search text-white"></i>
                   </button>
                   <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow" type="button" id="confirmarButton" disabled>
                     Confirmar <i class="bi bi-check-circle-fill text-white"></i>
@@ -562,7 +562,7 @@
     const eliminarFila = document.getElementById("eliminar-fila");
     const selectElement = document.getElementById("chooseSPMethod");
     const confirmarButton = document.getElementById("confirmarButton")
-    const buscarItemsManual = document.getElementById("buscarItemsManual")
+    const validarDatosManual = document.getElementById("validarDatosManual")
 
     selectElement.addEventListener("change", function() {
       const selectedValue = selectElement.value;
@@ -580,7 +580,7 @@
         confirmarButton.disabled = true
         agregarFila.disabled = true;
         eliminarFila.disabled = true;
-        buscarItemsManual.disabled = true
+        validarDatosManual.disabled = true
       } else if (selectedValue === "botonSeleccionarCarga") {
         uploadFile.disabled = true;
         buttonUploadFile.disabled = true;
@@ -595,7 +595,7 @@
         confirmarButton.disabled = false
         agregarFila.disabled = false;
         eliminarFila.disabled = false;
-        buscarItemsManual.disabled = false
+        validarDatosManual.disabled = false
       } 
     });
   });
@@ -606,13 +606,80 @@
     const finalizarPedido = document.getElementById("finalizarPedido")
     const container = document.getElementById("tabla-body");
 
-    const realizarBusquedaBTN = document.getElementById("buscarItemsManual")
+    const realizarBusquedaBTN = document.getElementById("validarDatosManual")
       realizarBusquedaBTN.addEventListener("click", (e) => {
-      let SKUInputs = container.querySelectorAll(".sku")
-      let sanitizedInputs = Array.from(SKUInputs)
-      sanitizedInputs.forEach(inputSku => {
-        //todo
-      })
+      let agrupacionSeleccionada = document.getElementById("agrupacionSeleccionada")
+      console.log(agrupacionSeleccionada.value)
+      let skuInputs = Array.from(container.querySelectorAll(".sku"))
+      let cantidadInputs = Array.from(container.querySelectorAll(".cantidad"))
+      let precioInputs = Array.from(container.querySelectorAll(".precio"))
+      let clienteInputs = Array.from(container.querySelectorAll(".cliente"))
+      let descuentoInputs = Array.from(container.querySelectorAll(".descuento"))
+
+      let groupedData = []
+      
+      for (let i = 0; i < skuInputs.length; i++) {
+        if (i < cantidadInputs.length && i < precioInputs.length && i < descuentoInputs.length && i < clienteInputs.length) {
+        
+          let filaData = {
+            sku: skuInputs[i].value.trim(),
+            cantidad: cantidadInputs[i].value.trim(),
+            precio: precioInputs[i].value.trim(),
+            cliente: clienteInputs[i].value.trim(),
+            descuento: descuentoInputs[i].value.trim()
+          };
+
+          groupedData.push(filaData);
+        }
+      }
+
+      Swal.fire({
+        title: "Procesando...",
+        text: "Por favor, espera mientras se completa la operación.",
+        icon: "info",
+        allowOutsideClick: false, 
+        showConfirmButton: false, 
+        didOpen: () => {
+            Swal.showLoading(); 
+        }
+      });
+      setTimeout(() => {
+        fetch("/admin/ventas-adicionales/validate-rows", {
+          body: JSON.stringify({ 
+            data: groupedData,
+            agrupacionSeleccionada: agrupacionSeleccionada.value
+          }),
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Error en la actualización: " + response.statusText);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          Swal.fire({
+            title: "Operación Exitosa",
+            text: "Los datos han sido actualizados correctamente.",
+            icon: "success",
+            timer: 2000,
+            showConfirmButton: false
+          });
+          return data;
+        })
+        .catch((err) => {
+          Swal.fire({
+            title: "Error",
+            text: err.message,
+            icon: "error",
+            confirmButtonText: "Aceptar"
+          });
+          return err;
+        });
+      }, 1000);
     })
 
     confirmarButton.addEventListener("click", () => {
