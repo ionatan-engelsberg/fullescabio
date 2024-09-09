@@ -103,7 +103,6 @@ const validateRow = async (row, rowCounter, sp) => {
 
   row.descripcion = product;
 
-
   return row;
 }
 

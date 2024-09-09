@@ -278,6 +278,9 @@
                   <h6 class="text-dark fw-600 mb-0">Carga Manual</h6>
                 </div>
                 <div class="col-md-6 text-end mb-20px">
+                  <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow" type="button" id="buscarItemsManual" disabled>
+                    Realizar Busqueda <i class="bi bi-search text-white"></i>
+                  </button>
                   <button class="btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow" type="button" id="confirmarButton" disabled>
                     Confirmar <i class="bi bi-check-circle-fill text-white"></i>
                   </button>
@@ -302,7 +305,7 @@
                       <input
                         disabled
                         type="text"
-                        class="form-control"
+                        class="form-control sku"
                         placeholder="SKU"
                       />
                     </td>
@@ -310,7 +313,7 @@
                       <input
                         disabled
                         type="text"
-                        class="form-control"
+                        class="form-control descripcion"
                         placeholder="Descripción"
                       />
                     </td>
@@ -318,7 +321,7 @@
                       <input
                         disabled
                         type="number"
-                        class="form-control"
+                        class="form-control cantidad"
                         placeholder="Cantidad"
                         min="0"
                       />
@@ -327,7 +330,7 @@
                       <input
                         disabled
                         type="number"
-                        class="form-control"
+                        class="form-control precio"
                         placeholder="Precio"
                         min="0"
                       />
@@ -336,7 +339,7 @@
                       <input
                         disabled
                         type="text"
-                        class="form-control"
+                        class="form-control cliente"
                         placeholder="Cliente"
                       />
                     </td>
@@ -344,7 +347,7 @@
                       <input
                         disabled
                         type="text"
-                        class="form-control"
+                        class="form-control sc"
                         placeholder="S/C"
                       />
                     </td>
@@ -352,7 +355,7 @@
                       <input
                         disabled
                         type="number"
-                        class="form-control"
+                        class="form-control descuento"
                         placeholder="Descuento"
                         min="0"
                       />
@@ -363,10 +366,10 @@
 
               <div class="row">
                 <div class="col-md-12 text-center">
-                  <button id="agregar-fila" class="btn btn-primary" disabled>
+                  <button id="agregar-fila" class="btn btn btn-gray-color btn-medium btn-hover-animation btn-round-edge btn-box-shadow">
                     Agregar Fila
                   </button>
-                  <button id="eliminar-fila" class="btn btn-danger" disabled>
+                  <button id="eliminar-fila" class="btn btn btn-base-color btn-medium btn-hover-animation btn-round-edge btn-box-shadow">
                     Eliminar Última Fila
                   </button>
                 </div>
@@ -559,6 +562,7 @@
     const eliminarFila = document.getElementById("eliminar-fila");
     const selectElement = document.getElementById("chooseSPMethod");
     const confirmarButton = document.getElementById("confirmarButton")
+    const buscarItemsManual = document.getElementById("buscarItemsManual")
 
     selectElement.addEventListener("change", function() {
       const selectedValue = selectElement.value;
@@ -576,6 +580,7 @@
         confirmarButton.disabled = true
         agregarFila.disabled = true;
         eliminarFila.disabled = true;
+        buscarItemsManual.disabled = true
       } else if (selectedValue === "botonSeleccionarCarga") {
         uploadFile.disabled = true;
         buttonUploadFile.disabled = true;
@@ -590,6 +595,7 @@
         confirmarButton.disabled = false
         agregarFila.disabled = false;
         eliminarFila.disabled = false;
+        buscarItemsManual.disabled = false
       } 
     });
   });
@@ -598,136 +604,143 @@
     const tbody = document.getElementById('verDetallesPedido');
     const confirmarButton = document.getElementById("confirmarButton")
     const finalizarPedido = document.getElementById("finalizarPedido")
+    const container = document.getElementById("tabla-body");
+
+    const realizarBusquedaBTN = document.getElementById("buscarItemsManual")
+      realizarBusquedaBTN.addEventListener("click", (e) => {
+      let SKUInputs = container.querySelectorAll(".sku")
+      let sanitizedInputs = Array.from(SKUInputs)
+      sanitizedInputs.forEach(inputSku => {
+        //todo
+      })
+    })
 
     confirmarButton.addEventListener("click", () => {
-      const container = document.getElementById("tabla-body");
       const rows = container.querySelectorAll("tr td input")
       const allInputs = Array.from(rows).every(input => input.value.trim() !== "");
 
       if (allInputs) {
-        console.log(ventasAdicionalesStorage)
+        const inputs = container.querySelectorAll("input")
+  
+        if (confirmarButton.textContent.trim().startsWith("Confirmar")) {
+          confirmarButton.classList.remove('btn-green-color');
+          confirmarButton.classList.add('btn-base-color');
+          confirmarButton.innerHTML = 'Desconfirmar <i class="bi bi-x-lg text-white"></i>';
+        } else {                        
+          confirmarButton.classList.remove('btn-base-color');
+          confirmarButton.classList.add('btn-green-color');
+          confirmarButton.innerHTML = 'Confirmar <i class="bi bi-check-circle-fill text-white"></i>';
+        }
+  
+        const groupedInputs = [];
+        const propertyNames = ['sku', 'descripcion', 'cantidad', 'precio', 'cliente', 'sc', 'descuento'];
+  
+        for (let i = 0; i < inputs.length; i += 7) {
+          const values = Array.from(inputs).slice(i, i + 7).map(input => input.value);
+          const obj = {};
+          propertyNames.forEach((propertyName, index) => {
+              obj[propertyName] = values[index] || ''; 
+          });
+  
+          groupedInputs.push(obj);
+        }      
+        ventasAdicionalesStorage = groupedInputs 
+  
+        tbody.innerHTML = '';
+  
+        if (ventasAdicionalesStorage && Array.isArray(ventasAdicionalesStorage)) {
+          ventasAdicionalesStorage.forEach(item => {
+            const row = document.createElement('tr');
+  
+            const cells = [
+              item.sku || '',
+              item.descripcion || '',
+              item.cantidad || '',
+              item.precio || '',
+              item.cliente || '',
+              item.sc || '',
+              item.descuento || ''
+            ];
+  
+            cells.forEach(cellData => {
+              const cell = document.createElement('td');
+              cell.textContent = cellData;
+              row.appendChild(cell);
+            });
+  
+            tbody.appendChild(row);
+          });
+        }
+  
+        inputs.forEach(input => {
+          input.disabled = !input.disabled
+          input.classList.toggle("input-disabled")
+        })
+  
+        document.getElementById("finalizarPedido").disabled = !document.getElementById("finalizarPedido").disabled
+        document.getElementById("agregar-fila").disabled = !document.getElementById("agregar-fila").disabled
+        document.getElementById("eliminar-fila").disabled = !document.getElementById("eliminar-fila").disabled
+        document.getElementById("verPedido").disabled = !document.getElementById("verPedido").disabled
+  
+        let dataObj = {
+          data: ventasAdicionalesStorage  
+        }
+  
+        sessionStorage.setItem("ventas-adicionales-data", JSON.stringify(dataObj));
+        ventasAdicionalesStorage = JSON.parse(sessionStorage.getItem('ventas-adicionales-data'));
+        ventasAdicionalesStorage.fechaActual = new Date().toISOString().split('T')[0]
+  
+        finalizarPedido.addEventListener("click", (e) => {
+          console.log(ventasAdicionalesStorage)
+          e.preventDefault()
+          Swal.fire({
+            title: "Procesando...",
+            text: "Por favor, espera mientras se completa la operación.",
+            icon: "info",
+            allowOutsideClick: false, 
+            showConfirmButton: false, 
+            didOpen: () => {
+                Swal.showLoading(); 
+            }
+          });
+          setTimeout(() => {
+            fetch("/admin/ventas-adicionales/update", {
+              body: JSON.stringify(ventasAdicionalesStorage),
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              }
+            })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error("Error en la actualización: " + response.statusText);
+              }
+              return response.json();
+            })
+            .then((data) => {
+              Swal.fire({
+                title: "Operación Exitosa",
+                text: "Los datos han sido actualizados correctamente.",
+                icon: "success",
+                timer: 2000,
+                showConfirmButton: false
+              });
+              return data;
+            })
+            .catch((err) => {
+              Swal.fire({
+                title: "Error",
+                text: err.message,
+                icon: "error",
+                confirmButtonText: "Aceptar"
+              });
+              return err;
+            });
+          }, 1000);
+        })
       } else {
-        // Err
+        alert("error")
       }
-
-      const inputs = container.querySelectorAll("input")
-
-      if (confirmarButton.textContent.trim().startsWith("Confirmar")) {
-        confirmarButton.classList.remove('btn-green-color');
-        confirmarButton.classList.add('btn-base-color');
-        confirmarButton.innerHTML = 'Desconfirmar <i class="bi bi-x-lg text-white"></i>';
-      } else {                        
-        confirmarButton.classList.remove('btn-base-color');
-        confirmarButton.classList.add('btn-green-color');
-        confirmarButton.innerHTML = 'Confirmar <i class="bi bi-check-circle-fill text-white"></i>';
-      }
-
-      const groupedInputs = [];
-      const propertyNames = ['sku', 'descripcion', 'cantidad', 'precio', 'cliente', 'sc', 'descuento'];
-
-      for (let i = 0; i < inputs.length; i += 7) {
-        const values = Array.from(inputs).slice(i, i + 7).map(input => input.value);
-        const obj = {};
-        propertyNames.forEach((propertyName, index) => {
-            obj[propertyName] = values[index] || ''; 
-        });
-
-        groupedInputs.push(obj);
-      }      
-      ventasAdicionalesStorage = groupedInputs 
-
-      tbody.innerHTML = '';
-
-      if (ventasAdicionalesStorage && Array.isArray(ventasAdicionalesStorage)) {
-        ventasAdicionalesStorage.forEach(item => {
-          const row = document.createElement('tr');
-
-          const cells = [
-            item.sku || '',
-            item.descripcion || '',
-            item.cantidad || '',
-            item.precio || '',
-            item.cliente || '',
-            item.sc || '',
-            item.descuento || ''
-          ];
-
-          cells.forEach(cellData => {
-            const cell = document.createElement('td');
-            cell.textContent = cellData;
-            row.appendChild(cell);
-          });
-
-          tbody.appendChild(row);
-        });
-      }
-
-      inputs.forEach(input => {
-        input.disabled = !input.disabled
-        input.classList.toggle("input-disabled")
-      })
-
-      document.getElementById("finalizarPedido").disabled = !document.getElementById("finalizarPedido").disabled
-      document.getElementById("agregar-fila").disabled = !document.getElementById("agregar-fila").disabled
-      document.getElementById("eliminar-fila").disabled = !document.getElementById("eliminar-fila").disabled
-      document.getElementById("verPedido").disabled = !document.getElementById("verPedido").disabled
-
-      let dataObj = {
-        data: ventasAdicionalesStorage  
-      }
-
-      sessionStorage.setItem("ventas-adicionales-data", JSON.stringify(dataObj));
-      ventasAdicionalesStorage = JSON.parse(sessionStorage.getItem('ventas-adicionales-data'));
-      ventasAdicionalesStorage.fechaActual = new Date().toISOString().split('T')[0]
-
-      finalizarPedido.addEventListener("click", (e) => {
-        console.log(ventasAdicionalesStorage)
-        e.preventDefault()
-        Swal.fire({
-          title: "Procesando...",
-          text: "Por favor, espera mientras se completa la operación.",
-          icon: "info",
-          allowOutsideClick: false, 
-          showConfirmButton: false, 
-          didOpen: () => {
-              Swal.showLoading(); 
-          }
-        });
-        setTimeout(() => {
-          fetch("/admin/ventas-adicionales/update", {
-            body: JSON.stringify(ventasAdicionalesStorage),
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            }
-          })
-          .then(response => {
-            if (!response.ok) {
-              throw new Error("Error en la actualización: " + response.statusText);
-            }
-            return response.json();
-          })
-          .then((data) => {
-            Swal.fire({
-              title: "Operación Exitosa",
-              text: "Los datos han sido actualizados correctamente.",
-              icon: "success",
-              timer: 2000,
-              showConfirmButton: false
-            });
-            return data;
-          })
-          .catch((err) => {
-            Swal.fire({
-              title: "Error",
-              text: err.message,
-              icon: "error",
-              confirmButtonText: "Aceptar"
-            });
-            return err;
-          });
-        }, 1000);
-      })
     })
 
     document
@@ -740,20 +753,20 @@
           const inputs = ultimaFila.querySelectorAll("input"); 
           const camposCompletos = Array.from(inputs).every(input => input.value.trim() !== ""); 
 
-        if (!camposCompletos) {
-            alert("Por favor, completa todos los campos antes de agregar una nueva fila.");
-            return; 
-          }
+          // if (!camposCompletos) {
+          //   alert("Por favor, completa todos los campos antes de agregar una nueva fila.");
+          //   return; 
+          // }
       }
         const nuevaFila = document.createElement("tr");
         nuevaFila.innerHTML = `
-          <td><input type="text" class="form-control" placeholder="SKU"></td>
-          <td><input type="text" class="form-control" placeholder="Descripción"></td>
-          <td><input type="number" min="0" class="form-control" placeholder="Cantidad"></td>
-          <td><input type="number" min="0" class="form-control" placeholder="Precio"></td>
-          <td><input type="text" class="form-control" placeholder="Cliente"></td>
-          <td><input type="text" class="form-control" placeholder="S/C"></td>
-          <td><input type="number" min="0" class="form-control" placeholder="Descuento"></td>
+          <td><input type="text" class="form-control sku" placeholder="SKU"></td>
+          <td><input type="text" class="form-control descripcion" placeholder="Descripción"></td>
+          <td><input type="number" min="0" class="form-control cantidad" placeholder="Cantidad"></td>
+          <td><input type="number" min="0" class="form-control precio" placeholder="Precio"></td>
+          <td><input type="text" class="form-control cliente" placeholder="Cliente"></td>
+          <td><input type="text" class="form-control sc" placeholder="S/C"></td>
+          <td><input type="number" min="0" class="form-control descuento" placeholder="Descuento"></td>
       `;
 
         tablaBody.appendChild(nuevaFila);
@@ -845,4 +858,13 @@
     border: 1px solid #157347 !important;
     cursor: not-allowed;
   } 
+  .btn-gray-color {
+    background-color: #3f3f3f;
+    color: white;
+  }
+  .btn-gray-color:hover {
+    background-color: #3f3f3f;
+    color: white;
+  }
+
 </style>

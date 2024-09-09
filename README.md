@@ -82,3 +82,4 @@ pasar form manual a sp dinamico
 NO pueden mandar formulario y excel a la vez. Es uno o el otro
 
 --- --- ---- 
+vtas ad, camviar var compr
