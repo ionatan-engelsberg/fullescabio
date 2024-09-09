@@ -315,6 +315,7 @@
                         type="text"
                         class="form-control descripcion"
                         placeholder="Descripción"
+                        
                       />
                     </td>
                     <td>
@@ -577,7 +578,6 @@
           input.disabled = true;
         });
 
-        confirmarButton.disabled = true
         agregarFila.disabled = true;
         eliminarFila.disabled = true;
         validarDatosManual.disabled = true
@@ -592,7 +592,6 @@
           input.disabled = false;
         });
 
-        confirmarButton.disabled = false
         agregarFila.disabled = false;
         eliminarFila.disabled = false;
         validarDatosManual.disabled = false
@@ -614,12 +613,12 @@
       let precioInputs = Array.from(container.querySelectorAll(".precio"))
       let clienteInputs = Array.from(container.querySelectorAll(".cliente"))
       let descuentoInputs = Array.from(container.querySelectorAll(".descuento"))
+      let descripcionInputs = Array.from(container.querySelectorAll(".descripcion"))
 
       let groupedData = []
       
       for (let i = 0; i < skuInputs.length; i++) {
         if (i < cantidadInputs.length && i < precioInputs.length && i < descuentoInputs.length && i < clienteInputs.length) {
-        
           let filaData = {
             sku: skuInputs[i].value.trim(),
             cantidad: cantidadInputs[i].value.trim(),
@@ -669,11 +668,13 @@
         .then((data) => {
           Swal.fire({
             title: "Operación Exitosa",
-            text: "Los datos han sido actualizados correctamente.",
+            text: "Los datos ingresados son correctos.",
             icon: "success",
             timer: 2000,
             showConfirmButton: false
           });
+          console.log(data)
+          confirmarButton.disabled = false
           return data;
         })
         .catch((err) => {
@@ -826,11 +827,12 @@
           const inputs = ultimaFila.querySelectorAll("input"); 
           const camposCompletos = Array.from(inputs).every(input => input.value.trim() !== ""); 
 
+          confirmarButton.disabled = true
           // if (!camposCompletos) {
           //   alert("Por favor, completa todos los campos antes de agregar una nueva fila.");
           //   return; 
           // }
-      }
+        }
         const nuevaFila = document.createElement("tr");
         nuevaFila.innerHTML = `
           <td><input type="text" class="form-control sku" placeholder="SKU"></td>

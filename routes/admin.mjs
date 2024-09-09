@@ -340,7 +340,7 @@ router.post('/ventas-adicionales/validate-rows', async (req, res) => {
 
     await validateManualRows(data, false)
     .then((data) => {
-        console.log("Oks")
+        console.log(data)
         res.render("ventasAdicionales", {
             agrupacionSeleccionada,
             agrupacion,
