@@ -111,10 +111,21 @@ const obtenerClienteAgrupacion = async (query) => {
     }
 }
 
-const numWeb = 10337
+const obtenerNumWeb = async (query) => {
+    try {
+        const request = await new sql.Request().query(query)
+        return request.recordset.map((row) => {
+            const { PROX_NUM: num } = row
+            return { num }
+        })
+    } catch (error) {
+        console.log('ERROR: ', error);
+        return [];
+    }
+}
 
-const execQueryAlta = async (request, object) => {
-    const { id, lista, listaCodigo, vendedor, fecha, tipo, montoPrecioTotal , montoItemsTotal ,partidas: filas } = object;
+const execQueryAlta = async (request, object, numWeb) => {
+    const { id, lista, listaCodigo, vendedor, fecha, tipo, montoPrecioTotal , montoItemsTotal, partidas: filas } = object;
 
     filas.forEach((fila) => {
         console.log("DATA: ", fila.data)
@@ -131,7 +142,7 @@ const execQueryAlta = async (request, object) => {
         @cant_max_items_web = '${montoItemsTotal}',
         @num_web = '${numWeb}',
         @codi_vende = '${vendedor}',
-        @obser = 'LAUTI ESTAS LEYENDO ESTO?',
+        @obser = '',
         @usuario = 'c1', 
         @condi_venta = '1',
         @mone = 'PES', 
@@ -146,8 +157,7 @@ const execQueryAlta = async (request, object) => {
     console.log('RESPONSE QUERY ALTA: ', requestQueryAlta);
 }
 
-const execUpdate = async (request, object, depo) => {
-    //! @num_web se asignan automaticamente en la db
+const execUpdate = async (request, object, depo, numWeb) => {
     const { id, lista, listaCodigo, vendedor, fecha, tipo, partidas: filas } = object;
     let renglon = 1;
 
@@ -180,6 +190,29 @@ const execUpdate = async (request, object, depo) => {
 // TODO
 const execTransferencia = async (request, object) => {}
 
+const finalizarPedidoMayorista = async (objeto) => {
+    try {
+        const transaction = new sql.Transaction()
+        await transaction.begin()
+        const request = new sql.Request(transaction)
+        
+        try {
+            const numWeb = await obtenerNumWeb(`EXEC may_prox_comp @comp = ${objeto.tipo}`)
+            await execQueryAlta(request, objeto, numWeb[0].num);
+            await execUpdate(request, objeto, 'MAY', numWeb[0].num)
+            
+            await transaction.commit();
+            return { msg: 'OK' }
+        } catch (error) {
+            await transaction.rollback();            
+            throw error;
+        }
+    } catch (error) {
+        console.log('ERROR: ', error);      
+        throw error;  
+    }
+}
+
 const finalizarPedidoUnico = async (objeto) => {
     try {
         const transaction = new sql.Transaction()
@@ -187,9 +220,10 @@ const finalizarPedidoUnico = async (objeto) => {
         const request = new sql.Request(transaction)
         
         try {
-            await execQueryAlta(request, objeto);
+            const numWeb = await obtenerNumWeb(`EXEC may_prox_comp @comp = ${objeto.tipo}`)
+            await execQueryAlta(request, objeto, numWeb[0].num);
             await execTransferencia(request, objeto);
-            await execUpdate(request, objeto, 'DEP')
+            await execUpdate(request, objeto, 'DEP', numWeb[0].num)
     
             await transaction.commit();
             return { msg: 'OK' }
@@ -203,38 +237,13 @@ const finalizarPedidoUnico = async (objeto) => {
     }
 }
 
-const finalizarPedidoMayorista = async (objeto) => {
-    try {
-        const transaction = new sql.Transaction()
-        await transaction.begin()
-        const request = new sql.Request(transaction)
-
-        try {
-            await execQueryAlta(request, objeto);
-            await execUpdate(request, objeto, 'MAY')
-    
-            await transaction.commit();
-            return { msg: 'OK' }
-        } catch (error) {
-            await transaction.rollback();            
-            throw error;
-        }
-    } catch (error) {
-        console.log('ERROR: ', error);      
-        throw error;  
-    }
-}
-
-const execVentasAdicionales = async (request, fila) => {
+const execVentasAdicionales = async (request, fila, fechaActual) => {
     const {sku, cantidad} = fila
-    const comprobante = 20240829;
-    // const comprobante = 1;
-
     const query = `
     exec [may_Proveedores_articulos_incidencia]
     @Cod_articulo = ${sku},
     @cantidad = ${cantidad},
-    @comprobante = ${comprobante},
+    @comprobante = ${parseInt(fechaActual.replace(/-/g, ''), 10)},
     @fecha_desde = null,
     @fecha_hasta = null
     `
@@ -244,17 +253,17 @@ const execVentasAdicionales = async (request, fila) => {
     return result
 };
 
-const finalizarVentasAdicionales = async (filas) => {
+const finalizarVentasAdicionales = async (filas, fechaActual) => {
     try {
         const transaction = new sql.Transaction()
         await transaction.begin()
         const request = new sql.Request(transaction)
-
+        
         try {
             for (const fila of filas) {
-                await execVentasAdicionales(request, fila);
+                await execVentasAdicionales(request, fila, fechaActual);
             }
-    
+            
             await transaction.commit();
             return { msg: 'OK' }
         } catch (error) {
@@ -297,8 +306,8 @@ router.get('/', (req, res) => {
 //! Ventas Adicionales
 router.post("/ventas-adicionales/update", async (req, res) => {
     try {
-        const { body } = req;
-        const result = await finalizarVentasAdicionales(body.data);
+        const { data, fechaActual } = req.body;
+        const result = await finalizarVentasAdicionales(data, fechaActual);
         return res.status(200).send(result);
     } catch (error) {
         console.error("Error al actualizar el pedido:", error);

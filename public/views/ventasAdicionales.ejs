@@ -424,11 +424,10 @@
 <script>
   //todo: SOLUCIONAR BUG: Importar Directo, se carga 2 veces al clickear finalizar
 
-  sessionStorage.setItem("ventas-adicionales-data", JSON.stringify(null))
+  sessionStorage.setItem("ventas-adicionales-data", JSON.stringify({}))
   let ventasAdicionalesStorage = JSON.parse(sessionStorage.getItem('ventas-adicionales-data'));
 
   document.addEventListener("DOMContentLoaded", (event) => {
-    
     const verPedidoButton = <%= verPedidoButton %>  // eslint-disable-line
     const finalizarPedidoButton = document.getElementById("finalizarPedido")
     if(verPedidoButton) {
@@ -446,6 +445,7 @@
 
       sessionStorage.setItem("ventas-adicionales-data", JSON.stringify(dataObj));
       ventasAdicionalesStorage = JSON.parse(sessionStorage.getItem('ventas-adicionales-data'));
+      ventasAdicionalesStorage.fechaActual = new Date().toISOString().split('T')[0]
 
       finalizarPedidoButton.addEventListener("click", (e) => {
         console.log(ventasAdicionalesStorage)
@@ -601,6 +601,15 @@
 
     confirmarButton.addEventListener("click", () => {
       const container = document.getElementById("tabla-body");
+      const rows = container.querySelectorAll("tr td input")
+      const allInputs = Array.from(rows).every(input => input.value.trim() !== "");
+
+      if (allInputs) {
+        console.log(ventasAdicionalesStorage)
+      } else {
+        // Err
+      }
+
       const inputs = container.querySelectorAll("input")
 
       if (confirmarButton.textContent.trim().startsWith("Confirmar")) {
@@ -669,6 +678,7 @@
 
       sessionStorage.setItem("ventas-adicionales-data", JSON.stringify(dataObj));
       ventasAdicionalesStorage = JSON.parse(sessionStorage.getItem('ventas-adicionales-data'));
+      ventasAdicionalesStorage.fechaActual = new Date().toISOString().split('T')[0]
 
       finalizarPedido.addEventListener("click", (e) => {
         console.log(ventasAdicionalesStorage)
@@ -724,9 +734,18 @@
       .getElementById("agregar-fila")
       .addEventListener("click", function () {
         const tablaBody = document.getElementById("tabla-body");
+        const ultimaFila = tablaBody.lastElementChild; 
 
+        if (ultimaFila) {
+          const inputs = ultimaFila.querySelectorAll("input"); 
+          const camposCompletos = Array.from(inputs).every(input => input.value.trim() !== ""); 
+
+        if (!camposCompletos) {
+            alert("Por favor, completa todos los campos antes de agregar una nueva fila.");
+            return; 
+          }
+      }
         const nuevaFila = document.createElement("tr");
-
         nuevaFila.innerHTML = `
           <td><input type="text" class="form-control" placeholder="SKU"></td>
           <td><input type="text" class="form-control" placeholder="Descripción"></td>
