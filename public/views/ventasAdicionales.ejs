@@ -98,7 +98,7 @@
 
           <div class="col-md-4 text-end d-flex justify-content-between" id="">
             <button
-              class="w-65 btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow"
+              class="w-50 btn btn-medium btn-green-color btn-hover-animation btn-round-edge btn-box-shadow"
               type="button"
               id="verPedido"
               data-toggle="modal"
@@ -224,6 +224,7 @@
               <label for="" class="text-dark fw-600 fs-24">Agrupacion</label>
 
               <select class="form-select" name="agrupacionVentasAdicionales" id="agrupacionVentasAdicionales" <%= selectAgrupacion ? 'disabled' : '' %>>
+                <option value="">Seleccionar Opcion</option>
                 <% agrupacion.forEach(i => { %>
                   <option value="<%= i.codigo %>"
                     <%= i.codigo === agrupacionSeleccionada ? 'selected' : '' %>><%= i.nombre %></option>
@@ -367,10 +368,10 @@
 
               <div class="row">
                 <div class="col-md-12 text-center">
-                  <button id="agregar-fila" class="btn btn btn-gray-color btn-medium btn-hover-animation btn-round-edge btn-box-shadow">
+                  <button id="agregar-fila" class="btn btn btn-gray-color btn-medium btn-hover-animation btn-round-edge btn-box-shadow" disabled>
                     Agregar Fila
                   </button>
-                  <button id="eliminar-fila" class="btn btn btn-base-color btn-medium btn-hover-animation btn-round-edge btn-box-shadow">
+                  <button id="eliminar-fila" class="btn btn btn-base-color btn-medium btn-hover-animation btn-round-edge btn-box-shadow" disabled>
                     Eliminar Última Fila
                   </button>
                 </div>
@@ -558,7 +559,7 @@
     const buttonUploadFile = document.getElementById("buttonFileSPUpload");
     const uploadFile = document.getElementById("inputFileSPUpload");
     const cargaManual = document.getElementById("tabla-body");
-    const inputGroup = cargaManual.querySelectorAll("input");
+    const inputGroup = cargaManual.querySelectorAll(".sku, .cantidad, .precio, .cliente, .sc, .descuento");
     const agregarFila = document.getElementById("agregar-fila");
     const eliminarFila = document.getElementById("eliminar-fila");
     const selectElement = document.getElementById("chooseSPMethod");
@@ -664,6 +665,8 @@
           if (!response.ok) {
             return response.json().then(err => { throw new Error(err.error); }); 
           }
+
+          return response.json();
         })
         .then((data) => {
           Swal.fire({
@@ -673,7 +676,11 @@
             timer: 2000,
             showConfirmButton: false
           });
-          console.log(data)
+          
+          for (let i = 0; i < data.data.length; i++) {
+            descripcionInputs[i].value = data.data[i].descripcion
+          }
+
           confirmarButton.disabled = false
           return data;
         })
@@ -695,6 +702,7 @@
 
       if (allInputs) {
         const inputs = container.querySelectorAll("input")
+        const disabledInputs = container.querySelectorAll(".sku, .cantidad, .precio, .cliente, .sc, .descuento");
   
         if (confirmarButton.textContent.trim().startsWith("Confirmar")) {
           confirmarButton.classList.remove('btn-green-color');
@@ -746,7 +754,7 @@
           });
         }
   
-        inputs.forEach(input => {
+        disabledInputs.forEach(input => {
           input.disabled = !input.disabled
           input.classList.toggle("input-disabled")
         })
@@ -836,7 +844,7 @@
         const nuevaFila = document.createElement("tr");
         nuevaFila.innerHTML = `
           <td><input type="text" class="form-control sku" placeholder="SKU"></td>
-          <td><input type="text" class="form-control descripcion" placeholder="Descripción"></td>
+          <td><input type="text" class="form-control descripcion" disabled placeholder="Descripción"></td>
           <td><input type="number" min="0" class="form-control cantidad" placeholder="Cantidad"></td>
           <td><input type="number" min="0" class="form-control precio" placeholder="Precio"></td>
           <td><input type="text" class="form-control cliente" placeholder="Cliente"></td>

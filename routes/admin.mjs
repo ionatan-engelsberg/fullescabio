@@ -341,7 +341,7 @@ router.post('/ventas-adicionales/validate-rows', async (req, res) => {
     await validateManualRows(data, false)
     .then((data) => {
         console.log(data)
-        res.render("ventasAdicionales", {
+        res.json({
             agrupacionSeleccionada,
             agrupacion,
             data,
@@ -354,6 +354,7 @@ router.post('/ventas-adicionales/validate-rows', async (req, res) => {
             directUpload: true,
             error: ""
         })
+        return data
     })
     .catch((error) => {
         console.error('Error ejecutando la función:', error);
