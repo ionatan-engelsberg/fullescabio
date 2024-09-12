@@ -856,12 +856,28 @@
                         
                         if(data.resultadosDescripcion.length == 0){
                             const articuloDiv = document.createElement('div');
+                            articuloDiv.className = "text-start"
                             articuloDiv.innerHTML = `No hay resultados`;
                             resultadosDiv.appendChild(articuloDiv);
                         } else {
                             data.resultadosDescripcion.forEach(articulo => {
                                 const articuloRow = document.createElement('div');
                                 articuloRow.className = 'row text-start result-item';
+
+                                articuloRow.addEventListener("click", (e) => {
+                                    navigator.clipboard.writeText(articulo.codigo)
+                                    .then(() => {
+                                        Swal.fire({
+                                            title: "SKU Copiado",
+                                            icon: "success",
+                                            showConfirmButton: false,
+                                            timer: 1000
+                                        });
+                                    })
+                                    .catch(err => {
+                                        console.log(err)
+                                    });
+                                })
 
                                 const codigoDiv = document.createElement('div');
                                 codigoDiv.className = 'col-md-4';
@@ -1456,13 +1472,46 @@
                             return response.json();
                         })
                         .then((data) => {
-                         Swal.fire({
+                            Swal.fire({
                                 title: "Operación Exitosa",
-                                text: "Los datos han sido actualizados correctamente.",
+                                html: `Los datos han sido actualizados correctamente. <br> Codigo de operacion: <b>${data.numWeb[0].num}</b>`,
                                 icon: "success",
-                                timer: 2000,
-                                showConfirmButton: false
+                                showConfirmButton: true,
+                                confirmButtonText: "Click para confirmar",
+                                allowOutsideClick: false
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = "/admin/pedido-unico";
+                                }
                             });
+
+                            retrievedData = ""
+
+                            const buscarClienteButton = document.getElementById("buscarCliente")
+                            const buscarCodigoDeArticuloButton = document.getElementById("buscarCodigoDeArticulo") 
+                            const confirmarClienteButton = document.getElementById('confirmarCliente');
+                            const verPedidoButton = document.getElementById("verPedido")
+                            const finalizarPedidoButton = document.getElementById("finalizarPedido")
+                            const cantidadLabel = document.getElementById("cantidadLabel")
+                            const mostrarSeleccionCliente = document.getElementById("mostrarSeleccionCliente")
+
+                            buscarClienteButton.disabled = false
+                            buscarCodigoDeArticuloButton.disabled = true
+                            confirmarClienteButton.disabled = true
+                            verPedidoButton.disabled = true
+                            finalizarPedidoButton.disabled = true
+                            cantidadLabel.textContent = ""
+                            mostrarSeleccionCliente.textContent = ""
+
+                            const inputs = document.querySelectorAll('input, select');
+                            for (let i = 0; i < inputs.length; i++) {
+                                inputs[i].value = ''; 
+                                inputs[i].classList.remove("input-disabled")
+                                inputs[i].disabled = false
+                            }
+
+                            //window.location.href = "/admin/pedido-unico";
+
                             return data;
                         })
                         .catch((err) => {

@@ -865,6 +865,21 @@
                                 const articuloRow = document.createElement('div');
                                 articuloRow.className = 'row text-start result-item';
 
+                                articuloRow.addEventListener("click", (e) => {
+                                    navigator.clipboard.writeText(articulo.codigo)
+                                    .then(() => {
+                                        Swal.fire({
+                                            title: "SKU Copiado",
+                                            icon: "success",
+                                            showConfirmButton: false,
+                                            timer: 1000
+                                        });
+                                    })
+                                    .catch(err => {
+                                        console.log(err)
+                                    });
+                                })
+
                                 const codigoDiv = document.createElement('div');
                                 codigoDiv.className = 'col-md-4';
                                 codigoDiv.textContent = `${articulo.codigo}`;
@@ -1456,11 +1471,17 @@
                     .then((data) => {
                         Swal.fire({
                             title: "Operación Exitosa",
-                            text: "Los datos han sido actualizados correctamente.",
+                            html: `Los datos han sido actualizados correctamente. <br> Codigo de operacion: <b>${data.numWeb[0].num}</b>`,
                             icon: "success",
-                            timer: 2000,
                             showConfirmButton: false
                         });
+
+                        const inputs = document.querySelectorAll('input, select');
+                        for (let i = 0; i < inputs.length; i++) {
+                            inputs[i].value = ''; 
+                            inputs[i].classList.remove("input-disabled")
+                            inputs[i].disabled = false
+                        }
                         return data
                     })
                     .catch((err) => {
