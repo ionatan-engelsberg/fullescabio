@@ -536,6 +536,18 @@ router.post("/pedido-unico/obtener-articulos", async (req, res) => {
     })
 })
 
+router.post("/pedido-unico/buscar-codigo-articulo", async (req, res) => {
+    const { descripcion } = req.body;
+    console.log(descripcion)
+
+    //! Consulta a DB
+    const resultadosDescripcion = await obtenerArticulosPedidoUnico(`EXEC may_articulos @Descrip_arti = '${descripcion}', @lista_cod = 'DDW'`)
+
+    res.json({
+        resultadosDescripcion
+    })
+})
+
 //! Pedido Mayorista
 router.get('/pedido-mayorista', async (req, res) => {
     res.render('pedidoMayorista', {
