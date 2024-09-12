@@ -528,7 +528,9 @@ router.post("/pedido-unico/obtener-articulos", async (req, res) => {
 
     //! Consulta a DB
     const resultadosCodigo = await obtenerArticulosPedidoUnico(`EXEC may_articulos @cod_art = '${codigoPedidoUnico}', @lista_cod = '${listaCodigo}'`)
+    console.log(resultadosCodigo)
     const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${codigoPedidoUnico}', @cod_depo = "DEP"`)
+    console.log(resultadosPartidas)
 
     res.json({
         resultadosCodigo,
@@ -537,18 +539,26 @@ router.post("/pedido-unico/obtener-articulos", async (req, res) => {
 })
 
 router.post("/pedido-unico/buscar-codigo-articulo", async (req, res) => {
-    const { descripcion } = req.body;
-    console.log(descripcion)
+    const { descripcion, listaCodigo } = req.body;
 
     //! Consulta a DB
-    const resultadosDescripcion = await obtenerClientesPedidoUnico(`EXEC may_client_busq_razon @razon = '${descripcion}'`)
-
+    const resultadosDescripcion = await obtenerArticulosPedidoUnico(`EXEC may_articulos @descrip = '${descripcion}', @lista_cod = '${listaCodigo}'`)
     res.json({
         resultadosDescripcion
     })
 })
 
 //! Pedido Mayorista
+router.post("/pedido-mayorista/buscar-codigo-articulo", async (req, res) => {
+    const { descripcion, listaCodigo } = req.body;
+
+    //! Consulta a DB
+    const resultadosDescripcion = await obtenerArticulosPedidoUnico(`EXEC may_articulos @descrip = '${descripcion}', @lista_cod = '${listaCodigo}'`)
+    res.json({
+        resultadosDescripcion
+    })
+})
+
 router.get('/pedido-mayorista', async (req, res) => {
     res.render('pedidoMayorista', {
         selectedOption: 1,
