@@ -62,9 +62,9 @@ initializePassport(
     id => users.find(user => user.id === id)
 );
 
-const { IP, USER_NAME, PASSWORD, DATABASE, PORT,  INSTANCENAME} = process.env
+const { IP, USERNAME, PASSWORD, DATABASE, PORT,  INSTANCENAME} = process.env
 const config = {
-    user: USER_NAME,
+    user: USERNAME,
     password: PASSWORD,
     server: IP,
     database: DATABASE,
