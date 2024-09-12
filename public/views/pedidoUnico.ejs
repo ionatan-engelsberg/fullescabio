@@ -313,6 +313,14 @@
                                                     </div>
                                                 </div>
 
+                                                <div class="row text-start">
+                                                    <div class="col-md-4">
+                                                       <h6>SKU</h6>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <h6>Descripcion</h6>
+                                                    </div>
+                                                </div>
                                                 <div id="resultadosBusquedaArticulos"></div>
                                                 
                                             </div>
@@ -668,15 +676,33 @@
                         }
 
                         const data = await response.json(); 
-
+                        
                         const resultadosDiv = document.getElementById('resultadosBusquedaArticulos');
                         resultadosDiv.innerHTML = '';
                         
-                        data.forEach(articulo => {
+                        if(data.resultadosDescripcion.length == 0){
                             const articuloDiv = document.createElement('div');
-                            articuloDiv.innerHTML = `<p>Código: ${articulo.codigo} - Nombre: ${articulo.nombre}</p>`;
+                            articuloDiv.innerHTML = `No hay resultados`;
                             resultadosDiv.appendChild(articuloDiv);
-                        });
+                        } else {
+                            data.resultadosDescripcion.forEach(articulo => {
+                                const articuloRow = document.createElement('div');
+                                articuloRow.className = 'row mb-2 text-start';
+
+                                const codigoDiv = document.createElement('div');
+                                codigoDiv.className = 'col-md-4';
+                                codigoDiv.textContent = `${articulo.codigo}`;
+
+                                const nombreDiv = document.createElement('div');
+                                nombreDiv.className = 'col-md-8';
+                                nombreDiv.textContent = `${articulo.nombre}`;
+
+                                articuloRow.appendChild(codigoDiv);
+                                articuloRow.appendChild(nombreDiv);
+                                resultadosDiv.appendChild(articuloRow);
+                            });
+                        }
+                        
                     } catch (error) {
                         console.error('Error:', error);
                         document.getElementById('resultadosBusquedaArticulos').innerHTML = `

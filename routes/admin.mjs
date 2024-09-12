@@ -541,7 +541,7 @@ router.post("/pedido-unico/buscar-codigo-articulo", async (req, res) => {
     console.log(descripcion)
 
     //! Consulta a DB
-    const resultadosDescripcion = await obtenerArticulosPedidoUnico(`EXEC may_articulos @Descrip_arti = '${descripcion}', @lista_cod = 'DDW'`)
+    const resultadosDescripcion = await obtenerClientesPedidoUnico(`EXEC may_client_busq_razon @razon = '${descripcion}'`)
 
     res.json({
         resultadosDescripcion
