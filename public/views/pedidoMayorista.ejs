@@ -1473,8 +1473,32 @@
                             title: "Operación Exitosa",
                             html: `Los datos han sido actualizados correctamente. <br> Codigo de operacion: <b>${data.numWeb[0].num}</b>`,
                             icon: "success",
-                            showConfirmButton: false
+                            showConfirmButton: true,
+                            confirmButtonText: "Click para confirmar",
+                            allowOutsideClick: false
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = "/admin/pedido-mayorista";
+                            }
                         });
+
+                        retrievedData = ""
+
+                        const buscarClienteButton = document.getElementById("buscarCliente")
+                        const buscarCodigoDeArticuloButton = document.getElementById("buscarCodigoDeArticulo") 
+                        const confirmarClienteButton = document.getElementById('confirmarCliente');
+                        const verPedidoButton = document.getElementById("verPedido")
+                        const finalizarPedidoButton = document.getElementById("finalizarPedido")
+                        const cantidadLabel = document.getElementById("cantidadLabel")
+                        const mostrarSeleccionCliente = document.getElementById("mostrarSeleccionCliente")
+
+                        buscarClienteButton.disabled = false
+                        buscarCodigoDeArticuloButton.disabled = true
+                        confirmarClienteButton.disabled = true
+                        verPedidoButton.disabled = true
+                        finalizarPedidoButton.disabled = true
+                        cantidadLabel.textContent = ""
+                        mostrarSeleccionCliente.textContent = ""
 
                         const inputs = document.querySelectorAll('input, select');
                         for (let i = 0; i < inputs.length; i++) {

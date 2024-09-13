@@ -157,12 +157,12 @@
                         <% data.forEach((item) => { %>
                           <tr>
                             <td><%= item.sku || '' %></td>
-                            <td><%= item.descripcion || '' %></td>
+                            <td><%= item.descripcion || 'No Definido' %></td>
                             <td><%= item.cantidad || '' %></td>
-                            <td><%= item.precio || '' %></td>
+                            <td>$ <%= item.precio || '' %></td>
                             <td class="client-cell"><%= item.cliente || '' %></td>
                             <td><%= item.sc || '' %></td>
-                            <td><%= item.descuento || '' %></td>
+                            <td><%= item.descuento || '' %>%</td>
                           </tr>
                         <% }); %>
                         <% } else { %>
@@ -294,8 +294,8 @@
                     <th>SKU</th>
                     <th>DESCRIPCIÓN</th>
                     <th>CANTIDAD</th>
-                    <th>PRECIO</th>
-                    <th>CLIENTE</th>
+                    <th>PRECIO (x Un)</th>
+                    <th>CLIENTE (ID)</th>
                     <th>S/C</th>
                     <th>DESCUENTO</th>
                   </tr>

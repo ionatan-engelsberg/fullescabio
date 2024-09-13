@@ -373,6 +373,7 @@ router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req
 
     await parsedWorkbook(filename, true)
         .then((data) => {
+            console.log(data)
             res.render("ventasAdicionales", {
                 agrupacionSeleccionada,
                 agrupacion,
