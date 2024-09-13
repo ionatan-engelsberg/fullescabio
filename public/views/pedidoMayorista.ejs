@@ -858,7 +858,9 @@
                         
                         if(data.resultadosDescripcion.length == 0){
                             const articuloDiv = document.createElement('div');
+                            articuloDiv.className = "text-start fw-600 fs-26"
                             articuloDiv.innerHTML = `No hay resultados`;
+                            articuloDiv.style = 'color: red'
                             resultadosDiv.appendChild(articuloDiv);
                         } else {
                             data.resultadosDescripcion.forEach(articulo => {
