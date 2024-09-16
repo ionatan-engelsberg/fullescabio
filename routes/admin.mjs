@@ -371,7 +371,7 @@ router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req
     const { filename } = req.file
     const agrupacion = await obtenerClienteAgrupacion(`EXEC may_client_agru`)
 
-    await parsedWorkbook(filename, true)
+    await parsedWorkbook(filename, false)
         .then((data) => {
             res.render("ventasAdicionales", {
                 agrupacionSeleccionada,
@@ -390,9 +390,16 @@ router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req
         .catch(error => {
             console.error('Error executing function:', error);
             res.render("ventasAdicionales", {
-                agrupacionSeleccionada,
-                agrupacion,
-                error
+                data: [],
+                agrupacion: [],
+                error,
+                verPedidoButton: false,
+                chooseImportMethod: true,
+                chooseSPMethod: false,
+                fechas: true,
+                selectAgrupacion: true,
+                SPUpload: true,
+                directUpload: false,
             })
         });
 })
@@ -538,9 +545,14 @@ router.post("/pedido-unico/obtener-articulos", async (req, res) => {
 
 router.post("/pedido-unico/buscar-codigo-articulo", async (req, res) => {
     const { descripcion, listaCodigo } = req.body;
-
+    
     //! Consulta a DB
     const resultadosDescripcion = await obtenerArticulosPedidoUnico(`EXEC may_articulos @descrip = '${descripcion}', @lista_cod = '${listaCodigo}'`)
+    for(let i = 0; i < resultadosDescripcion.length; i++){
+        const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${resultadosDescripcion[i].codigo}', @cod_depo = "DEP"`)
+        resultadosDescripcion[i].poseePartidas = resultadosPartidas.length != 0
+    }
+
     res.json({
         resultadosDescripcion
     })
@@ -552,6 +564,11 @@ router.post("/pedido-mayorista/buscar-codigo-articulo", async (req, res) => {
 
     //! Consulta a DB
     const resultadosDescripcion = await obtenerArticulosPedidoUnico(`EXEC may_articulos @descrip = '${descripcion}', @lista_cod = '${listaCodigo}'`)
+    for(let i = 0; i < resultadosDescripcion.length; i++){
+        const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${resultadosDescripcion[i].codigo}', @cod_depo = "MAY"`)
+        resultadosDescripcion[i].poseePartidas = resultadosPartidas.length != 0
+    }    
+    
     res.json({
         resultadosDescripcion
     })

@@ -314,11 +314,14 @@
                                                 </div>
 
                                                 <div class="row text-start">
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-2">
                                                        <h6>SKU</h6>
                                                     </div>
-                                                    <div class="col-md-8">
+                                                    <div class="col-md-6">
                                                         <h6>Descripcion</h6>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <h6>Posee Partidas</h6>
                                                     </div>
                                                 </div>
                                                 <div id="resultadosBusquedaArticulos"></div>
@@ -834,7 +837,7 @@
                     const { listaCodigo } = retrievedData
 
                     try {
-                        const response = await fetch('/admin/pedido-mayorista/buscar-codigo-articulo', {
+                        const response = await fetch('/admin/pedido-unico/buscar-codigo-articulo', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -880,17 +883,27 @@
                                 })
 
                                 const codigoDiv = document.createElement('div');
-                                codigoDiv.className = 'col-md-4';
+                                codigoDiv.className = 'col-md-2';
                                 codigoDiv.textContent = `${articulo.codigo}`;
                                 codigoDiv.style = "font-weight: 700"
 
                                 const nombreDiv = document.createElement('div');
-                                nombreDiv.className = 'col-md-8';
+                                nombreDiv.className = 'col-md-6';
                                 nombreDiv.textContent = `${articulo.nombre}`;
                                 nombreDiv.style = "font-weight: 700"
 
+                                const poseePartidasDiv = document.createElement('div');
+                                poseePartidasDiv.className = 'col-md-4';
+                                poseePartidasDiv.textContent = `${articulo.poseePartidas}`;
+                                if(articulo.poseePartidas){
+                                    poseePartidasDiv.style = "font-weight: 700; color: green;"
+                                } else {
+                                    poseePartidasDiv.style = "font-weight: 700; color: red;"
+                                }
+
                                 articuloRow.appendChild(codigoDiv);
                                 articuloRow.appendChild(nombreDiv);
+                                articuloRow.appendChild(poseePartidasDiv);
                                 resultadosDiv.appendChild(articuloRow);
                             });
                         }
@@ -1446,6 +1459,15 @@
                     retrievedData.montoPrecioTotal = totalSum
                     retrievedData.montoItemsTotal = totalItems
 
+                    const tipoPedidoMap = {
+                        "DDW": "Pedidos Web",
+                        "DDI": "Pedido Reventa Int",
+                        "DDM": "Pedidos Mayorista"
+                    };
+
+                    const selectedTipoPedido = retrievedData.tipo
+                    const tipoPedido = tipoPedidoMap[selectedTipoPedido] || "Tipo de pedido desconocido"; 
+
                     Swal.fire({
                         title: "Procesando...",
                         text: "Por favor, espera mientras se completa la operación.",
@@ -1474,7 +1496,9 @@
                         .then((data) => {
                             Swal.fire({
                                 title: "Operación Exitosa",
-                                html: `Los datos han sido actualizados correctamente. <br> Codigo de operacion: <b>${data.numWeb[0].num}</b>`,
+                                html: `Los datos han sido actualizados correctamente. 
+                                    <br> Tipo de Pedido: <b>${tipoPedido}</b>    
+                                    <br> Codigo de operacion: <b>${data.numWeb[0].num}</b>`,
                                 icon: "success",
                                 showConfirmButton: true,
                                 confirmButtonText: "Click para confirmar",
