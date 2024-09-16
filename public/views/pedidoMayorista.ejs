@@ -282,7 +282,7 @@
                                         </div>
                                     </div>
 
-                                    <input type="date" class="form-control d-inline" name="fechaPedidoMayorista" id="fechaPedidoMayorista" placeholder="aa" style="width: 49%;" value="<%= new Date().toISOString().split('T')[0] %>">
+                                    <input type="date" class="form-control d-inline" name="fechaPedidoMayorista" id="fechaPedidoMayorista" placeholder="aa" style="width: 35%;" value="<%= new Date().toISOString().split('T')[0] %>">
                                 </div>       
                                 
                                 <div class="col-md-8 text-end">
@@ -889,7 +889,7 @@
                                 nombreDiv.className = 'col-md-8';
                                 nombreDiv.textContent = `${articulo.nombre}`;
                                 nombreDiv.style = "font-weight: 700"
-                                
+
                                 const poseePartidasDiv = document.createElement('div');
                                 poseePartidasDiv.className = 'col-md-4';
                                 poseePartidasDiv.textContent = `${articulo.poseePartidas}`;
