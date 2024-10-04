@@ -169,8 +169,33 @@ const execUpdate = async (request, object, depo, numWeb) => {
     }
 }
 
-// TODO
-const execTransferencia = async (request, object) => { }
+const execTransferencia = async (request, object, numWeb) => {
+    const { fecha, tipo, partidas } = object;
+
+    for (const partida of partidas) {
+        const { data, articulos: { codigo: codArt, cantidad } } = partida;
+        for (const p of data) {
+            const { numero: codPartida } = p;
+
+            const QUERY_TRANSFERENCIA = `
+            EXEC full_transferencia_mayo
+            @tipo='${tipo}'
+            @cod_articulo='${codArt}'
+            @cod_partida='${codPartida}'
+            @depo_ori='DEP'
+            @depo_desti='MAY'
+            @cantidad='${cantidad}'
+            @fecha='${fecha}'
+            @pedi_tipo='${tipo}'
+            @pedi_num='${numWeb}'
+            `
+
+            await request.query(QUERY_TRANSFERENCIA);
+        }
+
+    }
+
+}
 
 const finalizarPedidoMayorista = async (objeto) => {
     try {
@@ -203,7 +228,7 @@ const finalizarPedidoUnico = async (objeto) => {
         try {
             const numWeb = await obtenerNumWeb(`EXEC may_prox_comp @comp = ${objeto.tipo}`)
             await execQueryAlta(request, objeto, numWeb[0].num);
-            await execTransferencia(request, objeto);
+            await execTransferencia(request, objeto, numWeb[0].num);
             await execUpdate(request, objeto, 'DEP', numWeb[0].num)
 
             await transaction.commit();
