@@ -4,7 +4,7 @@ import uploadExcel from "../middlewares/multer.mjs"
 import path from 'path';
 
 import { checkAuthenticated } from '../middlewares/auth.mjs';
-import { parsedWorkbook, validateManualRows } from "../xlsx.mjs";
+import { parseWorkbook, validateManualRows } from "../xlsx.mjs";
 
 //! !!!!
 //todo: !!! MODULARIZAR !!!
@@ -313,25 +313,25 @@ router.post('/ventas-adicionales/validate-rows', async (req, res) => {
     const agrupacion = await obtenerClienteAgrupacion(`EXEC may_client_agru`)
 
     await validateManualRows(data, false)
-    .then((data) => {
-        res.json({
-            agrupacionSeleccionada,
-            agrupacion,
-            data,
-            verPedidoButton: true,
-            chooseImportMethod: true,
-            chooseSPMethod: true,
-            fechas: true,
-            selectAgrupacion: true,
-            SPUpload: false,
-            directUpload: true,
-            error: ""
+        .then((data) => {
+            res.json({
+                agrupacionSeleccionada,
+                agrupacion,
+                data,
+                verPedidoButton: true,
+                chooseImportMethod: true,
+                chooseSPMethod: true,
+                fechas: true,
+                selectAgrupacion: true,
+                SPUpload: false,
+                directUpload: true,
+                error: ""
+            })
+            return data
         })
-        return data
-    })
-    .catch((error) => {
-        res.status(500).json({ error: error.message }); 
-    });
+        .catch((error) => {
+            res.status(500).json({ error: error.message });
+        });
 })
 
 router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req, res) => {
@@ -343,7 +343,7 @@ router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req
     const { filename } = req.file
     const agrupacion = await obtenerClienteAgrupacion(`EXEC may_client_agru`)
 
-    await parsedWorkbook(filename, false)
+    await parseWorkbook(filename, false)
         .then((data) => {
             res.render("ventasAdicionales", {
                 agrupacionSeleccionada,
@@ -360,7 +360,6 @@ router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req
             })
         })
         .catch(error => {
-            console.error('Error executing function:', error);
             res.render("ventasAdicionales", {
                 data: [],
                 agrupacion: [],
@@ -383,7 +382,7 @@ router.post("/ventas-adicionales/direct-upload", uploadExcel.single("file"), asy
 
     const { filename } = req.file
 
-    await parsedWorkbook(filename, false)
+    await parseWorkbook(filename, false)
         .then((data) => {
             res.render("ventasAdicionales", {
                 agrupacion: [],
@@ -516,10 +515,10 @@ router.post("/pedido-unico/obtener-articulos", async (req, res) => {
 
 router.post("/pedido-unico/buscar-codigo-articulo", async (req, res) => {
     const { descripcion, listaCodigo } = req.body;
-    
+
     //! Consulta a DB
     const resultadosDescripcion = await obtenerArticulosPedidoUnico(`EXEC may_articulos @descrip = '${descripcion}', @lista_cod = '${listaCodigo}'`)
-    for(let i = 0; i < resultadosDescripcion.length; i++){
+    for (let i = 0; i < resultadosDescripcion.length; i++) {
         const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${resultadosDescripcion[i].codigo}', @cod_depo = "DEP"`)
         resultadosDescripcion[i].poseePartidas = resultadosPartidas.length != 0
     }
@@ -535,11 +534,11 @@ router.post("/pedido-mayorista/buscar-codigo-articulo", async (req, res) => {
 
     //! Consulta a DB
     const resultadosDescripcion = await obtenerArticulosPedidoUnico(`EXEC may_articulos @descrip = '${descripcion}', @lista_cod = '${listaCodigo}'`)
-    for(let i = 0; i < resultadosDescripcion.length; i++){
+    for (let i = 0; i < resultadosDescripcion.length; i++) {
         const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${resultadosDescripcion[i].codigo}', @cod_depo = "MAY"`)
         resultadosDescripcion[i].poseePartidas = resultadosPartidas.length != 0
-    }    
-    
+    }
+
     res.json({
         resultadosDescripcion
     })

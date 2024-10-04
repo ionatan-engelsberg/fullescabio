@@ -7,9 +7,9 @@ const __dirname = path.resolve();
 const uploadsSource = `${__dirname}/uploads`;
 
 const emptyUploadsDirectory = () => {
-  if(!fs.existsSync(uploadsSource)){
+  if (!fs.existsSync(uploadsSource)) {
     return
-  } 
+  }
   fs.readdir(uploadsSource, (err, files) => {
     // TODO: Better handling
     if (err) return console.log('ERROR WHILE EMPTYING UPLOADS DIRECTORY: ', err)
@@ -51,15 +51,36 @@ const getProductBySku = async (sku, lista) => {
 }
 
 const validateRow = async (row, rowCounter, sp) => {
-  const { sku, cantidad, precio, cliente, descuento } = row
+  console.log(row);
+  const { 
+    "SKU": sku,
+    "CANTIDAD": cantidad,
+    "PRECIO": precio,
+    "CLIENTE": cliente,
+    "S/C": descuento
+  } = row
+
+  let missingColumn;
+  if (sku == undefined) {
+    missingColumn = "SKU";
+  }
+  if (cantidad == undefined) {
+    missingColumn = "CANTIDAD";
+  }
+  if (precio == undefined) {
+    missingColumn = "PRECIO";
+  }
+  if (descuento == undefined) {
+    missingColumn = "DESCUENTO";
+  }
 
   if (
-    !sku ||
-    !cantidad ||
-    !precio ||
-    !descuento
+    sku == undefined ||
+    cantidad == undefined ||
+    precio == undefined ||
+    descuento == undefined
   ) {
-    throw new Error("Cell can't be empty", { cause: rowCounter })
+    throw new Error(`La columna ${missingColumn} no puede estar vacía`, { cause: rowCounter })
   }
 
   if (typeof Number(cantidad) != 'number') {
@@ -145,11 +166,11 @@ export const validateManualRows = async (rows, sp) => {
     return parsedItems;
 
   } catch (error) {
-   throw new Error(`${error}`)
+    throw new Error(`${error}`)
   }
 }
 
-export const parsedWorkbook = async (fileName, sp) => {
+export const parseWorkbook = async (fileName, sp) => {
   const filePath = path.join(__dirname, 'uploads', fileName);
   const workbook = xlsx.readFile(filePath);
   try {
