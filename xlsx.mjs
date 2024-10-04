@@ -32,7 +32,6 @@ const getClientById = async (clientId) => {
       return { id, razon, nombreFantasia, lista, vendedor, listaCodigo }
     })
   } catch (error) {
-    console.log('ERROR: ', error);
     return [];
   }
 }
@@ -47,7 +46,6 @@ const getProductBySku = async (sku, lista) => {
       return { codigo, nombre, precio }
     })
   } catch (error) {
-    console.log('ERROR: ', error);
     return [];
   }
 }
@@ -147,7 +145,6 @@ export const validateManualRows = async (rows, sp) => {
     return parsedItems;
 
   } catch (error) {
-   console.log(error) 
    throw new Error(`${error}`)
   }
 }

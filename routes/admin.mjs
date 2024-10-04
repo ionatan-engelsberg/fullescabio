@@ -28,7 +28,6 @@ const obtenerClientesPedidoUnico = async (query) => {
             return { id, razon, nombreFantasia, lista, vendedor, listaCodigo }
         })
     } catch (error) {
-        console.log('ERROR: ', error);
         return [];
     }
 }
@@ -41,7 +40,6 @@ const obtenerTipoPedidoUnico = async (query) => {
             return { codigo, nombre }
         })
     } catch (error) {
-        console.log('ERROR: ', error);
         return [];
     }
 }
@@ -54,7 +52,6 @@ const obtenerListaPedidoUnico = async (query) => {
             return { lista }
         })
     } catch (error) {
-        console.log('ERROR: ', error);
         return [];
     }
 }
@@ -67,7 +64,6 @@ const obtenerArticulosPedidoUnico = async (query) => {
             return { codigo, nombre, precio }
         })
     } catch (error) {
-        console.log('ERROR: ', error);
         return [];
     }
 }
@@ -80,7 +76,6 @@ const obtenerPartidasPedidoUnico = async (query) => {
             return { numero, cantidad, codigoDeposito, costoUnitario, ubicacion }
         })
     } catch (error) {
-        console.log('ERROR: ', error);
         return [];
     }
 }
@@ -93,7 +88,6 @@ const obtenerListaVendedoresPedidoUnico = async (query) => {
             return { codigo, nombre }
         })
     } catch (error) {
-        console.log('ERROR: ', error);
         return [];
     }
 }
@@ -106,7 +100,6 @@ const obtenerClienteAgrupacion = async (query) => {
             return { codigo, nombre }
         })
     } catch (error) {
-        console.log('ERROR: ', error);
         return [];
     }
 }
@@ -119,18 +112,12 @@ const obtenerNumWeb = async (query) => {
             return { num }
         })
     } catch (error) {
-        console.log('ERROR: ', error);
         return [];
     }
 }
 
 const execQueryAlta = async (request, object, numWeb) => {
     const { id, lista, listaCodigo, vendedor, fecha, tipo, montoPrecioTotal, montoItemsTotal, partidas: filas } = object;
-
-    filas.forEach((fila) => {
-        console.log("DATA: ", fila.data)
-        console.log("ARTICULOS: ", fila.articulos)
-    })
 
     const QUERY_ALTA = `
         EXEC pediweb_pedi_cabe_alta 
@@ -151,10 +138,8 @@ const execQueryAlta = async (request, object, numWeb) => {
         @porcen_descuen = null,
         @codi_lugar = null
     `
-    console.log(QUERY_ALTA)
 
     const requestQueryAlta = await request.query(QUERY_ALTA);
-    console.log('RESPONSE QUERY ALTA: ', requestQueryAlta);
 }
 
 const execUpdate = async (request, object, depo, numWeb) => {
@@ -175,14 +160,11 @@ const execUpdate = async (request, object, depo, numWeb) => {
             @porcen_descuen_item = null,
             @depo_reser = '${depo}'
         `
-            console.log(queryFila)
             const requestFila = await request.query(queryFila)
-            console.log('RESPONSE REQUEST FILA: ', requestFila);
 
             renglon++;
         }
     } catch (error) {
-        console.log(error)
         throw error
     }
 }
@@ -208,7 +190,6 @@ const finalizarPedidoMayorista = async (objeto) => {
             throw error;
         }
     } catch (error) {
-        console.log('ERROR: ', error);
         throw error;
     }
 }
@@ -232,7 +213,6 @@ const finalizarPedidoUnico = async (objeto) => {
             throw error;
         }
     } catch (error) {
-        console.log('ERROR: ', error);
         throw error;
     }
 }
@@ -247,9 +227,7 @@ const execVentasAdicionales = async (request, fila, fechaActual) => {
     @fecha_desde = null,
     @fecha_hasta = null
     `
-    console.log(query)
     const result = await request.query(query)
-    console.log(result)
     return result
 };
 
@@ -267,12 +245,10 @@ const finalizarVentasAdicionales = async (filas, fechaActual) => {
             await transaction.commit();
             return { msg: 'OK' }
         } catch (error) {
-            console.log(error)
             await transaction.rollback();
             throw error;
         }
     } catch (error) {
-        console.log('ERROR: ', error);
         throw error;
     }
 }
@@ -283,7 +259,6 @@ router.post("/pedido-unico/update", async (req, res) => {
         const result = await finalizarPedidoUnico(body);
         return res.status(200).send(result);
     } catch (error) {
-        console.error("Error al actualizar el pedido:", error);
         return res.status(500).send(error);
     }
 });
@@ -294,7 +269,6 @@ router.post("/pedido-mayorista/update", async (req, res) => {
         const result = await finalizarPedidoMayorista(body);
         return res.status(200).send(result);
     } catch (error) {
-        console.error("Error al actualizar el pedido:", error);
         return res.status(500).send(error);
     }
 });
@@ -340,7 +314,6 @@ router.post('/ventas-adicionales/validate-rows', async (req, res) => {
 
     await validateManualRows(data, false)
     .then((data) => {
-        console.log(data)
         res.json({
             agrupacionSeleccionada,
             agrupacion,
@@ -357,7 +330,6 @@ router.post('/ventas-adicionales/validate-rows', async (req, res) => {
         return data
     })
     .catch((error) => {
-        console.error('Error ejecutando la función:', error);
         res.status(500).json({ error: error.message }); 
     });
 })
@@ -427,7 +399,6 @@ router.post("/ventas-adicionales/direct-upload", uploadExcel.single("file"), asy
             })
         })
         .catch(error => {
-            console.log(error)
             res.render("ventasAdicionales", {
                 data: [],
                 agrupacion: [],
