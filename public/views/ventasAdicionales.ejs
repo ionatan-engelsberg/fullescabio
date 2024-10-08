@@ -910,6 +910,16 @@
     const inputSPUpload = document.getElementById("inputFileSPUpload")
 
     buttonDirectUpload.addEventListener("click", (e) => {
+      Swal.fire({
+          title: "Validando Excel...",
+          text: "Por favor, espera mientras se completa la operación.",
+          icon: "info",
+          allowOutsideClick: false, 
+          showConfirmButton: false, 
+          didOpen: () => {
+              Swal.showLoading(); 
+          }
+      });
       if (inputDirectUpload.files.length === 0) {
         e.preventDefault()
         Swal.fire({
@@ -923,6 +933,16 @@
     })
 
     buttonSPpload.addEventListener("click", (e) => {
+      Swal.fire({
+          title: "Validando Excel...",
+          text: "Por favor, espera mientras se completa la operación.",
+          icon: "info",
+          allowOutsideClick: false, 
+          showConfirmButton: false, 
+          didOpen: () => {
+              Swal.showLoading(); 
+          }
+      });
       if (inputSPUpload.files.length === 0) {
         e.preventDefault()
         Swal.fire({
