@@ -368,11 +368,7 @@ router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req
     const { filename } = req.file
     const agrupacion = await obtenerClienteAgrupacion(`EXEC may_client_agru`)
 
-<<<<<<< HEAD
-    await parsedWorkbook(filename, true)
-=======
     await parseWorkbook(filename, false)
->>>>>>> 4d33846cc1f634b4a298ccc79a832ee15528a279
         .then((data) => {
             console.log(data)
             res.render("ventasAdicionales", {
@@ -541,14 +537,11 @@ router.post("/pedido-unico/buscar-codigo-articulo", async (req, res) => {
 
     //! Consulta a DB
     const resultadosDescripcion = await obtenerArticulosPedidoUnico(`EXEC may_articulos @descrip = '${descripcion}', @lista_cod = '${listaCodigo}'`)
-<<<<<<< HEAD
-=======
     for (let i = 0; i < resultadosDescripcion.length; i++) {
         const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${resultadosDescripcion[i].codigo}', @cod_depo = "DEP"`)
         resultadosDescripcion[i].poseePartidas = resultadosPartidas.length != 0
     }
 
->>>>>>> 4d33846cc1f634b4a298ccc79a832ee15528a279
     res.json({
         resultadosDescripcion
     })
@@ -560,14 +553,11 @@ router.post("/pedido-mayorista/buscar-codigo-articulo", async (req, res) => {
 
     //! Consulta a DB
     const resultadosDescripcion = await obtenerArticulosPedidoUnico(`EXEC may_articulos @descrip = '${descripcion}', @lista_cod = '${listaCodigo}'`)
-<<<<<<< HEAD
-=======
     for (let i = 0; i < resultadosDescripcion.length; i++) {
         const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${resultadosDescripcion[i].codigo}', @cod_depo = "MAY"`)
         resultadosDescripcion[i].poseePartidas = resultadosPartidas.length != 0
     }
 
->>>>>>> 4d33846cc1f634b4a298ccc79a832ee15528a279
     res.json({
         resultadosDescripcion
     })
