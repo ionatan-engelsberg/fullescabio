@@ -284,7 +284,7 @@
                                 </div>       
                                 
                                 <div class="col-md-8 text-end">
-                                    <button data-toggle="modal" data-target="#buscarCodigoDeArticuloModal" class="mr-10px btn btn-medium btn-blue-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="buscarCodigoDeArticulo" disabled>Buscar Codigo de Articulo <i class="bi bi-search text-white"></i></button>
+                                    <button data-toggle="modal" data-target="#buscarCodigoDeArticuloModal" class="mr-10px btn btn-medium btn-blue-color btn-hover-animation btn-round-edge btn-box-shadow " type="button" id="buscarCodigoDeArticulo" disabled>Codigo de Articulo <i class="bi bi-search text-white"></i></button>
 
                                     <div class="modal fade" id="buscarCodigoDeArticuloModal" tabindex="-1" role="dialog" aria-labelledby="buscarCodigoDeArticuloModal" aria-hidden="true" data-target=".bd-example-modal-lg">
                                         <div class="modal-dialog" role="document">
@@ -890,6 +890,18 @@
                                 nombreDiv.textContent = `${articulo.nombre}`;
                                 nombreDiv.style = "font-weight: 700"
 
+<<<<<<< HEAD
+=======
+                                const poseePartidasDiv = document.createElement('div');
+                                poseePartidasDiv.className = 'col-md-4';
+                                poseePartidasDiv.textContent = articulo.poseePartidas ? "Existen Partidas" : "No Existen";
+                                if(articulo.poseePartidas){
+                                    poseePartidasDiv.style = "font-weight: 700; color: green;"
+                                } else {
+                                    poseePartidasDiv.style = "font-weight: 700; color: red;"
+                                }
+
+>>>>>>> 4d33846cc1f634b4a298ccc79a832ee15528a279
                                 articuloRow.appendChild(codigoDiv);
                                 articuloRow.appendChild(nombreDiv);
                                 resultadosDiv.appendChild(articuloRow);

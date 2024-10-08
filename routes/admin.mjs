@@ -4,7 +4,7 @@ import uploadExcel from "../middlewares/multer.mjs"
 import path from 'path';
 
 import { checkAuthenticated } from '../middlewares/auth.mjs';
-import { parsedWorkbook, validateManualRows } from "../xlsx.mjs";
+import { parseWorkbook, validateManualRows } from "../xlsx.mjs";
 
 //! !!!!
 //todo: !!! MODULARIZAR !!!
@@ -28,7 +28,6 @@ const obtenerClientesPedidoUnico = async (query) => {
             return { id, razon, nombreFantasia, lista, vendedor, listaCodigo }
         })
     } catch (error) {
-        console.log('ERROR: ', error);
         return [];
     }
 }
@@ -41,7 +40,6 @@ const obtenerTipoPedidoUnico = async (query) => {
             return { codigo, nombre }
         })
     } catch (error) {
-        console.log('ERROR: ', error);
         return [];
     }
 }
@@ -54,7 +52,6 @@ const obtenerListaPedidoUnico = async (query) => {
             return { lista }
         })
     } catch (error) {
-        console.log('ERROR: ', error);
         return [];
     }
 }
@@ -67,7 +64,6 @@ const obtenerArticulosPedidoUnico = async (query) => {
             return { codigo, nombre, precio }
         })
     } catch (error) {
-        console.log('ERROR: ', error);
         return [];
     }
 }
@@ -80,7 +76,6 @@ const obtenerPartidasPedidoUnico = async (query) => {
             return { numero, cantidad, codigoDeposito, costoUnitario, ubicacion }
         })
     } catch (error) {
-        console.log('ERROR: ', error);
         return [];
     }
 }
@@ -93,7 +88,6 @@ const obtenerListaVendedoresPedidoUnico = async (query) => {
             return { codigo, nombre }
         })
     } catch (error) {
-        console.log('ERROR: ', error);
         return [];
     }
 }
@@ -106,7 +100,6 @@ const obtenerClienteAgrupacion = async (query) => {
             return { codigo, nombre }
         })
     } catch (error) {
-        console.log('ERROR: ', error);
         return [];
     }
 }
@@ -119,18 +112,12 @@ const obtenerNumWeb = async (query) => {
             return { num }
         })
     } catch (error) {
-        console.log('ERROR: ', error);
         return [];
     }
 }
 
 const execQueryAlta = async (request, object, numWeb) => {
     const { id, lista, listaCodigo, vendedor, fecha, tipo, montoPrecioTotal, montoItemsTotal, partidas: filas } = object;
-
-    filas.forEach((fila) => {
-        console.log("DATA: ", fila.data)
-        console.log("ARTICULOS: ", fila.articulos)
-    })
 
     const QUERY_ALTA = `
         EXEC pediweb_pedi_cabe_alta 
@@ -151,10 +138,8 @@ const execQueryAlta = async (request, object, numWeb) => {
         @porcen_descuen = null,
         @codi_lugar = null
     `
-    console.log(QUERY_ALTA)
 
     const requestQueryAlta = await request.query(QUERY_ALTA);
-    console.log('RESPONSE QUERY ALTA: ', requestQueryAlta);
 }
 
 const execUpdate = async (request, object, depo, numWeb) => {
@@ -175,20 +160,42 @@ const execUpdate = async (request, object, depo, numWeb) => {
             @porcen_descuen_item = null,
             @depo_reser = '${depo}'
         `
-            console.log(queryFila)
             const requestFila = await request.query(queryFila)
-            console.log('RESPONSE REQUEST FILA: ', requestFila);
 
             renglon++;
         }
     } catch (error) {
-        console.log(error)
         throw error
     }
 }
 
-// TODO
-const execTransferencia = async (request, object) => { }
+const execTransferencia = async (request, object, numWeb) => {
+    const { fecha, tipo, partidas } = object;
+
+    for (const partida of partidas) {
+        const { data, articulos: { codigo: codArt, cantidad } } = partida;
+        for (const p of data) {
+            const { numero: codPartida } = p;
+
+            const QUERY_TRANSFERENCIA = `
+            EXEC full_transferencia_mayo
+            @tipo='${tipo}'
+            @cod_articulo='${codArt}'
+            @cod_partida='${codPartida}'
+            @depo_ori='DEP'
+            @depo_desti='MAY'
+            @cantidad='${cantidad}'
+            @fecha='${fecha}'
+            @pedi_tipo='${tipo}'
+            @pedi_num='${numWeb}'
+            `
+
+            await request.query(QUERY_TRANSFERENCIA);
+        }
+
+    }
+
+}
 
 const finalizarPedidoMayorista = async (objeto) => {
     try {
@@ -208,7 +215,6 @@ const finalizarPedidoMayorista = async (objeto) => {
             throw error;
         }
     } catch (error) {
-        console.log('ERROR: ', error);
         throw error;
     }
 }
@@ -222,7 +228,7 @@ const finalizarPedidoUnico = async (objeto) => {
         try {
             const numWeb = await obtenerNumWeb(`EXEC may_prox_comp @comp = ${objeto.tipo}`)
             await execQueryAlta(request, objeto, numWeb[0].num);
-            await execTransferencia(request, objeto);
+            await execTransferencia(request, objeto, numWeb[0].num);
             await execUpdate(request, objeto, 'DEP', numWeb[0].num)
 
             await transaction.commit();
@@ -232,7 +238,6 @@ const finalizarPedidoUnico = async (objeto) => {
             throw error;
         }
     } catch (error) {
-        console.log('ERROR: ', error);
         throw error;
     }
 }
@@ -247,9 +252,7 @@ const execVentasAdicionales = async (request, fila, fechaActual) => {
     @fecha_desde = null,
     @fecha_hasta = null
     `
-    console.log(query)
     const result = await request.query(query)
-    console.log(result)
     return result
 };
 
@@ -267,12 +270,10 @@ const finalizarVentasAdicionales = async (filas, fechaActual) => {
             await transaction.commit();
             return { msg: 'OK' }
         } catch (error) {
-            console.log(error)
             await transaction.rollback();
             throw error;
         }
     } catch (error) {
-        console.log('ERROR: ', error);
         throw error;
     }
 }
@@ -283,7 +284,6 @@ router.post("/pedido-unico/update", async (req, res) => {
         const result = await finalizarPedidoUnico(body);
         return res.status(200).send(result);
     } catch (error) {
-        console.error("Error al actualizar el pedido:", error);
         return res.status(500).send(error);
     }
 });
@@ -294,7 +294,6 @@ router.post("/pedido-mayorista/update", async (req, res) => {
         const result = await finalizarPedidoMayorista(body);
         return res.status(200).send(result);
     } catch (error) {
-        console.error("Error al actualizar el pedido:", error);
         return res.status(500).send(error);
     }
 });
@@ -339,27 +338,25 @@ router.post('/ventas-adicionales/validate-rows', async (req, res) => {
     const agrupacion = await obtenerClienteAgrupacion(`EXEC may_client_agru`)
 
     await validateManualRows(data, false)
-    .then((data) => {
-        console.log(data)
-        res.json({
-            agrupacionSeleccionada,
-            agrupacion,
-            data,
-            verPedidoButton: true,
-            chooseImportMethod: true,
-            chooseSPMethod: true,
-            fechas: true,
-            selectAgrupacion: true,
-            SPUpload: false,
-            directUpload: true,
-            error: ""
+        .then((data) => {
+            res.json({
+                agrupacionSeleccionada,
+                agrupacion,
+                data,
+                verPedidoButton: true,
+                chooseImportMethod: true,
+                chooseSPMethod: true,
+                fechas: true,
+                selectAgrupacion: true,
+                SPUpload: false,
+                directUpload: true,
+                error: ""
+            })
+            return data
         })
-        return data
-    })
-    .catch((error) => {
-        console.error('Error ejecutando la función:', error);
-        res.status(500).json({ error: error.message }); 
-    });
+        .catch((error) => {
+            res.status(500).json({ error: error.message });
+        });
 })
 
 router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req, res) => {
@@ -371,7 +368,11 @@ router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req
     const { filename } = req.file
     const agrupacion = await obtenerClienteAgrupacion(`EXEC may_client_agru`)
 
+<<<<<<< HEAD
     await parsedWorkbook(filename, true)
+=======
+    await parseWorkbook(filename, false)
+>>>>>>> 4d33846cc1f634b4a298ccc79a832ee15528a279
         .then((data) => {
             console.log(data)
             res.render("ventasAdicionales", {
@@ -389,7 +390,6 @@ router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req
             })
         })
         .catch(error => {
-            console.error('Error executing function:', error);
             res.render("ventasAdicionales", {
                 agrupacionSeleccionada,
                 agrupacion,
@@ -405,7 +405,7 @@ router.post("/ventas-adicionales/direct-upload", uploadExcel.single("file"), asy
 
     const { filename } = req.file
 
-    await parsedWorkbook(filename, false)
+    await parseWorkbook(filename, false)
         .then((data) => {
             res.render("ventasAdicionales", {
                 agrupacion: [],
@@ -421,7 +421,6 @@ router.post("/ventas-adicionales/direct-upload", uploadExcel.single("file"), asy
             })
         })
         .catch(error => {
-            console.log(error)
             res.render("ventasAdicionales", {
                 data: [],
                 agrupacion: [],
@@ -542,6 +541,14 @@ router.post("/pedido-unico/buscar-codigo-articulo", async (req, res) => {
 
     //! Consulta a DB
     const resultadosDescripcion = await obtenerArticulosPedidoUnico(`EXEC may_articulos @descrip = '${descripcion}', @lista_cod = '${listaCodigo}'`)
+<<<<<<< HEAD
+=======
+    for (let i = 0; i < resultadosDescripcion.length; i++) {
+        const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${resultadosDescripcion[i].codigo}', @cod_depo = "DEP"`)
+        resultadosDescripcion[i].poseePartidas = resultadosPartidas.length != 0
+    }
+
+>>>>>>> 4d33846cc1f634b4a298ccc79a832ee15528a279
     res.json({
         resultadosDescripcion
     })
@@ -553,6 +560,14 @@ router.post("/pedido-mayorista/buscar-codigo-articulo", async (req, res) => {
 
     //! Consulta a DB
     const resultadosDescripcion = await obtenerArticulosPedidoUnico(`EXEC may_articulos @descrip = '${descripcion}', @lista_cod = '${listaCodigo}'`)
+<<<<<<< HEAD
+=======
+    for (let i = 0; i < resultadosDescripcion.length; i++) {
+        const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${resultadosDescripcion[i].codigo}', @cod_depo = "MAY"`)
+        resultadosDescripcion[i].poseePartidas = resultadosPartidas.length != 0
+    }
+
+>>>>>>> 4d33846cc1f634b4a298ccc79a832ee15528a279
     res.json({
         resultadosDescripcion
     })
