@@ -329,7 +329,8 @@ router.get('/ventas-adicionales', async (req, res) => {
         selectAgrupacion: false,
         SPUpload: true,
         directUpload: false,
-        error: ""
+        error: "",
+        existsError: false
     })
 })
 
@@ -350,6 +351,7 @@ router.post('/ventas-adicionales/validate-rows', async (req, res) => {
                 selectAgrupacion: true,
                 SPUpload: false,
                 directUpload: true,
+                existsError: false,
                 error: ""
             })
             return data
@@ -382,14 +384,24 @@ router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req
                 selectAgrupacion: true,
                 SPUpload: true,
                 directUpload: false,
-                error: ""
+                error: "",
+                existsError: false
             })
         })
         .catch(error => {
             res.render("ventasAdicionales", {
                 agrupacionSeleccionada,
                 agrupacion,
-                error
+                error,
+                data: "",
+                verPedidoButton: false,
+                chooseImportMethod: true,
+                chooseSPMethod: true,
+                fechas: true,
+                selectAgrupacion: true,
+                SPUpload: true,
+                directUpload: false,
+                existsError: true
             })
         });
 })
@@ -413,6 +425,7 @@ router.post("/ventas-adicionales/direct-upload", uploadExcel.single("file"), asy
                 selectAgrupacion: true,
                 SPUpload: false,
                 directUpload: true,
+                existsError: false,
                 error: ""
             })
         })
@@ -428,6 +441,7 @@ router.post("/ventas-adicionales/direct-upload", uploadExcel.single("file"), asy
                 selectAgrupacion: true,
                 SPUpload: false,
                 directUpload: true,
+                existsError: true
             })
         });
 })

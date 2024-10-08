@@ -433,7 +433,8 @@
   let ventasAdicionalesStorage = JSON.parse(sessionStorage.getItem('ventas-adicionales-data'));
 
   document.addEventListener("DOMContentLoaded", (event) => {
-    const verPedidoButton = <%= verPedidoButton %>  // eslint-disable-line
+    const verPedidoButton = <%= verPedidoButton %> 
+    const existsError = Boolean(<%= existsError %>)
     const finalizarPedidoButton = document.getElementById("finalizarPedido")
     if(verPedidoButton) {
       Swal.fire({
@@ -501,6 +502,17 @@
               });
           }, 500);
       })
+    } 
+
+    if(existsError){
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "Error al leer Excel",
+        text: "Por favor, vuelva a intentarlo. Consulte el mensaje de error para obtener mas informacion.",
+        showConfirmButton: false,
+        timer: 5000
+      });
     }
   })
   
