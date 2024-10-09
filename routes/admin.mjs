@@ -68,11 +68,11 @@ const obtenerArticulosPedidoUnico = async (query) => {
     }
 }
 
-const obtenerPartidasPedidoUnico = async (query) => {
+const obtenerPartidas = async (query) => {
     try {
         const request = await new sql.Request().query(query)
         return request.recordset.map((row) => {
-            const { COD_PARTIDA: numero, CANT_PEND: cantidad, COD_DEPO: codigoDeposito, COSTO_UNI: costoUnitario, UBICACION_PARTIDA: ubicacion } = row
+            const { COD_PARTIDA: numero, CANT_PEND: cantidad, DEPO: codigoDeposito, COSTO_UNI: costoUnitario, UBICACION_PARTIDA: ubicacion } = row
             return { numero, cantidad, codigoDeposito, costoUnitario, ubicacion }
         })
     } catch (error) {
@@ -538,7 +538,7 @@ router.post("/pedido-unico/obtener-articulos", async (req, res) => {
 
     //! Consulta a DB
     const resultadosCodigo = await obtenerArticulosPedidoUnico(`EXEC may_articulos @cod_art = '${codigoPedidoUnico}', @lista_cod = '${listaCodigo}'`)
-    const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${codigoPedidoUnico}', @cod_depo = "DEP"`)
+    const resultadosPartidas = await obtenerPartidas(`EXEC may_arti_partidas @cod_art = '${codigoPedidoUnico}', @cod_depo = "DEP"`)
 
     res.json({
         resultadosCodigo,
@@ -552,7 +552,7 @@ router.post("/pedido-unico/buscar-codigo-articulo", async (req, res) => {
     //! Consulta a DB
     const resultadosDescripcion = await obtenerArticulosPedidoUnico(`EXEC may_articulos @descrip = '${descripcion}', @lista_cod = '${listaCodigo}'`)
     for (let i = 0; i < resultadosDescripcion.length; i++) {
-        const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${resultadosDescripcion[i].codigo}', @cod_depo = "DEP"`)
+        const resultadosPartidas = await obtenerPartidas(`EXEC may_arti_partidas @cod_art = '${resultadosDescripcion[i].codigo}', @cod_depo = "DEP"`)
         resultadosDescripcion[i].poseePartidas = resultadosPartidas.length != 0
     }
 
@@ -568,7 +568,7 @@ router.post("/pedido-mayorista/buscar-codigo-articulo", async (req, res) => {
     //! Consulta a DB
     const resultadosDescripcion = await obtenerArticulosPedidoUnico(`EXEC may_articulos @descrip = '${descripcion}', @lista_cod = '${listaCodigo}'`)
     for (let i = 0; i < resultadosDescripcion.length; i++) {
-        const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${resultadosDescripcion[i].codigo}', @cod_depo = "MAY"`)
+        const resultadosPartidas = await obtenerPartidas(`EXEC may_arti_partidas @cod_art = '${resultadosDescripcion[i].codigo}', @cod_depo = "MAY"`)
         resultadosDescripcion[i].poseePartidas = resultadosPartidas.length != 0
     }
 
@@ -596,8 +596,8 @@ router.post("/pedido-mayorista/obtener-articulos", async (req, res) => {
 
     //! Consulta a DB
     const resultadosCodigo = await obtenerArticulosPedidoUnico(`EXEC may_articulos @cod_art = '${codigoPedidoMayorista}', @lista_cod = '${listaCodigo}'`)
-    const resultadosPartidas = await obtenerPartidasPedidoUnico(`EXEC may_partidas @cod_art = '${codigoPedidoMayorista}', @cod_depo = "MAY"`)
-
+    const resultadosPartidas = await obtenerPartidas(`EXEC may_arti_partidas @cod_art = '${codigoPedidoMayorista}', @cod_depo = "MAY"`)
+    console.log(resultadosPartidas)
     res.json({
         resultadosCodigo,
         resultadosPartidas
