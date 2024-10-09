@@ -243,8 +243,8 @@ const finalizarPedidoUnico = async (objeto) => {
 }
 
 const execVentasAdicionales = async (request, fila, fechaActual) => {
-    const { sku, cantidad } = fila
-    const query = `
+    const { SKU: sku, CANTIDAD: cantidad, CLIENTE: cliente, PRECIO: precio } = fila
+    const queryUpdate = `
     exec [may_Proveedores_articulos_incidencia]
     @Cod_articulo = ${sku},
     @cantidad = ${cantidad},
@@ -252,7 +252,19 @@ const execVentasAdicionales = async (request, fila, fechaActual) => {
     @fecha_desde = null,
     @fecha_hasta = null
     `
-    const result = await request.query(query)
+
+    const queryInsert = `
+    EXEC may_proveedores_articulos_directo
+    @cod_articulo='${sku}',
+    @cod_cliente = '${cliente}',
+    @comprobante = ${parseInt(fechaActual.replace(/-/g, ''), 10)},
+    @cantidad = ${cantidad},
+    @precio = '${precio}'
+    `;
+
+    const result = await request.query(queryUpdate)
+    await request.query(queryInsert);
+
     return result
 };
 
@@ -267,7 +279,8 @@ const finalizarVentasAdicionales = async (filas, fechaActual) => {
                 await execVentasAdicionales(request, fila, fechaActual);
             }
 
-            await transaction.commit();
+            await transaction.rollback();
+            // await transaction.commit();
             return { msg: 'OK' }
         } catch (error) {
             await transaction.rollback();

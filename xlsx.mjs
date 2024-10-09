@@ -40,7 +40,9 @@ const getClientById = async (clientId) => {
 const getProductBySku = async (sku, lista) => {
   const query = `EXEC may_articulos @cod_art = '${sku}', @lista_cod = ${lista}`
   try {
-    const request = await new sql.Request().query(query)
+    const request = await new sql.Request().query
+    (query)
+    
     return request.recordset.map((row) => {
       const { COD_ARTICULO: codigo, DESCRIP_ARTI: nombre, PRECIO_VTA: precio } = row
       return { codigo, nombre, precio }
@@ -51,7 +53,6 @@ const getProductBySku = async (sku, lista) => {
 }
 
 const validateRow = async (row, rowCounter, sp) => {
-  console.log(row);
   const { 
     "SKU": sku,
     "CANTIDAD": cantidad,
