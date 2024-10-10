@@ -22,7 +22,6 @@ const emptyUploadsDirectory = () => {
   });
 };
 
-// COPIADA DE admin.mjs
 const getClientById = async (clientId) => {
   const query = `EXEC may_client_busq @num = '${clientId}'`
   try {
@@ -36,9 +35,13 @@ const getClientById = async (clientId) => {
   }
 }
 
-// COPIADA DE admin.mjs
-const getProductBySku = async (sku, lista) => {
-  const query = `EXEC may_articulos @cod_art = '${sku}', @lista_cod = ${lista}`
+const getProductBySku = async (sku, cliente) => {
+  const query = `
+    EXEC may_proveedores_articulos_directo
+    @cod_articulo = '${sku}',
+    @cod_cliente = '${cliente}',
+    @validar = 'S'
+  `
   try {
     const request = await new sql.Request().query
     (query)
@@ -115,7 +118,7 @@ const validateRow = async (row, rowCounter, sp) => {
   const { listaCodigo: lista } = client
   listaCodigo = lista
 
-  const productResult = await getProductBySku(sku, listaCodigo);
+  const productResult = await getProductBySku(sku, cliente);
   if (productResult.length == 0) {
     throw new Error(`Invalid sku: ${sku}`, { cause: rowCounter })
   }

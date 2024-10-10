@@ -259,7 +259,8 @@ const execVentasAdicionales = async (request, fila, fechaActual) => {
     @cod_cliente = '${cliente}',
     @comprobante = ${parseInt(fechaActual.replace(/-/g, ''), 10)},
     @cantidad = ${cantidad},
-    @precio = '${precio}'
+    @precio = '${precio}',
+    @validar = 'N'
     `;
 
     const result = await request.query(queryUpdate)
