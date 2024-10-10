@@ -179,14 +179,14 @@ const execTransferencia = async (request, object, numWeb) => {
 
             const QUERY_TRANSFERENCIA = `
             EXEC full_transferencia_mayo
-            @tipo='${tipo}'
-            @cod_articulo='${codArt}'
-            @cod_partida='${codPartida}'
-            @depo_ori='DEP'
-            @depo_desti='MAY'
-            @cantidad='${cantidad}'
-            @fecha='${fecha}'
-            @pedi_tipo='${tipo}'
+            @tipo='STR',
+            @cod_articulo='${codArt}',
+            @cod_partida='${codPartida}',
+            @depo_ori='DEP',
+            @depo_desti='MAY',
+            @cantidad='${cantidad}',
+            @fecha='${fecha}',
+            @pedi_tipo='${tipo}',
             @pedi_num='${numWeb}'
             `
 
