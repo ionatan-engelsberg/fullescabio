@@ -35,28 +35,8 @@ const getClientById = async (clientId) => {
   }
 }
 
-const getProductBySku = async (sku, cliente) => {
-  const query = `
-    EXEC may_proveedores_articulos_directo
-    @cod_articulo = '${sku}',
-    @cod_cliente = '${cliente}',
-    @validar = 'S'
-  `
-  try {
-    const request = await new sql.Request().query
-    (query)
-    
-    return request.recordset.map((row) => {
-      const { COD_ARTICULO: codigo, DESCRIP_ARTI: nombre, PRECIO_VTA: precio } = row
-      return { codigo, nombre, precio }
-    })
-  } catch (error) {
-    return [];
-  }
-}
-
 const validateRow = async (row, rowCounter, sp) => {
-  const { 
+  const {
     "SKU": sku,
     "CANTIDAD": cantidad,
     "PRECIO": precio,
@@ -99,7 +79,6 @@ const validateRow = async (row, rowCounter, sp) => {
 
   let client;
   let listaCodigo;
-  let product;
 
   if (!sp && !cliente) {
     throw new Error("Client can't be empty", { cause: rowCounter });
@@ -118,15 +97,19 @@ const validateRow = async (row, rowCounter, sp) => {
   const { listaCodigo: lista } = client
   listaCodigo = lista
 
-  const productResult = await getProductBySku(sku, cliente);
-  if (productResult.length == 0) {
+  try {
+    // SP to validate SKU
+    const query = `
+      use factu_full_central_desa_nacho
+      EXEC [dbo].[may_valida_excel]
+      @cod_articulo = '${sku}',
+      @num_cliente = '${cliente}'
+    `
+    await new sql.Request().query(query)
+  } catch (error) {
     throw new Error(`Invalid sku: ${sku}`, { cause: rowCounter })
   }
-  product = productResult[0].nombre;
-
-  row.descripcion = product;
-
-  return row;
+  return { sku, cantidad, precio, cliente, descuento };
 }
 
 const validateWorkbook = async (file, sp) => {
