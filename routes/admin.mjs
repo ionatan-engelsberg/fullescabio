@@ -243,9 +243,9 @@ const finalizarPedidoUnico = async (objeto) => {
 }
 
 const execVentasAdicionales = async (request, fila, fechaActual) => {
-    const { SKU: sku, CANTIDAD: cantidad, CLIENTE: cliente, PRECIO: precio } = fila
+    const { sku, cantidad, cliente, precio } = fila
     const queryUpdate = `
-    exec [may_Proveedores_articulos_incidencia]
+    exec [may_proveedores_articulos_incidencia]
     @Cod_articulo = ${sku},
     @cantidad = ${cantidad},
     @comprobante = ${parseInt(fechaActual.replace(/-/g, ''), 10)},
@@ -263,10 +263,10 @@ const execVentasAdicionales = async (request, fila, fechaActual) => {
     @validar = 'N'
     `;
 
-    const result = await request.query(queryUpdate)
+    const resultUpdate = await request.query(queryUpdate)
     await request.query(queryInsert);
 
-    return result
+    return resultUpdate
 };
 
 const finalizarVentasAdicionales = async (filas, fechaActual) => {
@@ -280,8 +280,7 @@ const finalizarVentasAdicionales = async (filas, fechaActual) => {
                 await execVentasAdicionales(request, fila, fechaActual);
             }
 
-            await transaction.rollback();
-            // await transaction.commit();
+            await transaction.commit();
             return { msg: 'OK' }
         } catch (error) {
             await transaction.rollback();
