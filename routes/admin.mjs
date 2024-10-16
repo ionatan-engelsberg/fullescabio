@@ -242,8 +242,8 @@ const finalizarPedidoUnico = async (objeto) => {
     }
 }
 
-const execVentasAdicionales = async (request, fila, fechaActual) => {
-    const { sku, cantidad, cliente, precio } = fila
+const execVentasAdicionalesSp = async (request, fila, fechaActual) => {
+    const { sku, cantidad } = fila
     const queryUpdate = `
     exec [may_proveedores_articulos_incidencia]
     @Cod_articulo = ${sku},
@@ -253,6 +253,13 @@ const execVentasAdicionales = async (request, fila, fechaActual) => {
     @fecha_hasta = null
     `
 
+    const resultUpdate = await request.query(queryUpdate)
+
+    return resultUpdate
+};
+
+const execVentasAdicionalesDirect = async (request, fila, fechaActual) => {
+    const { sku, cantidad, cliente, precio } = fila
     const queryInsert = `
     EXEC may_proveedores_articulos_directo
     @cod_articulo='${sku}',
@@ -263,13 +270,10 @@ const execVentasAdicionales = async (request, fila, fechaActual) => {
     @validar = 'N'
     `;
 
-    const resultUpdate = await request.query(queryUpdate)
     await request.query(queryInsert);
-
-    return resultUpdate
 };
 
-const finalizarVentasAdicionales = async (filas, fechaActual) => {
+const finalizarVentasAdicionalesDirect = async (filas, fechaActual) => {
     try {
         const transaction = new sql.Transaction()
         await transaction.begin()
@@ -277,7 +281,29 @@ const finalizarVentasAdicionales = async (filas, fechaActual) => {
 
         try {
             for (const fila of filas) {
-                await execVentasAdicionales(request, fila, fechaActual);
+                await execVentasAdicionalesDirect(request, fila, fechaActual);
+            }
+
+            await transaction.commit();
+            return { msg: 'OK' }
+        } catch (error) {
+            await transaction.rollback();
+            throw error;
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+
+const finalizarVentasAdicionalesSp = async (filas, fechaActual) => {
+    try {
+        const transaction = new sql.Transaction()
+        await transaction.begin()
+        const request = new sql.Request(transaction)
+
+        try {
+            for (const fila of filas) {
+                await execVentasAdicionalesSp(request, fila, fechaActual);
             }
 
             await transaction.commit();
@@ -316,13 +342,22 @@ router.get('/', (req, res) => {
 })
 
 //! Ventas Adicionales
-router.post("/ventas-adicionales/update", async (req, res) => {
+router.post("/ventas-adicionales/update-sp", async (req, res) => {
     try {
         const { data, fechaActual } = req.body;
-        const result = await finalizarVentasAdicionales(data, fechaActual);
+        const result = await finalizarVentasAdicionalesSp(data, fechaActual);
         return res.status(200).send(result);
     } catch (error) {
-        console.error("Error al actualizar el pedido:", error);
+        return res.status(500).send(error);
+    }
+})
+
+router.post("/ventas-adicionales/update-direct", async (req, res) => {
+    try {
+        const { data, fechaActual } = req.body;
+        const result = await finalizarVentasAdicionalesDirect(data, fechaActual);
+        return res.status(200).send(result);
+    } catch (error) {
         return res.status(500).send(error);
     }
 })
@@ -385,7 +420,6 @@ router.post("/ventas-adicionales/upload", uploadExcel.single("file"), async (req
 
     await parseWorkbook(filename, false)
         .then((data) => {
-            console.log(data)
             res.render("ventasAdicionales", {
                 agrupacionSeleccionada,
                 agrupacion,
@@ -610,7 +644,6 @@ router.post("/pedido-mayorista/obtener-articulos", async (req, res) => {
     //! Consulta a DB
     const resultadosCodigo = await obtenerArticulosPedidoUnico(`EXEC may_articulos @cod_art = '${codigoPedidoMayorista}', @lista_cod = '${listaCodigo}'`)
     const resultadosPartidas = await obtenerPartidas(`EXEC may_arti_partidas @cod_art = '${codigoPedidoMayorista}', @cod_depo = "MAY"`)
-    console.log(resultadosPartidas)
     res.json({
         resultadosCodigo,
         resultadosPartidas
