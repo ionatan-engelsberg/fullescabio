@@ -120,14 +120,14 @@ const validateWorkbook = async (file, sp) => {
   const { Sheets: sheets } = file;
   const sheetsNames = Object.keys(sheets);
   if (sheetsNames.length != 1) {
-    throw new Error('File must have exactly one sheet');
+    throw new Error('El archivo debe tener exactamente 1 hja');
   }
 
   const sheet = sheetsNames[0];
   const sheetItems = xlsx.utils.sheet_to_json(sheets[sheet]);
 
   if (sheetItems.length == 0) {
-    throw new Error('File must have at least one row');
+    throw new Error('El archivo debe tener al menos una fila');
   }
 
   const parsedItems = []
@@ -170,7 +170,8 @@ export const parseWorkbook = async (fileName, sp) => {
     if (typeof rowError == 'number') {
       throw new Error(`ERROR at row ${rowError}: ${error}`)
     } else {
-      throw new Error(`ERROR: ${error.cause}`)
+      const message = error.cause ?? error.message;
+      throw new Error(`ERROR: ${message}`)
     }
   }
 }
