@@ -238,6 +238,7 @@ const finalizarPedidoUnico = async (objeto) => {
             throw error;
         }
     } catch (error) {
+        console.log("ERROR: ", error);
         throw error;
     }
 }
