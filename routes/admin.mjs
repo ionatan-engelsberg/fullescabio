@@ -391,6 +391,8 @@ router.get('/ventas-adicionales', async (req, res) => {
 
 router.post('/ventas-adicionales/validate-rows', async (req, res) => {
     const { agrupacionSeleccionada, data } = req.body
+    console.log(agrupacionSeleccionada)
+    console.log(data)
     const agrupacion = await obtenerClienteAgrupacion(`EXEC may_client_agru`)
 
     await validateManualRows(data, false)

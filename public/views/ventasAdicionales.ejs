@@ -292,7 +292,6 @@
                     <th>CANTIDAD</th>
                     <th>PRECIO (x Un)</th>
                     <th>CLIENTE (ID)</th>
-                    <th>S/C</th>
                     <th>DESCUENTO</th>
                   </tr>
                 </thead>
@@ -341,14 +340,7 @@
                         placeholder="Cliente"
                       />
                     </td>
-                    <td>
-                      <input
-                        disabled
-                        type="text"
-                        class="form-control sc"
-                        placeholder="S/C"
-                      />
-                    </td>
+                   
                     <td>
                       <input
                         disabled
@@ -449,6 +441,17 @@
       ventasAdicionalesStorage = JSON.parse(sessionStorage.getItem('ventas-adicionales-data'));
       ventasAdicionalesStorage.fechaActual = new Date().toISOString().split('T')[0]
 
+      const selectElement = document.getElementById("chooseImportMethod");
+      let selectedRoute = "/admin/ventas-adicionales/update"; // Valor por defecto
+      selectElement.addEventListener("change", (e) => {
+        const selectedValue = e.target.value;
+          if (selectedValue === "SPUpload") {
+            selectedRoute = "/admin/ventas-adicionales/update";
+          } else if (selectedValue === "directUpload") {
+            selectedRoute = "/admin/ventas-adicionales/update-direct";
+          }
+      });
+
       finalizarPedidoButton.addEventListener("click", (e) => {
         console.log(ventasAdicionalesStorage)
           e.preventDefault()
@@ -464,7 +467,8 @@
           });
 
           setTimeout(() => {
-              fetch("/admin/ventas-adicionales/update", {
+              console.log(selectedRoute)
+              fetch(selectedRoute, {
                   body: JSON.stringify(ventasAdicionalesStorage),
                   method: "POST",
                   headers: {
@@ -567,7 +571,7 @@
     const buttonUploadFile = document.getElementById("buttonFileSPUpload");
     const uploadFile = document.getElementById("inputFileSPUpload");
     const cargaManual = document.getElementById("tabla-body");
-    const inputGroup = cargaManual.querySelectorAll(".sku, .cantidad, .precio, .cliente, .sc, .descuento");
+    const inputGroup = cargaManual.querySelectorAll(".sku, .cantidad, .precio, .cliente, .descuento");
     const agregarFila = document.getElementById("agregar-fila");
     const eliminarFila = document.getElementById("eliminar-fila");
     const selectElement = document.getElementById("chooseSPMethod");
@@ -629,11 +633,11 @@
       for (let i = 0; i < skuInputs.length; i++) {
         if (i < cantidadInputs.length && i < precioInputs.length && i < descuentoInputs.length && i < clienteInputs.length) {
           let filaData = {
-            sku: skuInputs[i].value.trim(),
-            cantidad: cantidadInputs[i].value.trim(),
-            precio: precioInputs[i].value.trim(),
-            cliente: clienteInputs[i].value.trim(),
-            descuento: descuentoInputs[i].value.trim()
+            "SKU": skuInputs[i].value.trim(),
+            "CANTIDAD": cantidadInputs[i].value.trim(),
+            "PRECIO": precioInputs[i].value.trim(),
+            "CLIENTE": clienteInputs[i].value.trim(),
+            "S/C": descuentoInputs[i].value.trim()
           };
 
           groupedData.push(filaData);
@@ -651,6 +655,7 @@
         }
       });
       setTimeout(() => {
+        console.log(groupedData)
         fetch("/admin/ventas-adicionales/validate-rows", {
           body: JSON.stringify({ 
             data: groupedData,
@@ -710,7 +715,7 @@
 
       if (allInputs) {
         const inputs = container.querySelectorAll("input")
-        const disabledInputs = container.querySelectorAll(".sku, .cantidad, .precio, .cliente, .sc, .descuento");
+        const disabledInputs = container.querySelectorAll(".sku, .cantidad, .precio, .cliente, .descuento");
   
         if (confirmarButton.textContent.trim().startsWith("Confirmar")) {
           confirmarButton.classList.remove('btn-green-color');
@@ -748,7 +753,6 @@
               item.cantidad || '',
               item.precio || '',
               item.cliente || '',
-              item.sc || '',
               item.descuento || ''
             ];
   
@@ -857,7 +861,6 @@
           <td><input type="number" min="0" class="form-control cantidad" placeholder="Cantidad"></td>
           <td><input type="number" min="0" class="form-control precio" placeholder="Precio"></td>
           <td><input type="text" class="form-control cliente" placeholder="Cliente"></td>
-          <td><input type="text" class="form-control sc" placeholder="S/C"></td>
           <td><input type="number" min="0" class="form-control descuento" placeholder="Descuento"></td>
       `;
 
