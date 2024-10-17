@@ -139,7 +139,8 @@ const execQueryAlta = async (request, object, numWeb) => {
         @codi_lugar = null
     `
 
-    const requestQueryAlta = await request.query(QUERY_ALTA);
+    const response = await request.query(QUERY_ALTA);
+    console.log("QUERY ALTA RESULT: ", response);
 }
 
 const execUpdate = async (request, object, depo, numWeb) => {
@@ -165,6 +166,7 @@ const execUpdate = async (request, object, depo, numWeb) => {
             renglon++;
         }
     } catch (error) {
+        console.log("ERROR EN UPDATE: ", error);
         throw error
     }
 }
@@ -228,12 +230,16 @@ const finalizarPedidoUnico = async (objeto) => {
         try {
             const numWeb = await obtenerNumWeb(`EXEC may_prox_comp @comp = ${objeto.tipo}`)
             await execQueryAlta(request, objeto, numWeb[0].num);
+            console.log("ALTA OK");
             await execTransferencia(request, objeto, numWeb[0].num);
+            console.log("TRANSFERENCIA OK");
             await execUpdate(request, objeto, 'DEP', numWeb[0].num)
+            console.log("UPDATE OK");
 
             await transaction.commit();
             return { msg: 'OK', numWeb }
         } catch (error) {
+            console.log("ERROR (pre): ", error);
             await transaction.rollback();
             throw error;
         }
