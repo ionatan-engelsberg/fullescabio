@@ -119,7 +119,7 @@ const obtenerNumWeb = async (query) => {
 const execQueryAlta = async (request, object, numWeb) => {
     const { id, lista, listaCodigo, vendedor, fecha, tipo, montoPrecioTotal, montoItemsTotal, partidas: filas } = object;
 
-    const QUERY_ALTA = `
+    const query = `
         EXEC pediweb_pedi_cabe_alta 
         @tipo = '${tipo}',
         @num_cliente = '${id}',
@@ -138,9 +138,10 @@ const execQueryAlta = async (request, object, numWeb) => {
         @porcen_descuen = null,
         @codi_lugar = null
     `
+    console.log("QUERY: ", query);
 
-    const response = await request.query(QUERY_ALTA);
-    console.log("QUERY ALTA RESULT: ", response);
+    const response = await request.query(query);
+    console.log("RESULT: ", response);
 }
 
 const execUpdate = async (request, object, depo, numWeb) => {
@@ -150,7 +151,7 @@ const execUpdate = async (request, object, depo, numWeb) => {
     try {
         for (const fila of filas) {
             const { data, articulos: { codigo: codigoArticulo, cantidad, precioTotal } } = fila
-            const queryFila = `
+            const query = `
             EXEC pediweb_pedi_items_alta
             @tipo = '${tipo}',
             @articulo = '${codigoArticulo}',
@@ -161,7 +162,9 @@ const execUpdate = async (request, object, depo, numWeb) => {
             @porcen_descuen_item = null,
             @depo_reser = '${depo}'
         `
-            const requestFila = await request.query(queryFila)
+            console.log("QUERY: ", query);
+            const response = await request.query(query)
+            console.log("RESPONSE: ", response);
 
             renglon++;
         }
@@ -179,7 +182,7 @@ const execTransferencia = async (request, object, numWeb) => {
         for (const p of data) {
             const { numero: codPartida } = p;
 
-            const QUERY_TRANSFERENCIA = `
+            const query = `
             EXEC full_transferencia_mayo
             @tipo='STR',
             @cod_articulo='${codArt}',
@@ -191,8 +194,10 @@ const execTransferencia = async (request, object, numWeb) => {
             @pedi_tipo='${tipo}',
             @pedi_num='${numWeb}'
             `
-
-            await request.query(QUERY_TRANSFERENCIA);
+            
+            console.log("QUERY: ", query);
+            const response = await request.query(query);
+            console.log("RESPONSE: ", response);
         }
 
     }
@@ -391,8 +396,6 @@ router.get('/ventas-adicionales', async (req, res) => {
 
 router.post('/ventas-adicionales/validate-rows', async (req, res) => {
     const { agrupacionSeleccionada, data } = req.body
-    console.log(agrupacionSeleccionada)
-    console.log(data)
     const agrupacion = await obtenerClienteAgrupacion(`EXEC may_client_agru`)
 
     await validateManualRows(data, false)
