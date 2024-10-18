@@ -236,7 +236,7 @@ const finalizarPedidoUnico = async (objeto) => {
             const numWeb = await obtenerNumWeb(`EXEC may_prox_comp @comp = ${objeto.tipo}`)
             await execQueryAlta(request, objeto, numWeb[0].num);
             console.log("ALTA OK");
-            await execTransferencia(request, objeto, numWeb[0].num);
+            // await execTransferencia(request, objeto, numWeb[0].num);
             console.log("TRANSFERENCIA OK");
             await execUpdate(request, objeto, 'DEP', numWeb[0].num)
             console.log("UPDATE OK");
