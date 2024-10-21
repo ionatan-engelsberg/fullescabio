@@ -184,7 +184,7 @@ const execTransferencia = async (object, numWeb) => {
             @pedi_tipo='${tipo}',
             @pedi_num='${numWeb}'
             `
-
+            console.log("QUERY: ", query);
             const request = new sql.Request();
             await request.query(query);
         }
