@@ -117,6 +117,9 @@ const obtenerNumWeb = async (tipo) => {
 }
 
 const execQueryAlta = async (request, object, numWeb) => {
+    const transCountResult = await request.query('SELECT @@TRANCOUNT as tranCount');
+    console.log("ALTA: Contador de transacciones: ", transCountResult.recordset[0].tranCount);
+
     const { id, lista, listaCodigo, vendedor, fecha, tipo, montoPrecioTotal, montoItemsTotal, partidas: filas } = object;
 
     const query = `
@@ -138,20 +141,20 @@ const execQueryAlta = async (request, object, numWeb) => {
         @porcen_descuen = null,
         @codi_lugar = null
     `
-    console.log("QUERY: ", query);
 
-    const response = await request.query(query);
-    console.log("RESULT: ", response);
+    await request.query(query);
 }
 
 const execUpdate = async (request, object, depo, numWeb) => {
-    const { id, lista, listaCodigo, vendedor, fecha, tipo, partidas: filas } = object;
+    const transCountResult = await request.query('SELECT @@TRANCOUNT as tranCount');
+    console.log("UPDATE: Contador de transacciones: ", transCountResult.recordset[0].tranCount);
+
+    const { tipo, partidas: filas } = object;
     let renglon = 1;
 
-    try {
-        for (const fila of filas) {
-            const { data, articulos: { codigo: codigoArticulo, cantidad, precioTotal } } = fila
-            const query = `
+    for (const fila of filas) {
+        const { articulos: { codigo: codigoArticulo, cantidad, precioTotal } } = fila
+        const query = `
             EXEC pediweb_pedi_items_alta
             @tipo = '${tipo}',
             @articulo = '${codigoArticulo}',
@@ -162,19 +165,15 @@ const execUpdate = async (request, object, depo, numWeb) => {
             @porcen_descuen_item = null,
             @depo_reser = '${depo}'
         `
-            console.log("QUERY: ", query);
-            const response = await request.query(query)
-            console.log("RESPONSE: ", response);
-
-            renglon++;
-        }
-    } catch (error) {
-        console.log("ERROR EN UPDATE: ", error);
-        throw error
+        await request.query(query)
+        renglon++;
     }
 }
 
 const execTransferencia = async (request, object, numWeb) => {
+    const transCountResult = await request.query('SELECT @@TRANCOUNT as tranCount');
+    console.log("TRANSFERENCIA: Contador de transacciones: ", transCountResult.recordset[0].tranCount);
+
     const { fecha, tipo, partidas } = object;
 
     for (const partida of partidas) {
@@ -195,17 +194,9 @@ const execTransferencia = async (request, object, numWeb) => {
             @pedi_num='${numWeb}'
             `
 
-            console.log("QUERY: ", query);
-            try {
-                const response = await request.query(query);
-                console.log("RESPONSE: ", response);
-            } catch (error) {
-                console.log("ERROR (from function): ", error);
-            }
+            await request.query(query);
         }
-
     }
-
 }
 
 const finalizarPedidoMayorista = async (objeto) => {
@@ -235,16 +226,16 @@ const finalizarPedidoUnico = async (objeto) => {
         const transaction = new sql.Transaction()
         await transaction.begin()
         const request = new sql.Request(transaction)
-    
+
         const numWeb = await obtenerNumWeb(objeto.tipo)
         await execQueryAlta(request, objeto, numWeb[0].num);
         await execUpdate(request, objeto, 'DEP', numWeb[0].num)
         await execTransferencia(request, objeto, numWeb[0].num);
-    
+
         await transaction.commit();
         return { msg: 'OK', numWeb }
     } catch (error) {
-        console.dir(`ERROR: ${error}`, { depth: null });
+        console.log("ERROR: ", error);
         await transaction.rollback();
         throw error;
     }
@@ -329,7 +320,6 @@ router.post("/pedido-unico/update", async (req, res) => {
     try {
         const { body } = req;
         const result = await finalizarPedidoUnico(body);
-        console.log("RESULT: ", result);
         return res.status(200).send(result);
     } catch (error) {
         return res.status(500).send(error);
