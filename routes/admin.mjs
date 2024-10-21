@@ -232,24 +232,21 @@ const finalizarPedidoUnico = async (objeto) => {
         await transaction.begin()
         const request = new sql.Request(transaction)
 
-        try {
-            const numWeb = await obtenerNumWeb(`EXEC may_prox_comp @comp = ${objeto.tipo}`)
-            await execQueryAlta(request, objeto, numWeb[0].num);
-            console.log("ALTA OK");
-            await execTransferencia(request, objeto, numWeb[0].num);
-            console.log("TRANSFERENCIA OK");
-            await execUpdate(request, objeto, 'DEP', numWeb[0].num)
-            console.log("UPDATE OK");
+        const numWeb = await obtenerNumWeb(`EXEC may_prox_comp @comp = ${objeto.tipo}`)
+        // await execQueryAlta(request, objeto, numWeb[0].num);
+        // console.log("ALTA OK");
+        await execTransferencia(request, objeto, "10978");
+        // await execTransferencia(request, objeto, numWeb[0].num);
+        console.log("TRANSFERENCIA OK");
+        await execUpdate(request, objeto, 'DEP', "10978")
+        // await execUpdate(request, objeto, 'DEP', numWeb[0].num)
+        console.log("UPDATE OK");
 
-            await transaction.commit();
-            return { msg: 'OK', numWeb }
-        } catch (error) {
-            console.log("ERROR (pre): ", error);
-            await transaction.rollback();
-            throw error;
-        }
+        await transaction.commit();
+        return { msg: 'OK', numWeb }
     } catch (error) {
         console.log("ERROR: ", error);
+        await transaction.rollback();
         throw error;
     }
 }
