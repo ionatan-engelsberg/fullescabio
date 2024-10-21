@@ -104,9 +104,9 @@ const obtenerClienteAgrupacion = async (query) => {
     }
 }
 
-const obtenerNumWeb = async (query) => {
+const obtenerNumWeb = async (tipo) => {
     try {
-        const request = await new sql.Request().query(query)
+        const request = await new sql.Request().query(`EXEC may_prox_comp @comp = ${tipo}`)
         return request.recordset.map((row) => {
             const { PROX_NUM: num } = row
             return { num }
@@ -194,7 +194,7 @@ const execTransferencia = async (request, object, numWeb) => {
             @pedi_tipo='${tipo}',
             @pedi_num='${numWeb}'
             `
-            
+
             console.log("QUERY: ", query);
             const response = await request.query(query);
             console.log("RESPONSE: ", response);
@@ -211,7 +211,7 @@ const finalizarPedidoMayorista = async (objeto) => {
         const request = new sql.Request(transaction)
 
         try {
-            const numWeb = await obtenerNumWeb(`EXEC may_prox_comp @comp = ${objeto.tipo}`)
+            const numWeb = await obtenerNumWeb(objeto.tipo)
             await execQueryAlta(request, objeto, numWeb[0].num);
             await execUpdate(request, objeto, 'MAY', numWeb[0].num)
 
@@ -231,21 +231,16 @@ const finalizarPedidoUnico = async (objeto) => {
         const transaction = new sql.Transaction()
         await transaction.begin()
         const request = new sql.Request(transaction)
-
-        const numWeb = await obtenerNumWeb(`EXEC may_prox_comp @comp = ${objeto.tipo}`)
-        // await execQueryAlta(request, objeto, numWeb[0].num);
-        // console.log("ALTA OK");
-        await execTransferencia(request, objeto, "10978");
-        // await execTransferencia(request, objeto, numWeb[0].num);
-        console.log("TRANSFERENCIA OK");
-        await execUpdate(request, objeto, 'DEP', "10978")
-        // await execUpdate(request, objeto, 'DEP', numWeb[0].num)
-        console.log("UPDATE OK");
-
+    
+        const numWeb = await obtenerNumWeb(objeto.tipo)
+        await execQueryAlta(request, objeto, numWeb[0].num);
+        await execUpdate(request, objeto, 'DEP', numWeb[0].num)
+        await execTransferencia(request, objeto, numWeb[0].num);
+    
         await transaction.commit();
         return { msg: 'OK', numWeb }
     } catch (error) {
-        console.log("ERROR: ", error);
+        console.dir(`ERROR: ${error}`, { depth: null });
         await transaction.rollback();
         throw error;
     }
@@ -330,6 +325,7 @@ router.post("/pedido-unico/update", async (req, res) => {
     try {
         const { body } = req;
         const result = await finalizarPedidoUnico(body);
+        console.log("RESULT: ", result);
         return res.status(200).send(result);
     } catch (error) {
         return res.status(500).send(error);
