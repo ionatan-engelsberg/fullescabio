@@ -120,7 +120,7 @@ const execQueryAlta = async (request, object, numWeb) => {
     const transCountResult = await request.query('SELECT @@TRANCOUNT as tranCount');
     console.log("ALTA: Contador de transacciones: ", transCountResult.recordset[0].tranCount);
 
-    const { id, lista, listaCodigo, vendedor, fecha, tipo, montoPrecioTotal, montoItemsTotal, partidas: filas } = object;
+    const { id, listaCodigo, vendedor, fecha, tipo, montoPrecioTotal, montoItemsTotal } = object;
 
     const query = `
         EXEC pediweb_pedi_cabe_alta 
@@ -227,16 +227,22 @@ const finalizarPedidoUnico = async (objeto) => {
         await transaction.begin()
         const request = new sql.Request(transaction)
 
-        const numWeb = await obtenerNumWeb(objeto.tipo)
-        await execQueryAlta(request, objeto, numWeb[0].num);
-        await execUpdate(request, objeto, 'DEP', numWeb[0].num)
-        await execTransferencia(request, objeto, numWeb[0].num);
+        try {
+            const numWeb = await obtenerNumWeb(objeto.tipo)
+            await execQueryAlta(request, objeto, numWeb[0].num);
+            await execUpdate(request, objeto, 'DEP', numWeb[0].num)
+            await execTransferencia(request, objeto, numWeb[0].num);
+    
+            await transaction.commit();
+            return { msg: 'OK', numWeb }
+        } catch (error) {
+            console.log("Error en la transacción. Haciendo rollback...", error);
+            await transaction.rollback();
+            throw error;
+        }
 
-        await transaction.commit();
-        return { msg: 'OK', numWeb }
     } catch (error) {
-        console.log("ERROR: ", error);
-        await transaction.rollback();
+        console.log("ERROR fuera de la transacción: ", error);
         throw error;
     }
 }
