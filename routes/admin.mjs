@@ -237,7 +237,7 @@ const finalizarPedidoUnico = async (objeto) => {
             await execQueryAlta(request, objeto, numWeb[0].num);
             console.log("ALTA OK");
             // await execTransferencia(request, objeto, numWeb[0].num);
-            console.log("TRANSFERENCIA OK");
+            // console.log("TRANSFERENCIA OK");
             await execUpdate(request, objeto, 'DEP', numWeb[0].num)
             console.log("UPDATE OK");
 
