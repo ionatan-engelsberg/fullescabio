@@ -117,9 +117,6 @@ const obtenerNumWeb = async (tipo) => {
 }
 
 const execQueryAlta = async (request, object, numWeb) => {
-    const transCountResult = await request.query('SELECT @@TRANCOUNT as tranCount');
-    console.log("ALTA: Contador de transacciones: ", transCountResult.recordset[0].tranCount);
-
     const { id, listaCodigo, vendedor, fecha, tipo, montoPrecioTotal, montoItemsTotal } = object;
 
     const query = `
@@ -146,9 +143,6 @@ const execQueryAlta = async (request, object, numWeb) => {
 }
 
 const execUpdate = async (request, object, depo, numWeb) => {
-    const transCountResult = await request.query('SELECT @@TRANCOUNT as tranCount');
-    console.log("UPDATE: Contador de transacciones: ", transCountResult.recordset[0].tranCount);
-
     const { tipo, partidas: filas } = object;
     let renglon = 1;
 
@@ -171,14 +165,6 @@ const execUpdate = async (request, object, depo, numWeb) => {
 }
 
 const execTransferencia = async (object, numWeb) => {
-    // const execTransferencia = async (request, object, numWeb) => {
-    const transaction = new sql.Transaction()
-    await transaction.begin()
-    const request = new sql.Request(transaction)
-
-    const transCountResult = await request.query('SELECT @@TRANCOUNT as tranCount');
-    console.log("TRANSFERENCIA: Contador de transacciones: ", transCountResult.recordset[0].tranCount);
-
     const { fecha, tipo, partidas } = object;
 
     for (const partida of partidas) {
@@ -199,11 +185,10 @@ const execTransferencia = async (object, numWeb) => {
             @pedi_num='${numWeb}'
             `
 
+            const request = new sql.Request();
             await request.query(query);
         }
     }
-
-    return { transaction, request };
 }
 
 const finalizarPedidoMayorista = async (objeto) => {
@@ -230,13 +215,14 @@ const finalizarPedidoMayorista = async (objeto) => {
 
 const finalizarPedidoUnico = async (objeto) => {
     try {
-        // const transaction = new sql.Transaction()
-        // await transaction.begin()
-        // const request = new sql.Request(transaction)
+        const numWeb = await obtenerNumWeb(objeto.tipo)
+        await execTransferencia(objeto, numWeb[0].num);
+
+        const transaction = new sql.Transaction()
+        await transaction.begin()
+        const request = new sql.Request(transaction)
 
         try {
-            const numWeb = await obtenerNumWeb(objeto.tipo)
-            const { transaction, request } = await execTransferencia(objeto, numWeb[0].num);
             await execQueryAlta(request, objeto, numWeb[0].num);
             await execUpdate(request, objeto, 'DEP', numWeb[0].num)
 
@@ -249,7 +235,7 @@ const finalizarPedidoUnico = async (objeto) => {
         }
 
     } catch (error) {
-        console.log("ERROR fuera de la transacción: ", error);
+        console.log("ERROR: ", error);
         throw error;
     }
 }
