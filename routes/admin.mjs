@@ -182,7 +182,7 @@ const execTransferencia = async (object, numWeb) => {
             @cantidad='${cantidad}',
             @fecha='${fecha}',
             @pedi_tipo='${tipo}',
-            @pedi_num='${numWeb}'
+            @pedi_num=${numWeb}
             `
             console.log("QUERY: ", query);
             const request = new sql.Request();
