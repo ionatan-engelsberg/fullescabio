@@ -179,7 +179,7 @@ const execTransferencia = async (object, numWeb) => {
             @cod_partida='${codPartida}',
             @depo_ori='DEP',
             @depo_desti='MAY',
-            @cantidad='${cantidad}',
+            @cantidad=${cantidad},
             @fecha='${fecha}',
             @pedi_tipo='${tipo}',
             @pedi_num=${numWeb}
