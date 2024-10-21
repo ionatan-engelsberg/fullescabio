@@ -196,8 +196,12 @@ const execTransferencia = async (request, object, numWeb) => {
             `
 
             console.log("QUERY: ", query);
-            const response = await request.query(query);
-            console.log("RESPONSE: ", response);
+            try {
+                const response = await request.query(query);
+                console.log("RESPONSE: ", response);
+            } catch (error) {
+                console.log("ERROR (from function): ", error);
+            }
         }
 
     }
