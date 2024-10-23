@@ -442,11 +442,11 @@
       ventasAdicionalesStorage.fechaActual = new Date().toISOString().split('T')[0]
 
       const selectElement = document.getElementById("chooseImportMethod");
-      let selectedRoute = "/admin/ventas-adicionales/update"; // Valor por defecto
+      let selectedRoute = "/admin/ventas-adicionales/update-sp"; // Valor por defecto
       selectElement.addEventListener("change", (e) => {
         const selectedValue = e.target.value;
           if (selectedValue === "SPUpload") {
-            selectedRoute = "/admin/ventas-adicionales/update";
+            selectedRoute = "/admin/ventas-adicionales/update-sp";
           } else if (selectedValue === "directUpload") {
             selectedRoute = "/admin/ventas-adicionales/update-direct";
           }
@@ -728,10 +728,10 @@
         }
   
         const groupedInputs = [];
-        const propertyNames = ['sku', 'descripcion', 'cantidad', 'precio', 'cliente', 'sc', 'descuento'];
+        const propertyNames = ['sku', 'descripcion', 'cantidad', 'precio', 'cliente', 'descuento'];
   
-        for (let i = 0; i < inputs.length; i += 7) {
-          const values = Array.from(inputs).slice(i, i + 7).map(input => input.value);
+        for (let i = 0; i < inputs.length; i += 6) {
+          const values = Array.from(inputs).slice(i, i + 6).map(input => input.value);
           const obj = {};
           propertyNames.forEach((propertyName, index) => {
               obj[propertyName] = values[index] || ''; 
