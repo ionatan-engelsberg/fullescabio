@@ -424,6 +424,7 @@
     const verPedidoButton = <%= verPedidoButton %> 
     const existsError = Boolean(<%= existsError %>)
     const finalizarPedidoButton = document.getElementById("finalizarPedido")
+
     if(verPedidoButton) {
       Swal.fire({
         position: "center",
@@ -440,23 +441,10 @@
       sessionStorage.setItem("ventas-adicionales-data", JSON.stringify(dataObj));
       ventasAdicionalesStorage = JSON.parse(sessionStorage.getItem('ventas-adicionales-data'));
       ventasAdicionalesStorage.fechaActual = new Date().toISOString().split('T')[0]
-
       const selectElement = document.getElementById("chooseImportMethod");
-      let selectedRoute = "/admin/ventas-adicionales/update-sp";
-      selectElement.addEventListener("change", (e) => {
-        const selectedValue = e.target.value;
-          if (selectedValue === "SPUpload") {
-            selectedRoute = "/admin/ventas-adicionales/update-sp";
-            console.log(e.target.value)
-            console.log(selectedRoute)
-          } else if (selectedValue === "directUpload") {
-            selectedRoute = "/admin/ventas-adicionales/update-direct";
-            console.log(e.target.value)
-            console.log(selectedRoute)
-          }
-      });
 
       finalizarPedidoButton.addEventListener("click", (e) => {
+        const selectedValue = selectElement.value;
         console.log(ventasAdicionalesStorage)
           Swal.fire({
             title: "Procesando...",
@@ -470,7 +458,15 @@
           });
 
           setTimeout(() => {
-              console.log(selectedRoute)
+              let selectedRoute = "/admin/ventas-adicionales/update-sp";
+              if (selectedValue === "SPUpload") {
+                  selectedRoute = "/admin/ventas-adicionales/update-sp";
+              } else if (selectedValue === "directUpload") {
+                  selectedRoute = "/admin/ventas-adicionales/update-direct";
+              }
+
+              console.log("Ruta seleccionada antes de fetch:", selectedRoute);
+
               fetch(selectedRoute, {
                   body: JSON.stringify(ventasAdicionalesStorage),
                   method: "POST",
