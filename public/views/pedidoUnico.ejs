@@ -1489,6 +1489,7 @@
                         })
                         .then(response => {
                             if (!response.ok) {
+                                console.log(response)
                                 throw new Error("Error en la actualización: " + response.statusText);
                             }
                             return response.json();
@@ -1539,7 +1540,7 @@
                         .catch((err) => {
                             console.log(err)
                             Swal.fire({
-                                itle: "Error",
+                                title: "Error",
                                 text: err.message,
                                 icon: "error",
                                 confirmButtonText: "Aceptar"
