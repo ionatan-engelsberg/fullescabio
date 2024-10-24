@@ -1537,6 +1537,7 @@
                             return data;
                         })
                         .catch((err) => {
+                            console.log(err)
                             Swal.fire({
                                 itle: "Error",
                                 text: err.message,

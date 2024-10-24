@@ -167,27 +167,32 @@ const execUpdate = async (request, object, depo, numWeb) => {
 const execTransferencia = async (object, numWeb) => {
     const { fecha, tipo, partidas } = object;
 
-    for (const partida of partidas) {
-        const { data, articulos: { codigo: codArt, cantidad } } = partida;
-        for (const p of data) {
-            const { numero: codPartida } = p;
-
-            const query = `
-            EXEC full_transferencia_mayo
-            @tipo='STR',
-            @cod_articulo='${codArt}',
-            @cod_partida='${codPartida}',
-            @depo_ori='DEP',
-            @depo_desti='MAY',
-            @cantidad=${cantidad},
-            @fecha='${fecha}',
-            @pedi_tipo='${tipo}',
-            @pedi_num=${numWeb}
-            `
-            console.log("QUERY: ", query);
-            const request = new sql.Request();
-            await request.query(query);
+    try {
+        for (const partida of partidas) {
+            const { data, articulos: { codigo: codArt, cantidad } } = partida;
+            for (const p of data) {
+                const { numero: codPartida } = p;
+    
+                const query = `
+                EXEC full_transferencia_mayo
+                @tipo='STR',
+                @cod_articulo='${codArt}',
+                @cod_partida='${codPartida}',
+                @depo_ori='DEP',
+                @depo_desti='MAY',
+                @cantidad=${cantidad},
+                @fecha='${fecha}',
+                @pedi_tipo='${tipo}',
+                @pedi_num=${numWeb}
+                `
+                console.log("QUERY: ", query);
+                const request = new sql.Request();
+                await request.query(query);
+            }
         }
+    } catch (error) {
+        console.log(error)
+        throw error
     }
 }
 
@@ -321,6 +326,7 @@ router.post("/pedido-unico/update", async (req, res) => {
         const result = await finalizarPedidoUnico(body);
         return res.status(200).send(result);
     } catch (error) {
+        console.log(error)
         return res.status(500).send(error);
     }
 });
