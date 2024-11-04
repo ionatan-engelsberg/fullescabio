@@ -172,8 +172,19 @@ const execTransferencia = async (object, numWeb) => {
             const { data, articulos: { codigo: codArt, cantidad } } = partida;
             for (const p of data) {
                 const { numero: codPartida } = p;
-
-                // Registrar las longitudes de los datos
+    
+                const query = `
+                EXEC full_transferencia_mayo
+                @tipo='STR',
+                @cod_articulo='${codArt}',
+                @cod_partida='${codPartida}',
+                @depo_ori='DEP',
+                @depo_desti='MAY',
+                @cantidad=${cantidad},
+                @fecha='${fecha}',
+                @pedi_tipo='${tipo}',
+                @pedi_num=${numWeb}
+                `
                 console.log("Length of Parameters:");
                 console.log(`cod_articulo (length): ${codArt.length}`);
                 console.log(`cod_partida (length): ${codPartida.length}`);
@@ -183,27 +194,17 @@ const execTransferencia = async (object, numWeb) => {
                 console.log(`fecha (length): ${fecha.length}`);
                 console.log(`pedi_tipo (length): ${tipo.length}`);
                 console.log(`pedi_num (value): ${numWeb}`);
-
+                
+                console.log("QUERY: ", query);
                 const request = new sql.Request();
-                request.input('tipo', sql.VarChar, 'STR');
-                request.input('cod_articulo', sql.VarChar, codArt);
-                request.input('cod_partida', sql.VarChar, codPartida);
-                request.input('depo_ori', sql.VarChar, 'DEP');
-                request.input('depo_desti', sql.VarChar, 'MAY');
-                request.input('cantidad', sql.Int, cantidad);
-                request.input('fecha', sql.Date, fecha);
-                request.input('pedi_tipo', sql.VarChar, tipo);
-                request.input('pedi_num', sql.Int, numWeb);
-
-                await request.execute('full_transferencia_mayo');
+                await request.query(query);
             }
         }
     } catch (error) {
-        console.log(error);
-        throw error;
+        console.log(error)
+        throw error
     }
-};
-
+}
 
 const finalizarPedidoMayorista = async (objeto) => {
     try {
