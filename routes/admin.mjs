@@ -172,29 +172,38 @@ const execTransferencia = async (object, numWeb) => {
             const { data, articulos: { codigo: codArt, cantidad } } = partida;
             for (const p of data) {
                 const { numero: codPartida } = p;
-    
-                const query = `
-                EXEC full_transferencia_mayo
-                @tipo='STR',
-                @cod_articulo='${codArt}',
-                @cod_partida='${codPartida}',
-                @depo_ori='DEP',
-                @depo_desti='MAY',
-                @cantidad=${cantidad},
-                @fecha='${fecha}',
-                @pedi_tipo='${tipo}',
-                @pedi_num=${numWeb}
-                `
-                console.log("QUERY: ", query);
+
+                // Registrar las longitudes de los datos
+                console.log("Length of Parameters:");
+                console.log(`cod_articulo (length): ${codArt.length}`);
+                console.log(`cod_partida (length): ${codPartida.length}`);
+                console.log(`depo_ori (length): ${'DEP'.length}`);
+                console.log(`depo_desti (length): ${'MAY'.length}`);
+                console.log(`cantidad (value): ${cantidad}`);
+                console.log(`fecha (length): ${fecha.length}`);
+                console.log(`pedi_tipo (length): ${tipo.length}`);
+                console.log(`pedi_num (value): ${numWeb}`);
+
                 const request = new sql.Request();
-                await request.query(query);
+                request.input('tipo', sql.VarChar, 'STR');
+                request.input('cod_articulo', sql.VarChar, codArt);
+                request.input('cod_partida', sql.VarChar, codPartida);
+                request.input('depo_ori', sql.VarChar, 'DEP');
+                request.input('depo_desti', sql.VarChar, 'MAY');
+                request.input('cantidad', sql.Int, cantidad);
+                request.input('fecha', sql.Date, fecha);
+                request.input('pedi_tipo', sql.VarChar, tipo);
+                request.input('pedi_num', sql.Int, numWeb);
+
+                await request.execute('full_transferencia_mayo');
             }
         }
     } catch (error) {
-        console.log(error)
-        throw error
+        console.log(error);
+        throw error;
     }
-}
+};
+
 
 const finalizarPedidoMayorista = async (objeto) => {
     try {
