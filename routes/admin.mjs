@@ -185,16 +185,16 @@ const execTransferencia = async (object, numWeb) => {
                 @pedi_tipo='${tipo}',
                 @pedi_num=${numWeb}
                 `
-                console.log("Length of Parameters:");
-                console.log(`cod_articulo (length): ${codArt.length}`);
-                console.log(`cod_partida (length): ${codPartida.length}`);
-                console.log(`depo_ori (length): ${'DEP'.length}`);
-                console.log(`depo_desti (length): ${'MAY'.length}`);
-                console.log(`cantidad (value): ${cantidad}`);
-                console.log(`fecha (length): ${fecha.length}`);
-                console.log(`pedi_tipo (length): ${tipo.length}`);
-                console.log(`pedi_num (value): ${numWeb}`);
-                
+
+                console.log(`cod_articulo (bytes): ${Buffer.byteLength(codArt, 'utf8')}`);
+                console.log(`cod_partida (bytes): ${Buffer.byteLength(codPartida, 'utf8')}`);
+                console.log(`depo_ori (bytes): ${Buffer.byteLength('DEP', 'utf8')}`);
+                console.log(`depo_desti (bytes): ${Buffer.byteLength('MAY', 'utf8')}`);
+                console.log(`cantidad (bytes): ${Buffer.byteLength(cantidad.toString(), 'utf8')}`);
+                console.log(`fecha (bytes): ${Buffer.byteLength(fecha.toString(), 'utf8')}`);
+                console.log(`pedi_tipo (bytes): ${Buffer.byteLength(tipo, 'utf8')}`);
+                console.log(`pedi_num (bytes): ${Buffer.byteLength(numWeb.toString(), 'utf8')}`);
+
                 console.log("QUERY: ", query);
                 const request = new sql.Request();
                 await request.query(query);
