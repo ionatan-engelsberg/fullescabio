@@ -172,7 +172,13 @@ const execTransferencia = async (object, numWeb) => {
             const { data, articulos: { codigo: codArt, cantidad } } = partida;
             for (const p of data) {
                 const { numero: codPartida } = p;
-    
+
+                const request = new sql.Request();
+
+                // Deshabilita ANSI_WARNINGS para esta ejecución
+                await request.query("SET ANSI_WARNINGS OFF");
+
+                // Construye y ejecuta la consulta principal
                 const query = `
                 EXEC full_transferencia_mayo
                 @tipo='STR',
@@ -184,27 +190,20 @@ const execTransferencia = async (object, numWeb) => {
                 @fecha='${fecha}',
                 @pedi_tipo='${tipo}',
                 @pedi_num=${numWeb}
-                `
-
-                console.log(`cod_articulo (bytes): ${Buffer.byteLength(codArt, 'utf8')}`);
-                console.log(`cod_partida (bytes): ${Buffer.byteLength(codPartida, 'utf8')}`);
-                console.log(`depo_ori (bytes): ${Buffer.byteLength('DEP', 'utf8')}`);
-                console.log(`depo_desti (bytes): ${Buffer.byteLength('MAY', 'utf8')}`);
-                console.log(`cantidad (bytes): ${Buffer.byteLength(cantidad.toString(), 'utf8')}`);
-                console.log(`fecha (bytes): ${Buffer.byteLength(fecha.toString(), 'utf8')}`);
-                console.log(`pedi_tipo (bytes): ${Buffer.byteLength(tipo, 'utf8')}`);
-                console.log(`pedi_num (bytes): ${Buffer.byteLength(numWeb.toString(), 'utf8')}`);
+                `;
 
                 console.log("QUERY: ", query);
-                const request = new sql.Request();
                 await request.query(query);
+
+                // Habilita ANSI_WARNINGS nuevamente
+                await request.query("SET ANSI_WARNINGS ON");
             }
         }
     } catch (error) {
-        console.log(error)
-        throw error
+        console.log("Error en execTransferencia:", error);
+        throw error;
     }
-}
+};
 
 const finalizarPedidoMayorista = async (objeto) => {
     try {
