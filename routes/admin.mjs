@@ -175,10 +175,8 @@ const execTransferencia = async (object, numWeb) => {
 
                 const request = new sql.Request();
 
-                // Deshabilita ANSI_WARNINGS para esta ejecución
                 await request.query("SET ANSI_WARNINGS OFF");
 
-                // Construye y ejecuta la consulta principal
                 const query = `
                 EXEC full_transferencia_mayo
                 @tipo='STR',
@@ -195,7 +193,6 @@ const execTransferencia = async (object, numWeb) => {
                 console.log("QUERY: ", query);
                 await request.query(query);
 
-                // Habilita ANSI_WARNINGS nuevamente
                 await request.query("SET ANSI_WARNINGS ON");
             }
         }
