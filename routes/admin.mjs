@@ -167,31 +167,36 @@ const execUpdate = async (request, object, depo, numWeb) => {
 const execTransferencia = async (object, numWeb) => {
     const { fecha, tipo, partidas } = object;
 
+    function cleanString(str) {
+        return str.trim().replace(/\s+/g, ' ');
+    }
+
     try {
         for (const partida of partidas) {
             const { data, articulos: { codigo: codArt, cantidad } } = partida;
             for (const p of data) {
                 const { numero: codPartida } = p;
 
+                const cleanCodArt = cleanString(codArt);
+                const cleanCodPartida = cleanString(codPartida);
+                const cleanFecha = fecha.trim();
+                const cleanPediTipo = cleanString(tipo);
+
                 const request = new sql.Request();
 
                 await request.query("SET ANSI_WARNINGS OFF");
 
-                const query = `
-                EXEC full_transferencia_mayo
-                @tipo='STR',
-                @cod_articulo='${codArt}',
-                @cod_partida='${codPartida}',
-                @depo_ori='DEP',
-                @depo_desti='MAY',
-                @cantidad=${cantidad},
-                @fecha='${fecha}',
-                @pedi_tipo='${tipo}',
-                @pedi_num=${numWeb}
-                `;
+                request.input('tipo', sql.VarChar, 'STR');
+                request.input('cod_articulo', sql.VarChar, cleanCodArt);
+                request.input('cod_partida', sql.VarChar, cleanCodPartida);
+                request.input('depo_ori', sql.VarChar, 'DEP');
+                request.input('depo_desti', sql.VarChar, 'MAY');
+                request.input('cantidad', sql.Int, cantidad);
+                request.input('fecha', sql.Date, cleanFecha);
+                request.input('pedi_tipo', sql.VarChar, cleanPediTipo);
+                request.input('pedi_num', sql.Int, numWeb);
 
-                console.log("QUERY: ", query);
-                await request.query(query);
+                await request.execute('full_transferencia_mayo');
 
                 await request.query("SET ANSI_WARNINGS ON");
             }
@@ -201,6 +206,7 @@ const execTransferencia = async (object, numWeb) => {
         throw error;
     }
 };
+
 
 const finalizarPedidoMayorista = async (objeto) => {
     try {
