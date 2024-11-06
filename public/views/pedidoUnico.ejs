@@ -1101,15 +1101,10 @@
                     const listaCodigo = retrievedData.listaCodigo; // Asigna tu código aquí
                     let data = {
                         codigoPedidoUnico: codigo,
-                        listaCodigo: null // Inicializamos con null o un valor por defecto
+                        listaCodigo: retrievedData.listaCodigo// Inicializamos con null o un valor por defecto
                     };
 
-
                     let selectListaPedidoUnico = document.getElementById("listaPedidoUnico")
-                    data.listaCodigo = selectListaPedidoUnico.value; 
-
-                    console.log(data)
-                    console.log(retrievedData)
 
                     let allInputCodigo = formularioArticulos.querySelectorAll('input[name="codigoPedidoUnico"]') 
                     let hayDuplicados = false;
