@@ -48,8 +48,9 @@ const obtenerListaPedidoUnico = async (query) => {
     try {
         const request = await new sql.Request().query(query)
         return request.recordset.map((row) => {
-            const { LISTA_DESCRIP: lista } = row
-            return { lista }
+            console.log(row)
+            const { LISTA_DESCRIP: lista,  LISTA_CODI: codigo} = row
+            return { lista, codigo }
         })
     } catch (error) {
         return [];
@@ -196,7 +197,7 @@ const execTransferencia = async (object, numWeb) => {
                 request.input('pedi_tipo', sql.VarChar, cleanPediTipo);
                 request.input('pedi_num', sql.Int, numWeb);
 
-                await request.execute('full_transferencia_mayo');
+                await request.execute('full_transferencia_mayo2');
 
                 await request.query("SET ANSI_WARNINGS ON");
             }
@@ -532,6 +533,9 @@ router.post('/pedido-unico/buscar-por-id', async (req, res) => {
     const lista = await obtenerListaPedidoUnico(`EXEC may_lista_precios`)
     const listaVendedor = await obtenerListaVendedoresPedidoUnico(`EXEC may_lista_vendedores`)
 
+    console.log(lista)
+    console.log('---')
+    console.log(listaVendedor)
     res.render("pedidoUnico", {
         lista,
         listaVendedor,
@@ -598,6 +602,11 @@ router.post('/pedido-unico/buscar-por-nombre', async (req, res) => {
 router.post("/pedido-unico/obtener-articulos", async (req, res) => {
     const codigoPedidoUnico = req.body.codigoPedidoUnico;
     const listaCodigo = req.body.listaCodigo
+
+    console.log(codigoPedidoUnico)
+    console.log(listaCodigo)
+    console.log(123)
+
 
     //! Consulta a DB
     const resultadosCodigo = await obtenerArticulosPedidoUnico(`EXEC may_articulos @cod_art = '${codigoPedidoUnico}', @lista_cod = '${listaCodigo}'`)

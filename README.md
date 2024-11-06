@@ -83,3 +83,5 @@ NO pueden mandar formulario y excel a la vez. Es uno o el otro
 
 --- --- ---- 
 vtas ad, camviar var compr
+
+Bug 5/11: Cuando se hace un cambio de lista, este no es detectado. Solo se esta trayendo un codigo de lista, se necesitan todos. 
