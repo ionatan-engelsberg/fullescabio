@@ -87,7 +87,6 @@ const start = async () => {
             console.error('SQL Global Error:', err);
         });
         
-        console.log(config)
         const pool = new sql.ConnectionPool(config);
         pool.on('error', err => {
             console.error('SQL Pool Error:', err);
