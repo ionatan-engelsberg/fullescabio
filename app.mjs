@@ -82,6 +82,18 @@ const start = async () => {
             fs.mkdirSync('uploads');
         }
         await sql.connect(config);
+
+        sql.on('error', err => {
+            console.error('SQL Global Error:', err);
+        });
+        
+        console.log(config)
+        const pool = new sql.ConnectionPool(config);
+        pool.on('error', err => {
+            console.error('SQL Pool Error:', err);
+        });
+
+        
         app.listen(8080, () => {
             console.log('Server on Port 8080')
         })

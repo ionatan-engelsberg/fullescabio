@@ -182,10 +182,21 @@ const execTransferencia = async (object, numWeb) => {
                 const cleanCodPartida = cleanString(codPartida);
                 const cleanFecha = fecha.trim();
                 const cleanPediTipo = cleanString(tipo);
+                
+
+                console.log('Executing stored procedure with the following parameters:');
+                console.log(`cleanCodArt: ${cleanCodArt} (length: ${cleanCodArt.length})`);
+                console.log(`cleanCodPartida: ${cleanCodPartida} (length: ${cleanCodPartida.length})`);
+                console.log(`cleanFecha: ${cleanFecha} (length: ${cleanFecha.length})`);
+                console.log(`cleanPediTipo: ${cleanPediTipo} (length: ${cleanPediTipo.length})`);
+                console.log(`Numweb: ${numWeb} (length: ${numWeb.length})`);
 
                 const request = new sql.Request();
 
                 await request.query("SET ANSI_WARNINGS OFF");
+
+                request.queryTimeout = 30000; 
+                request.connectionTimeout = 30000;
 
                 request.input('tipo', sql.VarChar, 'STR');
                 request.input('cod_articulo', sql.VarChar, cleanCodArt);
@@ -197,7 +208,11 @@ const execTransferencia = async (object, numWeb) => {
                 request.input('pedi_tipo', sql.VarChar, cleanPediTipo);
                 request.input('pedi_num', sql.Int, numWeb);
 
-                await request.execute('full_transferencia_mayo2');
+                const query = request.queryText; 
+                console.log('Generated Query:', query);
+
+                const response = await request.execute('full_transferencia_mayo2');
+                console.log(response)
 
                 await request.query("SET ANSI_WARNINGS ON");
             }
@@ -602,11 +617,6 @@ router.post('/pedido-unico/buscar-por-nombre', async (req, res) => {
 router.post("/pedido-unico/obtener-articulos", async (req, res) => {
     const codigoPedidoUnico = req.body.codigoPedidoUnico;
     const listaCodigo = req.body.listaCodigo
-
-    console.log(codigoPedidoUnico)
-    console.log(listaCodigo)
-    console.log(123)
-
 
     //! Consulta a DB
     const resultadosCodigo = await obtenerArticulosPedidoUnico(`EXEC may_articulos @cod_art = '${codigoPedidoUnico}', @lista_cod = '${listaCodigo}'`)
