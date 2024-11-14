@@ -219,7 +219,7 @@ const execTransferencia = async (object, numWeb) => {
                 request.input('pedi_tipo', sql.VarChar, 'DDW');
                 request.input('pedi_num', sql.Int, 10987);
 
-                const response = await request.execute('full_transferencia_mayo2');
+                const response = await request.execute('full_transferencia_mayo');
                 console.log(response)
 
                 await request.query("SET ANSI_WARNINGS ON");
