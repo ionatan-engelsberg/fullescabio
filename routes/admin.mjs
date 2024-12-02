@@ -136,8 +136,7 @@ const execQueryAlta = async (request, object, numWeb) => {
         @usuario = 'c1', 
         @condi_venta = '1',
         @mone = 'PES', 
-        @porcen_descuen_item = '0',
-        @porcen_descuen = '0',
+        @porcen_descuen = 0,
         @mone_coti = null,
         @num_factu = null,
         @codi_lugar = null
@@ -161,7 +160,7 @@ const execUpdate = async (request, object, depo, numWeb) => {
             @cant = '${cantidad}',
             @num_web = '${numWeb}',
             @renglon = '${renglon}',
-            @porcen_descuen_item = null,
+            @porcen_descuen_item = '0',
             @depo_reser = '${depo}'
         `
         console.log('update ', query)
