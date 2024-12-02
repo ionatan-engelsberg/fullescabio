@@ -48,7 +48,6 @@ const obtenerListaPedidoUnico = async (query) => {
     try {
         const request = await new sql.Request().query(query)
         return request.recordset.map((row) => {
-            console.log(row)
             const { LISTA_DESCRIP: lista,  LISTA_CODI: codigo} = row
             return { lista, codigo }
         })
@@ -120,12 +119,15 @@ const obtenerNumWeb = async (tipo) => {
 const execQueryAlta = async (request, object, numWeb) => {
     const { id, listaCodigo, vendedor, fecha, tipo, montoPrecioTotal, montoItemsTotal } = object;
 
+    let parsedTotal = Number(montoPrecioTotal)
+    console.log(typeof parsedTotal)
+
     const query = `
         EXEC pediweb_pedi_cabe_alta 
         @tipo = '${tipo}',
         @num_cliente = '${id}',
         @fecha = '${fecha}',
-        @total = '${montoPrecioTotal}',
+        @total = ${parsedTotal},
         @lista_codi = '${listaCodigo}',
         @cant_max_items_web = '${montoItemsTotal}',
         @num_web = '${numWeb}',
@@ -134,12 +136,14 @@ const execQueryAlta = async (request, object, numWeb) => {
         @usuario = 'c1', 
         @condi_venta = '1',
         @mone = 'PES', 
+        @porcen_descuen_item = '0',
+        @porcen_descuen = '0',
         @mone_coti = null,
         @num_factu = null,
-        @porcen_descuen = null,
         @codi_lugar = null
     `
 
+    console.log('query ', query)
     await request.query(query);
 }
 
@@ -160,6 +164,7 @@ const execUpdate = async (request, object, depo, numWeb) => {
             @porcen_descuen_item = null,
             @depo_reser = '${depo}'
         `
+        console.log('update ', query)
         await request.query(query)
         renglon++;
     }
@@ -208,7 +213,6 @@ const execTransferencia = async (object, numWeb) => {
                 // request.input('pedi_tipo', sql.VarChar, cleanPediTipo);
                 // request.input('pedi_num', sql.Int, numWeb);
 
-                console.log(typeof cleanCodPartida)
                 request.input('tipo', sql.VarChar, 'STR');
                 request.input('cod_articulo', sql.VarChar, "c1");
                 request.input('cod_partida', sql.VarChar, "1");
@@ -219,7 +223,7 @@ const execTransferencia = async (object, numWeb) => {
                 request.input('pedi_tipo', sql.VarChar, 'DDW');
                 request.input('pedi_num', sql.Int, 10987);
 
-                const response = await request.execute('full_transferencia_mayo2');
+                const response = await request.execute('full_transferencia_mayo');
                 console.log(response)
 
                 await request.query("SET ANSI_WARNINGS ON");
@@ -556,9 +560,6 @@ router.post('/pedido-unico/buscar-por-id', async (req, res) => {
     const lista = await obtenerListaPedidoUnico(`EXEC may_lista_precios`)
     const listaVendedor = await obtenerListaVendedoresPedidoUnico(`EXEC may_lista_vendedores`)
 
-    console.log(lista)
-    console.log('---')
-    console.log(listaVendedor)
     res.render("pedidoUnico", {
         lista,
         listaVendedor,
