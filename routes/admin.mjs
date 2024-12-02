@@ -160,7 +160,7 @@ const execUpdate = async (request, object, depo, numWeb) => {
             @cant = '${cantidad}',
             @num_web = '${numWeb}',
             @renglon = '${renglon}',
-            @porcen_descuen_item = '0',
+            @porcen_descuen_item = 0,
             @depo_reser = '${depo}'
         `
         console.log('update ', query)
@@ -202,25 +202,25 @@ const execTransferencia = async (object, numWeb) => {
                 request.queryTimeout = 30000; 
                 request.connectionTimeout = 30000;
 
+                request.input('tipo', sql.VarChar, 'STR');
+                request.input('cod_articulo', sql.VarChar, cleanCodArt);
+                request.input('cod_partida', sql.VarChar, cleanCodPartida);
+                request.input('depo_ori', sql.VarChar, 'DEP');
+                request.input('depo_desti', sql.VarChar, 'MAY');
+                request.input('cantidad', sql.Int, cantidad);
+                request.input('fecha', sql.Date, cleanFecha);
+                request.input('pedi_tipo', sql.VarChar, cleanPediTipo);
+                request.input('pedi_num', sql.Int, numWeb);
+
                 // request.input('tipo', sql.VarChar, 'STR');
-                // request.input('cod_articulo', sql.VarChar, cleanCodArt);
-                // request.input('cod_partida', sql.VarChar, cleanCodPartida);
+                // request.input('cod_articulo', sql.VarChar, "c1");
+                // request.input('cod_partida', sql.VarChar, "1");
                 // request.input('depo_ori', sql.VarChar, 'DEP');
                 // request.input('depo_desti', sql.VarChar, 'MAY');
                 // request.input('cantidad', sql.Int, cantidad);
-                // request.input('fecha', sql.Date, cleanFecha);
-                // request.input('pedi_tipo', sql.VarChar, cleanPediTipo);
+                // request.input('fecha', sql.Date, '2024-11-07');
+                // request.input('pedi_tipo', sql.VarChar, 'DDW');
                 // request.input('pedi_num', sql.Int, numWeb);
-
-                request.input('tipo', sql.VarChar, 'STR');
-                request.input('cod_articulo', sql.VarChar, "c1");
-                request.input('cod_partida', sql.VarChar, "1");
-                request.input('depo_ori', sql.VarChar, 'DEP');
-                request.input('depo_desti', sql.VarChar, 'MAY');
-                request.input('cantidad', sql.Int, 1);
-                request.input('fecha', sql.Date, '2024-11-07');
-                request.input('pedi_tipo', sql.VarChar, 'DDW');
-                request.input('pedi_num', sql.Int, 10987);
 
                 const response = await request.execute('full_transferencia_mayo');
                 console.log(response)
