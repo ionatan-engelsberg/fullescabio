@@ -445,7 +445,14 @@
 
       finalizarPedidoButton.addEventListener("click", (e) => {
         const selectedValue = selectElement.value;
+        let fechaDesde = sessionStorage.getItem('fechaDesde')
+        let fechaHasta = sessionStorage.getItem('fechaHasta')
+        
+        ventasAdicionalesStorage.fechaDesde = fechaDesde
+        ventasAdicionalesStorage.fechaHasta = fechaHasta
+
         console.log(ventasAdicionalesStorage)
+
           Swal.fire({
             title: "Procesando...",
             text: "Por favor, espera mientras se completa la operación.",
@@ -464,8 +471,6 @@
               } else if (selectedValue === "directUpload") {
                   selectedRoute = "/admin/ventas-adicionales/update-direct";
               }
-
-              console.log("Ruta seleccionada antes de fetch:", selectedRoute);
 
               fetch(selectedRoute, {
                   body: JSON.stringify(ventasAdicionalesStorage),
@@ -654,7 +659,6 @@
         }
       });
       setTimeout(() => {
-        console.log(groupedData)
         fetch("/admin/ventas-adicionales/validate-rows", {
           body: JSON.stringify({ 
             data: groupedData,
