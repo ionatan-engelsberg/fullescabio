@@ -45,13 +45,13 @@ const users = [];
 const userAlpha = {
   id: Date.now().toString(),
   name: "FullEscabio",
-  username: "a",
-  password: "",
-  business: "a",
+  username: "dba_lautaro",
+  password: "dba@2020",
+  business: "dba_centro",
 };
 
 async function hashPass() {
-  const pass = await bcrypt.hash("a", 10);
+  const pass = await bcrypt.hash("dba@2020", 10);
   userAlpha.password = pass;
   users.push(userAlpha);
   return pass;
