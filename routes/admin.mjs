@@ -1,5 +1,6 @@
 import express from "express";
 import sql from "mssql";
+import fs from "fs";
 import uploadExcel from "../middlewares/multer.mjs";
 import path from "path";
 
@@ -436,7 +437,55 @@ router.post("/pedido-mayorista/update", async (req, res) => {
   }
 });
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
+  const { username, password, database, ip, port, instanceName } = req.user;
+
+  let unhashedPass;
+  const FACTU_DBA_PASS = process.env.FACTU_DBA_PASS;
+  const FACTU_DBA_NORTE_DESA_PASS = process.env.FACTU_DB_NORTE_DESA_PASS;
+  const FACTU_DBA_NORTE_PASS = process.env.FACTU_DBA_NORTE_PASS;
+
+  switch (database) {
+    case "factu_dba":
+      unhashedPass = FACTU_DBA_PASS;
+    case "factu_dba_norte_desa":
+      unhashedPass = FACTU_DBA_NORTE_DESA_PASS;
+    case "factu_dba_norte":
+      unhashedPass = FACTU_DBA_NORTE_PASS;
+  }
+
+  const config = {
+    user: "dba_lautaro",
+    password: process.env.PASSWORD,
+    server: ip,
+    database: database,
+    port: Number(port),
+    options: {
+      encrypt: false,
+      trustServerCertificate: false,
+      instancename: instanceName,
+    },
+  };
+
+  console.log(config);
+
+  try {
+    await sql.connect(config);
+
+    sql.on("error", (err) => {
+      console.error("SQL Global Error:", err);
+    });
+
+    const pool = new sql.ConnectionPool(config);
+    pool.on("error", (err) => {
+      console.error("SQL Pool Error:", err);
+    });
+
+    console.log("Conection OK");
+  } catch (error) {
+    console.log("ERROR while connecting to DB: ", error);
+  }
+
   res.render("admin");
 });
 

@@ -42,67 +42,143 @@ app.use("/admin", admin);
 app.get("*", (req, res) => res.render("404"));
 
 const users = [];
-const userAlpha = {
-  id: Date.now().toString(),
-  name: "FullEscabio",
-  username: "dba_lautaro",
-  password: "dba@2020",
-  business: "dba_centro",
-};
+// const userAlpha = {
+//   id: Date.now().toString(),
+//   name: "FullEscabio",
+//   username: "dba_lautaro",
+//   password: "dba@2020",
+//   business: "dba_centro",
+// };
 
-async function hashPass() {
-  const pass = await bcrypt.hash("dba@2020", 10);
-  userAlpha.password = pass;
-  users.push(userAlpha);
-  return pass;
-}
-hashPass();
+// async function hashPass() {
+//   const pass = await bcrypt.hash("dba@2020", 10);
+//   userAlpha.password = pass;
+//   users.push(userAlpha);
+//   return pass;
+// }
+// hashPass();
 
-initializePassport(
-  passport,
-  (username, business) =>
-    users.find(
-      (user) => user.username === username && user.business === business
-    ),
-  (id) => users.find((user) => user.id === id)
-);
-
-const { IP, USER_NAME, PASSWORD, DATABASE, PORT, INSTANCENAME } = process.env;
-const config = {
-  user: USER_NAME,
-  password: PASSWORD,
-  server: IP,
-  database: DATABASE,
-  port: Number(PORT),
-  options: {
-    encrypt: false,
-    trustServerCertificate: false,
-    instancename: INSTANCENAME,
+//! --- ---- ----
+const initialUsers = [
+  {
+    name: "FullEscabio",
+    username: "factu_dba",
+    password: "dba@2020",
+    business: "dba_centro",
+    database: "factu_dba",
+    ip: "181.119.169.120",
+    port: "50322",
+    instanceName: "RPSISTEMAS",
   },
-};
+  {
+    name: "FullEscabio",
+    username: "factu_dba_norte_desa",
+    password: "dba@2020",
+    business: "dba_prueba",
+    database: "factu_dba_norte_desa",
+    ip: "181.119.169.120",
+    port: "50322",
+    instanceName: "RPSISTEMAS",
+  },
+  {
+    name: "FullEscabio",
+    username: "factu_dba_norte",
+    password: "dba@2020",
+    business: "dba_norte",
+    database: "factu_dba_norte",
+    ip: "181.119.169.120",
+    port: "50322",
+    instanceName: "RPSISTEMAS",
+  },
+];
+class User {
+  constructor({
+    id = Date.now().toString(),
+    name,
+    username,
+    password,
+    business,
+    database,
+    ip,
+    port,
+    instanceName,
+  }) {
+    this.id = id;
+    this.name = name;
+    this.username = username;
+    this.password = password;
+    this.business = business;
+    this.database = database;
+    this.ip = ip;
+    this.port = port;
+    this.instanceName = instanceName;
+  }
+}
 
-const start = async () => {
+async function createUser({
+  name,
+  username,
+  password,
+  business,
+  database,
+  ip,
+  port,
+  instanceName,
+}) {
   try {
-    if (!fs.existsSync("uploads")) {
-      fs.mkdirSync("uploads");
-    }
-    await sql.connect(config);
-
-    sql.on("error", (err) => {
-      console.error("SQL Global Error:", err);
-    });
-
-    const pool = new sql.ConnectionPool(config);
-    pool.on("error", (err) => {
-      console.error("SQL Pool Error:", err);
-    });
-
-    app.listen(8080, () => {
-      console.log("Server on Port 8080");
+    const hashedPassword = await bcrypt.hash(password, 10);
+    return new User({
+      name,
+      username,
+      password: hashedPassword,
+      //password,
+      business,
+      database,
+      ip,
+      port,
+      instanceName,
     });
   } catch (error) {
-    console.log("ERROR while connecting to DB: ", error);
+    console.error("Error al crear usuario:", error);
+    throw error;
   }
+}
+
+async function preloadUsers(usersArray) {
+  try {
+    const promises = usersArray.map((user) => createUser(user));
+    const loadedUsers = await Promise.all(promises);
+    users.push(...loadedUsers);
+    console.log("Usuarios precargados exitosamente.");
+  } catch (error) {
+    console.error("Error al precargar usuarios:", error);
+    throw error;
+  }
+}
+
+async function init() {
+  await preloadUsers(initialUsers);
+  initializePassport(
+    passport,
+    (username, business) =>
+      users.find(
+        (user) => user.username === username && user.business === business
+      ),
+    (id) => users.find((user) => user.id === id)
+  );
+}
+
+await init();
+//! --- ---- ----
+
+const start = async () => {
+  if (!fs.existsSync("uploads")) {
+    fs.mkdirSync("uploads");
+  }
+
+  app.listen(8080, () => {
+    console.log("Server on Port 8080");
+  });
 };
 
 await start();
