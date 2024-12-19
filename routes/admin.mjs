@@ -331,7 +331,7 @@ const execVentasAdicionalesSp = async (
 ) => {
   const { sku, cantidad } = fila;
   const queryUpdate = `
-    EXEC [may_proveedores_articulos_incidencia]
+    EXEC [may_proveedores_articulos_incidencia_2]
     @Cod_articulo = ${sku},
     @cantidad = ${cantidad},
     @comprobante = ${parseInt(fechaActual.replace(/-/g, ""), 10)},
@@ -466,8 +466,6 @@ router.get("/", async (req, res) => {
       instancename: instanceName,
     },
   };
-
-  console.log(config);
 
   try {
     await sql.connect(config);
